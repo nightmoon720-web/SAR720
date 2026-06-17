@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣山域搜救 · 第三批 C2 C3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:   #F5F0E8;
+  --stone:   #EDE7D9;
+  --stone2:  #E3DDD0;
+  --rule:    #CFC9BC;
+  --rule2:   #BDB6A8;
+  --ink:     #1C1A17;
+  --dim:     #6B6560;
+  --dim2:    #9A948E;
+  --fire:    #C8401A;
+  --ember:   #D4781A;
+  --amber:   #B89030;
+  --safe:    #2E7D52;
+  --moss:    #3D5C3A;
+  --slate:   #2C4A6E;
+  --violet:  #6B4FA0;
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+  --nav-h: 56px;
+  --spine-w: 4px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+.spine { position: fixed; left: 0; top: var(--nav-h); bottom: 0; width: var(--spine-w); background: var(--fire); z-index: 90; }
+
+.nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: var(--paper); border-bottom: 1px solid var(--rule); display: flex; align-items: center; padding: 0 2rem; gap: 2rem; z-index: 100; }
+.nav-logo { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--fire); letter-spacing: .08em; white-space: nowrap; flex: none; }
+.nav-links { display: flex; gap: .2rem; overflow-x: auto; scrollbar-width: none; }
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-link { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--dim); text-decoration: none; padding: .35rem .65rem; border-radius: 4px; white-space: nowrap; transition: .15s; letter-spacing: .04em; border-left: 3px solid #2C4A6E; }
+.nav-link:hover { color: var(--ink); background: var(--stone); }
+.nav-link.active { color: var(--fire); background: #C8401A18; }
+
+.page-body { padding-top: var(--nav-h); padding-left: calc(var(--spine-w) + 2rem); padding-right: 2rem; }
+
+.sec-header { padding: 4rem 0 2.5rem; border-bottom: 1px solid var(--rule); margin-bottom: 2.5rem; }
+.sec-layer { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--dim2); margin-bottom: .6rem; }
+.sec-title { font-family: var(--serif); font-size: clamp(1.6rem, 3.5vw, 2.8rem); font-weight: 900; color: var(--ink); line-height: 1.15; }
+.sec-title em { color: var(--fire); font-style: normal; }
+.sec-sub { margin-top: .75rem; font-size: 14px; color: var(--dim); line-height: 1.6; }
+
+.tool-frame { background: var(--stone); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; margin-bottom: 4rem; }
+.tool-bar { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1.25rem; border-bottom: 1px solid var(--rule); background: var(--stone2); }
+.tool-label { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--fire); letter-spacing: .1em; }
+.tool-tag { font-family: var(--mono); font-size: 11px; color: var(--dim2); }
+.tool-inner { padding: 1.5rem; }
+.section-divider { height: 1px; background: var(--rule); margin: 3rem 0; }
+
+/* ============================================================
+   C2 PART A — ANCHOR FORCE SIMULATOR
+   ============================================================ */
+.anchor-sim-layout { display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; align-items: start; }
+#anchor-canvas { display: block; border: 1px solid var(--rule); border-radius: 10px; background: var(--paper); }
+.anchor-controls { display: flex; flex-direction: column; gap: 1rem; }
+.slider-group { background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; padding: .9rem 1rem; }
+.slider-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .5rem; }
+.slider-label { font-size: 13px; font-weight: 700; }
+.slider-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--fire); }
+input[type="range"].light-range {
+  -webkit-appearance: none; width: 100%; height: 8px; border-radius: 6px;
+  background: linear-gradient(90deg, var(--fire) var(--pct,0%), var(--rule) var(--pct,0%));
+  outline: none;
+}
+input[type="range"].light-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--paper); border: 3px solid var(--fire); cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+}
+.force-display { display: grid; grid-template-columns: repeat(4,1fr); gap: .6rem; margin-top: .75rem; }
+.force-item { background: var(--stone); border: 1px solid var(--rule); border-radius: 7px; padding: .6rem .7rem; }
+.force-item .fi-label { font-size: 10px; color: var(--dim2); font-family: var(--mono); letter-spacing: .06em; margin-bottom: .2rem; }
+.force-item .fi-val { font-family: var(--mono); font-size: 15px; font-weight: 700; color: var(--ink); }
+.angle-verdict { background: var(--stone); border: 1px solid var(--rule); border-radius: 8px; padding: .75rem 1rem; font-size: 13px; line-height: 1.6; margin-top: .5rem; border-left: 4px solid var(--fire); }
+
+/* ============================================================
+   C2 PART B — ANCHOR TYPES
+   ============================================================ */
+.anchor-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: .85rem; margin-bottom: 1.25rem; }
+.anchor-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem; cursor: pointer; transition: .18s; border-top: 3px solid var(--rule2); }
+.anchor-card:hover { background: var(--stone); border-top-color: var(--fire); transform: translateY(-1px); }
+.anchor-card.open { border-top-color: var(--fire); background: var(--stone); }
+.anchor-icon { font-size: 22px; display: block; margin-bottom: .4rem; }
+.anchor-name { font-weight: 700; font-size: 14px; margin-bottom: .2rem; }
+.anchor-strength { font-family: var(--mono); font-size: 11px; color: var(--fire); margin-bottom: .35rem; }
+.anchor-desc { font-size: 12px; color: var(--dim); line-height: 1.5; }
+.anchor-detail { background: #FFF8F0; border: 1px solid #E8C8A0; border-radius: 8px; padding: 1.1rem 1.2rem; margin-bottom: .85rem; display: none; }
+.anchor-detail.show { display: block; }
+.anchor-detail h4 { font-family: var(--serif); font-weight: 700; font-size: 15px; margin-bottom: .75rem; color: var(--ink); }
+.detail-list { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+.detail-list li { font-size: 13px; line-height: 1.55; padding-left: 1.2rem; position: relative; }
+.detail-list li::before { content: '·'; position: absolute; left: 0; color: var(--fire); font-weight: 700; }
+
+/* ============================================================
+   C2 PART C — SERENE CHECKER
+   ============================================================ */
+.serene-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: .75rem; margin-bottom: 1rem; }
+.serene-item { background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem; cursor: pointer; transition: .18s; display: flex; align-items: center; gap: .75rem; }
+.serene-item:hover { background: var(--stone); }
+.serene-item.checked { background: #E8F5EE; border-color: var(--safe); }
+.serene-letter { font-family: var(--mono); font-weight: 700; font-size: 28px; color: var(--rule2); transition: .2s; flex: none; width: 36px; }
+.serene-item.checked .serene-letter { color: var(--safe); }
+.serene-word { font-weight: 700; font-size: 13px; flex: 1; }
+.serene-check { font-size: 18px; flex: none; opacity: 0; transition: .2s; }
+.serene-item.checked .serene-check { opacity: 1; }
+.serene-status { font-family: var(--mono); font-size: 12px; padding: .75rem 1rem; border-radius: 7px; background: var(--stone); border: 1px solid var(--rule); margin-bottom: .75rem; }
+.serene-status.pass { background: #E8F5EE; border-color: var(--safe); color: var(--safe); }
+.serene-detail { font-family: var(--mono); font-size: 12px; color: var(--ember); min-height: 1.5rem; }
+
+/* ============================================================
+   C2 PART D — HITCH TABLE
+   ============================================================ */
+.hitch-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 1rem; }
+.hitch-table th { background: var(--stone2); font-family: var(--mono); font-size: 10px; letter-spacing: .08em; color: var(--dim); padding: .5rem .75rem; text-align: left; border: 1px solid var(--rule); font-weight: 700; }
+.hitch-table td { padding: .55rem .75rem; border: 1px solid var(--rule); line-height: 1.4; font-size: 12px; }
+.hitch-table tr:nth-child(even) td { background: var(--stone); }
+.kn-green { color: var(--safe); font-family: var(--mono); font-weight: 700; }
+.kn-amber { color: var(--amber); font-family: var(--mono); font-weight: 700; }
+.kn-red { color: var(--fire); font-family: var(--mono); font-weight: 700; }
+.bar-wrap { width: 80px; height: 8px; background: var(--rule); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; }
+
+/* ============================================================
+   C2 PART E — TTRRS vs DMDB
+   ============================================================ */
+.ttrrs-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.sys-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.sys-card-head { padding: .85rem 1.1rem; border-bottom: 1px solid var(--rule); }
+.sys-card-head .sys-name { font-family: var(--serif); font-weight: 700; font-size: 16px; }
+.sys-card-head .sys-tag { font-family: var(--mono); font-size: 11px; color: var(--dim2); margin-top: .15rem; }
+.sys-card-body { padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .6rem; }
+.sys-row { display: flex; align-items: flex-start; gap: .6rem; font-size: 13px; line-height: 1.5; }
+.sys-icon { flex: none; font-size: 14px; margin-top: .05rem; }
+.sys-card.dmdb .sys-card-head { background: #FFF8F0; border-bottom-color: #E8C8A0; }
+.sys-card.ttrrs .sys-card-head { background: #F0F8F4; border-bottom-color: #B8D8C8; }
+.sys-verdict { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 700; padding: .2rem .6rem; border-radius: 4px; margin-top: .5rem; }
+.sys-card.dmdb .sys-verdict { background: #FFF0EE; color: var(--fire); border: 1px solid #E8B0A0; }
+.sys-card.ttrrs .sys-verdict { background: #E8F5EE; color: var(--safe); border: 1px solid #B0D8C0; }
+.dcd-spec { background: var(--stone); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; margin-top: 1rem; }
+.dcd-title { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--dim2); letter-spacing: .08em; margin-bottom: .75rem; }
+.dcd-row { display: flex; justify-content: space-between; align-items: center; padding: .4rem 0; border-bottom: 1px solid var(--rule); }
+.dcd-row:last-child { border-bottom: none; }
+.dcd-label { font-size: 12px; }
+.dcd-val { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--fire); }
+
+/* ============================================================
+   C2 PART F — DECISION TREE
+   ============================================================ */
+.dtree-wrap { max-width: 700px; margin: 0 auto; }
+.dtree-progress { display: flex; gap: .4rem; margin-bottom: 1.5rem; }
+.dtree-dot { height: 4px; flex: 1; border-radius: 2px; background: var(--rule); transition: background .3s; }
+.dtree-dot.done { background: var(--fire); }
+
+.dtree-card { background: var(--paper); border: 2px solid var(--fire); border-radius: 12px; padding: 1.75rem; text-align: center; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.25rem; }
+.dtree-step-num { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--dim2); letter-spacing: .12em; }
+.dtree-question { font-family: var(--serif); font-size: 20px; font-weight: 900; color: var(--ink); line-height: 1.3; }
+.dtree-opts { display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center; }
+.dtree-opt { font-family: var(--sans); font-weight: 700; font-size: 14px; padding: .75rem 1.75rem; border-radius: 8px; border: 2px solid var(--rule); background: var(--paper); color: var(--ink); cursor: pointer; transition: .18s; }
+.dtree-opt:hover { border-color: var(--fire); background: #FFF8F5; color: var(--fire); }
+.dtree-opt.yes { border-color: var(--safe); }
+.dtree-opt.yes:hover { background: #F0F8F4; color: var(--safe); border-color: var(--safe); }
+
+.dtree-result { background: var(--stone); border: 2px solid var(--fire); border-radius: 12px; padding: 1.75rem; }
+.dtree-result-icon { font-size: 40px; margin-bottom: .75rem; }
+.dtree-result-title { font-family: var(--serif); font-size: 22px; font-weight: 900; color: var(--ink); margin-bottom: .5rem; }
+.dtree-result-strength { font-family: var(--mono); font-size: 13px; color: var(--fire); font-weight: 700; margin-bottom: 1rem; }
+.dtree-result-notes { text-align: left; }
+.dtree-result-notes .rn-label { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--dim2); letter-spacing: .1em; margin-bottom: .5rem; }
+.dtree-result-notes ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+.dtree-result-notes ul li { font-size: 13px; line-height: 1.55; padding-left: 1.2rem; position: relative; color: var(--ink); }
+.dtree-result-notes ul li::before { content: '→'; position: absolute; left: 0; color: var(--fire); font-family: var(--mono); }
+.dtree-taiwan { background: #FFF8F0; border: 1px solid #E8C8A0; border-radius: 7px; padding: .85rem 1rem; margin-top: 1rem; font-size: 12px; line-height: 1.6; color: var(--ember); }
+.dtree-taiwan strong { color: var(--ink); }
+.dtree-breadcrumb { display: flex; gap: .35rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.dtree-bc-item { font-family: var(--mono); font-size: 10px; color: var(--dim2); background: var(--stone); border: 1px solid var(--rule); border-radius: 4px; padding: .15rem .5rem; }
+.dtree-restart { margin-top: 1rem; font-family: var(--sans); font-weight: 700; border-radius: 7px; padding: .6rem 1.3rem; font-size: 13px; cursor: pointer; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); transition: .15s; }
+.dtree-restart:hover { background: var(--stone); }
+
+/* ============================================================
+   C3 — SCENARIO SIMULATOR
+   ============================================================ */
+.sim-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.sim-inputs { display: flex; flex-direction: column; gap: 1rem; }
+.sim-input-group { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.sim-input-head { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .7rem 1rem; font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--dim2); letter-spacing: .08em; }
+.sim-options { display: flex; flex-direction: column; }
+.sim-opt { display: flex; align-items: center; gap: .75rem; padding: .65rem 1rem; border-bottom: 1px solid var(--rule); cursor: pointer; transition: .15s; }
+.sim-opt:last-child { border-bottom: none; }
+.sim-opt:hover { background: var(--stone); }
+.sim-opt.selected { background: #FFF8F5; }
+.sim-opt-radio { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--rule2); flex: none; transition: .15s; display: flex; align-items: center; justify-content: center; }
+.sim-opt.selected .sim-opt-radio { border-color: var(--fire); background: var(--fire); }
+.sim-opt.selected .sim-opt-radio::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: white; }
+.sim-opt-icon { font-size: 16px; flex: none; }
+.sim-opt-label { font-size: 13px; font-weight: 500; }
+.sim-opt-sub { font-size: 11px; color: var(--dim2); }
+
+.sim-run-btn { background: var(--fire); color: #fff; border: none; border-radius: 9px; padding: .85rem 1.5rem; font-family: var(--sans); font-weight: 700; font-size: 15px; cursor: pointer; transition: .15s; width: 100%; margin-top: .5rem; letter-spacing: .02em; }
+.sim-run-btn:hover { filter: brightness(.92); }
+.sim-run-btn:disabled { opacity: .45; cursor: default; }
+
+.sim-output { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; min-height: 400px; }
+.sim-output-placeholder { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem; color: var(--dim2); font-size: 14px; padding: 2rem; text-align: center; }
+.sim-output-placeholder .ph-icon { font-size: 40px; opacity: .4; }
+.sim-result-head { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: 1rem 1.25rem; }
+.sim-result-title { font-family: var(--serif); font-weight: 900; font-size: 18px; margin-bottom: .25rem; }
+.sim-result-tags { display: flex; gap: .4rem; flex-wrap: wrap; }
+.sim-result-tag { font-family: var(--mono); font-size: 10px; font-weight: 700; padding: .2rem .55rem; border-radius: 4px; background: var(--stone); border: 1px solid var(--rule); color: var(--dim); }
+.sim-result-body { padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+.sim-block { background: var(--stone); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.sim-block-head { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .55rem .9rem; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--dim2); letter-spacing: .08em; }
+.sim-block-body { padding: .85rem .9rem; font-size: 13px; line-height: 1.65; color: var(--ink); }
+.sim-block-body ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; padding: 0; }
+.sim-block-body ul li { padding-left: 1.2rem; position: relative; }
+.sim-block-body ul li::before { content: '›'; position: absolute; left: 0; color: var(--fire); font-weight: 700; font-family: var(--mono); }
+.sim-alert-row { display: flex; align-items: flex-start; gap: .6rem; padding: .5rem .75rem; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.sim-alert-row.danger { background: #FFF0EE; border: 1px solid #E8B0A0; color: var(--fire); }
+.sim-alert-row.warn { background: #FFF8E0; border: 1px solid #E8D890; color: var(--amber); }
+.sim-alert-row.ok { background: #F0F8F4; border: 1px solid #B8D8C8; color: var(--safe); }
+.sim-window-bar { display: flex; align-items: center; gap: 1rem; padding: .6rem .9rem; }
+.sim-window-label { font-size: 12px; flex: 1; }
+.sim-window-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--fire); }
+
+/* FOOTER */
+.page-footer { border-top: 1px solid var(--rule); padding: 2rem 0; margin-top: 4rem; display: flex; justify-content: space-between; align-items: center; }
+.footer-left { font-family: var(--mono); font-size: 12px; color: var(--dim); line-height: 1.6; }
+.footer-left strong { color: var(--ink); }
+.footer-right { font-family: var(--mono); font-size: 11px; color: var(--dim2); }
+
+.callout { border-radius: 8px; padding: .85rem 1.1rem; font-size: 13px; line-height: 1.6; margin-top: .75rem; }
+.callout-danger { background: #FFF0EE; border: 1px solid #E8B0A0; border-left: 4px solid var(--fire); }
+.callout-warn { background: #FFF8E0; border: 1px solid #E8D890; border-left: 4px solid var(--amber); }
+
+@media (max-width: 768px) {
+  .anchor-sim-layout, .ttrrs-compare, .sim-layout, .anchor-grid, .serene-grid { grid-template-columns: 1fr; }
+  #anchor-canvas { width: 100%; height: auto; }
+}
+  html.in-iframe .nav { display: none !important; }
+  html.in-iframe .spine { display: none !important; }
+  html.in-iframe .page-body { padding-top: 0 !important; padding-left: 1rem !important; }
+</style>
+<script>if(window.self!==window.top){document.documentElement.classList.add("in-iframe");}</script>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<nav class="nav">
+  <div class="nav-logo">SAR // TW · BATCH 03</div>
+  <div class="nav-links">
+    <a href="#c2" class="nav-link active">C2 固定點 + 決策樹</a>
+    <a href="#c3" class="nav-link">C3 情境模擬器</a>
+  </div>
+</nav>
+
+<div class="page-body">
+
+<!-- ============================================================
+     C2 — ANCHOR + DECISION TREE
+     ============================================================ -->
+<section id="c2">
+  <div class="sec-header">
+    <div class="sec-layer">C2 · 技術執行</div>
+    <h2 class="sec-title">固定點技術 × <em>你會選哪種？</em></h2>
+    <p class="sec-sub">從夾角力學到選型決策樹，完整涵蓋 SERENE 評估、套接方式強度、TTRRS vs DMDB 系統比較。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">MODULE 01 · 夾角力學模擬器</span>
+      <span class="tool-tag">拖動滑桿即時更新向量圖</span>
+    </div>
+    <div class="tool-inner">
+      <div class="anchor-sim-layout">
+        <canvas id="anchor-canvas" width="280" height="240"></canvas>
+        <div class="anchor-controls">
+          <div class="slider-group">
+            <div class="slider-row">
+              <span class="slider-label">錨點夾角 θ</span>
+              <span class="slider-val" id="angle-display">60°</span>
+            </div>
+            <input type="range" class="light-range" id="angle-slider" min="0" max="170" value="60">
+          </div>
+          <div class="slider-group">
+            <div class="slider-row">
+              <span class="slider-label">系統總負載 W</span>
+              <span class="slider-val" id="load-display">200 kg</span>
+            </div>
+            <input type="range" class="light-range" id="load-slider" min="50" max="400" value="200" step="10" style="--pct:38%">
+          </div>
+          <div class="force-display">
+            <div class="force-item"><div class="fi-label">每支受力</div><div class="fi-val" id="each-force">—</div></div>
+            <div class="force-item"><div class="fi-label">各支佔比</div><div class="fi-val" id="each-pct">—</div></div>
+            <div class="force-item"><div class="fi-label">負載 W</div><div class="fi-val" id="total-load">—</div></div>
+            <div class="force-item"><div class="fi-label">夾角狀態</div><div class="fi-val" id="angle-status">—</div></div>
+          </div>
+          <div class="angle-verdict" id="angle-verdict"></div>
+        </div>
+      </div>
+      <div class="callout callout-danger" style="margin-top:1rem;">
+        <strong>120° 臨界線</strong>：夾角超過120°，各支受力等於甚至超過總負載，錨點開始互相對拉，失效風險呈幾何級數上升。台灣教案強制要求 ≤ 60°，Auto-Fail 門檻為 120°。
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">MODULE 02 · 固定點種類</span>
+      <span class="tool-tag">點擊卡片展開詳細規範</span>
+    </div>
+    <div class="tool-inner">
+      <div class="anchor-grid" id="anchor-grid"></div>
+      <div id="anchor-details"></div>
+    </div>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">MODULE 03 · SERENE 架設前評估</span>
+      <span class="tool-tag">全部勾選才算通過</span>
+    </div>
+    <div class="tool-inner">
+      <div class="serene-grid" id="serene-grid"></div>
+      <div class="serene-status" id="serene-status">點擊上方字母逐項確認 — 全部勾選後系統才能使用</div>
+      <div class="serene-detail" id="serene-detail"></div>
+    </div>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">MODULE 04 · 套接方式強度比較</span>
+      <span class="tool-tag">台灣現場常被忽略的關鍵細節</span>
+    </div>
+    <div class="tool-inner">
+      <table class="hitch-table">
+        <thead>
+          <tr><th>套接方式</th><th>強度</th><th>相對強度</th><th>適用場景</th><th>台灣注意事項</th></tr>
+        </thead>
+        <tbody id="hitch-tbody"></tbody>
+      </table>
+      <div class="callout callout-warn">
+        <strong>台灣現場常見錯誤</strong>：用索圈套接（Girth Hitch）連接扁帶至岩石，強度僅為籃式套接的40%（約20kN）。雙人救援重載約2kN，安全係數要求10:1需達20kN，此方式剛好在臨界點，無任何餘裕。
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">MODULE 05 · TTRRS vs DMDB</span>
+      <span class="tool-tag">雙繩張力系統 vs 傳統主繩確保系統</span>
+    </div>
+    <div class="tool-inner">
+      <div class="ttrrs-compare" id="ttrrs-compare"></div>
+      <div class="dcd-spec">
+        <div class="dcd-title">DCD 裝置性能規範（ICAR TERCOM）</div>
+        <div class="dcd-row"><span class="dcd-label">無意外滑移臨界（靜態鎖定）</span><span class="dcd-val">0 – 3 kN</span></div>
+        <div class="dcd-row"><span class="dcd-label">受控動態滑移釋能區間</span><span class="dcd-val">6 – 12 kN</span></div>
+        <div class="dcd-row"><span class="dcd-label">單人最大衝擊力上限</span><span class="dcd-val">≤ 6 kN</span></div>
+        <div class="dcd-row"><span class="dcd-label">雙人救援最大衝擊力上限</span><span class="dcd-val">≤ 12 kN</span></div>
+        <div class="dcd-row"><span class="dcd-label">系統極限承載強度（MBS）</span><span class="dcd-val">≥ 20 kN</span></div>
+        <div class="dcd-row"><span class="dcd-label">設計安全係數</span><span class="dcd-val">12 kN × 1.7 = 20.4 kN</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">MODULE 06 · 你會選哪種固定點？</span>
+      <span class="tool-tag">互動決策樹 · 回答 5 個問題</span>
+    </div>
+    <div class="tool-inner">
+      <div class="dtree-wrap">
+        <div class="dtree-breadcrumb" id="dtree-bc"></div>
+        <div class="dtree-progress" id="dtree-progress">
+          <div class="dtree-dot"></div><div class="dtree-dot"></div><div class="dtree-dot"></div>
+          <div class="dtree-dot"></div><div class="dtree-dot"></div>
+        </div>
+        <div id="dtree-content"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================
+     C3 — SCENARIO SIMULATOR
+     ============================================================ -->
+<section id="c3">
+  <div class="sec-header">
+    <div class="sec-layer">C3 · 技術執行</div>
+    <h2 class="sec-title">情境模擬器 · <em>輸入三變數</em></h2>
+    <p class="sec-sub">輸入失蹤者類型、天氣狀況、地形條件，產出建議戰術、搜索時窗與關鍵危害警示。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">INTERACTIVE · 情境模擬器</span>
+      <span class="tool-tag">選擇三個變數 → 點擊產出戰術建議</span>
+    </div>
+    <div class="tool-inner">
+      <div class="sim-layout">
+        <div class="sim-inputs">
+
+          <div class="sim-input-group">
+            <div class="sim-input-head">① 失蹤者類型</div>
+            <div class="sim-options" id="sim-persona"></div>
+          </div>
+
+          <div class="sim-input-group">
+            <div class="sim-input-head">② 天氣狀況</div>
+            <div class="sim-options" id="sim-weather"></div>
+          </div>
+
+          <div class="sim-input-group">
+            <div class="sim-input-head">③ 地形條件</div>
+            <div class="sim-options" id="sim-terrain"></div>
+          </div>
+
+          <button class="sim-run-btn" id="sim-run-btn" disabled>產出戰術建議 →</button>
+        </div>
+
+        <div class="sim-output" id="sim-output">
+          <div class="sim-output-placeholder">
+            <div class="ph-icon">🗺️</div>
+            <div>選擇左側三個變數後，點擊「產出戰術建議」</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  <div class="footer-left"><strong>北搜 徐汶翰</strong><br>僅供訓練參考使用</div>
+  <div class="footer-right">BATCH 03 · C2 C3</div>
+</footer>
+
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+(function() {
+'use strict';
+
+/* NAV SCROLL SPY */
+(function() {
+  const links = document.querySelectorAll('.nav-link[href^="#"]');
+  const sections = [];
+  links.forEach(l => { const el = document.querySelector(l.getAttribute('href')); if (el) sections.push({ el, link: l }); });
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { links.forEach(l => l.classList.remove('active')); const f = sections.find(s => s.el === e.target); if (f) f.link.classList.add('active'); } });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => obs.observe(s.el));
+})();
+
+/* ============================================================
+   C2 — ANCHOR FORCE SIMULATOR
+   ============================================================ */
+(function() {
+  const cv = document.getElementById('anchor-canvas');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+
+  function setPct(el) {
+    el.style.setProperty('--pct', ((el.value - el.min) / (el.max - el.min) * 100) + '%');
+  }
+
+  function update() {
+    const theta = +document.getElementById('angle-slider').value;
+    const load = +document.getElementById('load-slider').value;
+    const legForce = load / (2 * Math.cos(theta * Math.PI / 360));
+    const pct = Math.round(legForce / load * 100);
+    const kn = (load * 9.81 / 1000).toFixed(2);
+    const legKn = (legForce * 9.81 / 1000).toFixed(2);
+
+    document.getElementById('angle-display').textContent = theta + '°';
+    document.getElementById('load-display').textContent = load + ' kg';
+    document.getElementById('each-force').textContent = legKn + ' kN';
+    document.getElementById('each-pct').textContent = pct + '%';
+    document.getElementById('total-load').textContent = kn + ' kN';
+
+    let statusText, statusColor, verdictText, verdictBorder;
+    if (theta < 60) {
+      statusText = '✓ 黃金'; statusColor = '#2E7D52';
+      verdictText = `夾角 ${theta}° — 黃金標準：每支承受約 ${pct}% 負載，系統效率最佳。`;
+      verdictBorder = '#2E7D52';
+    } else if (theta <= 90) {
+      statusText = '可接受'; statusColor = '#B89030';
+      verdictText = `夾角 ${theta}° — 尚可接受，但應盡量縮小夾角。每支承受 ${pct}% 負載。`;
+      verdictBorder = '#B89030';
+    } else if (theta <= 120) {
+      statusText = '⚠ 臨界'; statusColor = '#D4781A';
+      verdictText = `夾角 ${theta}° — 臨界危險區。每支受力已達 ${pct}%，接近總負載。立即重新架設。`;
+      verdictBorder = '#D4781A';
+    } else {
+      statusText = '✕ 危險'; statusColor = '#C8401A';
+      verdictText = `夾角 ${theta}° — 嚴重危險！每支受力已達 ${pct}%，遠超總負載，錨點連鎖拔除風險極高。Auto-Fail！`;
+      verdictBorder = '#C8401A';
+    }
+    const statusEl = document.getElementById('angle-status');
+    statusEl.textContent = statusText; statusEl.style.color = statusColor;
+    const verdictEl = document.getElementById('angle-verdict');
+    verdictEl.textContent = verdictText; verdictEl.style.borderLeftColor = verdictBorder;
+
+    setPct(document.getElementById('angle-slider'));
+    setPct(document.getElementById('load-slider'));
+    drawCanvas(theta, load, legForce, statusColor);
+  }
+
+  function drawCanvas(theta, load, legForce, col) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#F5F0E8'; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(0,0,0,.04)'; ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += 28) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+    for (let y = 0; y < H; y += 28) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+    const cx = W / 2, loadY = H * 0.72, topY = H * 0.18;
+    const legLen = loadY - topY;
+    const half = theta * Math.PI / 360;
+    const ax1 = cx - Math.sin(half) * legLen * 0.88;
+    const ax2 = cx + Math.sin(half) * legLen * 0.88;
+    const pct = legForce / load;
+    const thick = Math.max(2, Math.min(11, pct * 6));
+
+    // anchor points
+    [ax1, ax2].forEach(x => {
+      ctx.fillStyle = '#F5F0E8'; ctx.strokeStyle = col; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(x, topY, 11, 0, 7); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = col; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('⚓', x, topY + 4);
+    });
+
+    // legs
+    ctx.strokeStyle = col; ctx.lineWidth = thick;
+    ctx.beginPath(); ctx.moveTo(ax1, topY); ctx.lineTo(cx, loadY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ax2, topY); ctx.lineTo(cx, loadY); ctx.stroke();
+
+    // force arrows on legs
+    function arrow(x1,y1,x2,y2,c,w) {
+      ctx.strokeStyle=c; ctx.fillStyle=c; ctx.lineWidth=w;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      const a=Math.atan2(y2-y1,x2-x1),h=7+w;
+      ctx.beginPath(); ctx.moveTo(x2,y2); ctx.lineTo(x2-h*Math.cos(a-.4),y2-h*Math.sin(a-.4)); ctx.lineTo(x2-h*Math.cos(a+.4),y2-h*Math.sin(a+.4)); ctx.closePath(); ctx.fill();
+    }
+    arrow(cx,loadY, ax1+(cx-ax1)*.2, topY+(loadY-topY)*.2, col, Math.max(1.5,thick*.5));
+    arrow(cx,loadY, ax2+(cx-ax2)*.2, topY+(loadY-topY)*.2, col, Math.max(1.5,thick*.5));
+
+    // leg force labels
+    ctx.fillStyle = col; ctx.font = 'bold 12px IBM Plex Mono'; ctx.textAlign = 'right';
+    ctx.fillText((legForce * 9.81 / 1000).toFixed(1) + 'kN', (ax1+cx)/2-4, (topY+loadY)/2);
+    ctx.textAlign = 'left';
+    ctx.fillText((legForce * 9.81 / 1000).toFixed(1) + 'kN', (ax2+cx)/2+4, (topY+loadY)/2);
+
+    // angle arc
+    ctx.strokeStyle = '#1C1A17'; ctx.lineWidth = 1.5; ctx.beginPath();
+    ctx.arc(cx, loadY, 38, -Math.PI/2-half, -Math.PI/2+half); ctx.stroke();
+    ctx.fillStyle = '#1C1A17'; ctx.font = 'bold 13px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText(theta + '°', cx, loadY - 46);
+
+    // load box
+    ctx.fillStyle = '#EDE7D9'; ctx.strokeStyle = '#CFC9BC'; ctx.lineWidth = 2;
+    ctx.fillRect(cx-28, loadY+2, 56, 26); ctx.strokeRect(cx-28, loadY+2, 56, 26);
+    ctx.fillStyle = '#1C1A17'; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText(load + 'kg', cx, loadY+19);
+
+    // load arrow down
+    arrow(cx, loadY+30, cx, loadY+55, '#2E7D52', 3);
+  }
+
+  document.getElementById('angle-slider').addEventListener('input', update);
+  document.getElementById('load-slider').addEventListener('input', update);
+  update();
+})();
+
+/* ============================================================
+   C2 — ANCHOR TYPES
+   ============================================================ */
+(function() {
+  const ANCHORS = [
+    {
+      id:'nat-rock', icon:'🪨', name:'天然岩石錨點', strength:'3 — 30+ kN（視岩質）',
+      desc:'利用大型穩固岩塊或岩柱，以扁帶套接。花崗岩最理想，台灣板岩需謹慎。',
+      details: ['架設前先用手推拉測試穩定度，敲擊聽是否空洞','目視檢查：無貫穿性裂縫、無懸空岩片、無交叉節理','台灣板岩/頁岩節理發達，單點信任度遠低於花崗岩','扁帶套接：籃式套接 > 繞套 > 索圈套接（強度依序遞減）','確保受力方向與岩石最穩固的軸向一致（垂直向下或向內）','ICAR 2024：海崖或高濕度環境螺栓腐蝕問題，建議鈦合金']
+    },
+    {
+      id:'nat-tree', icon:'🌲', name:'天然植物錨點', strength:'活木基部 ≈ 20 — 40 kN',
+      desc:'選直徑 ≥15cm 活木，套接於基部低處。台灣高海拔淺根樹種單株禁用。',
+      details: ['直徑 ≥ 15cm 活木，樹皮完整無腐朽跡象','扁帶套接於基部 30cm 以內（利用根系向下抓地力）','台灣高山鐵杉、冷杉、圓柏：根系淺而水平分布，側向拉扯有連根拔起風險','單株嚴禁依賴，必須多株（≥3株）聯動均力','使用護套保護樹皮，避免扁帶直接磨損','多日降雨後土壤鬆軟，根系抓地力大幅下降，需重新評估']
+    },
+    {
+      id:'cam', icon:'⚙️', name:'凸輪裝置（Cam）', strength:'4 — 14 kN（依型號）',
+      desc:'擴張式保護點，適用平行裂隙。台灣破碎板岩裂隙不規則，置放需特別評估。',
+      details: ['置放後凸輪外張率應在 50%–80% 之間，避免過張或極限縮小','受力方向須與裂隙走向平行（向下或向外）','台灣板岩裂隙常見鋸齒不規則邊緣，置放後需測試是否有鬆動','濕岩面會降低凸輪齒與岩石的摩擦力，梅雨/颱風後需特別謹慎','台灣救援：凸輪+岩楔+淺根喬木三者聯動，實現多點動態分配','單顆凸輪 MBS 約4–14kN，系統安全係數需達10:1 → 雙人救援需 ≥20kN']
+    },
+    {
+      id:'nut', icon:'🔩', name:'岩楔（Nut/Stopper）', strength:'2 — 14 kN（依型號）',
+      desc:'楔型保護點，需裂隙向內收縮。受向外拉力易脫落，必須多點聯動。',
+      details: ['需放置於裂隙由寬漸窄（向下收縮）的位置','置放後用力向下拉扯測試，確認卡緊且無轉動','台灣板岩裂隙常有破碎邊緣，岩楔接觸面可能不穩定','Micro Nut 台灣少用，且多為輔助性而非主力保護點','無論品牌或尺寸，均禁止以單顆岩楔作為救援主錨','連接時使用延伸長扁帶（60–120cm），降低凸輪轉動引發的脫落風險']
+    },
+    {
+      id:'bolt', icon:'🔧', name:'膨脹螺栓（Bolt）', strength:'15 — 25 kN（依規格）',
+      desc:'固定式人工錨點，優勝美地大岩壁標配。台灣熱門路線有設置，搜救現場罕見。',
+      details: ['即使螺栓錨點，YOSAR 實務仍推薦「雙螺栓+Quad扁帶」，避免依賴單顆','螺栓年齡評估：1990年代前設置的螺栓閘門強度可能未達7kN標準','UIAA 2024：標準不鏽鋼在海崖高鹽霧環境有應力腐蝕風險，建議鈦合金','台灣山域熱門路線少數有螺栓，搜救行動多無法依賴既有螺栓','破壞性測試：螺栓應能通過 25kN 拉力測試方可信任','化學膠結型岩栓（Glue-in）適合溪降與濱海環境，不對岩石產生預應力']
+    },
+    {
+      id:'earth', icon:'⛏️', name:'地錨釘 / 土錨', strength:'2 — 10 kN（依土質）',
+      desc:'土坡、草坡或雪坡環境使用。台灣高山薄層腐植土中必須多點分散聯動。',
+      details: ['土錨強度極度依賴土質密實度：台灣高山腐植土層薄，強度遠低於預期','正確置放角度：地錨釘與地面成 45°–60° 斜角（受力反方向）','強度提升：多根聯動（Picket System），以繩索串聯等距排列的多根地錨','台灣颱風過後地面極度飽和，地錨抗拉強度可能降低 50%–70%','作為輔助點而非主錨，必須配合天然岩石或植物錨點聯動使用','使用後應盡量回填土壤，避免破壞台灣高山脆弱的生態土層']
+    }
+  ];
+
+  const grid = document.getElementById('anchor-grid');
+  const detailsContainer = document.getElementById('anchor-details');
+  let openId = null;
+
+  ANCHORS.forEach(a => {
+    const card = document.createElement('div');
+    card.className = 'anchor-card';
+    card.dataset.id = a.id;
+    card.innerHTML = `<span class="anchor-icon">${a.icon}</span><div class="anchor-name">${a.name}</div><div class="anchor-strength">${a.strength}</div><div class="anchor-desc">${a.desc}</div>`;
+    card.addEventListener('click', () => {
+      const wasOpen = openId === a.id;
+      document.querySelectorAll('.anchor-card').forEach(c => c.classList.remove('open'));
+      detailsContainer.innerHTML = '';
+      if (!wasOpen) {
+        card.classList.add('open');
+        openId = a.id;
+        const detail = document.createElement('div');
+        detail.className = 'anchor-detail show';
+        detail.innerHTML = `<h4>${a.icon} ${a.name} — 台灣在地規範</h4><ul class="detail-list">${a.details.map(d => `<li>${d}</li>`).join('')}</ul>`;
+        detailsContainer.appendChild(detail);
+        detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        openId = null;
+      }
+    });
+    grid.appendChild(card);
+  });
+})();
+
+/* ============================================================
+   C2 — SERENE CHECKER
+   ============================================================ */
+(function() {
+  const ITEMS = [
+    { letter:'S', word:'Solid 堅固', desc:'每個單一保護點必須能獨立承受系統最大預期負載' },
+    { letter:'E', word:'Equalized 均力', desc:'多點間負載分配均勻，夾角控制在60°以下' },
+    { letter:'R', word:'Redundant 冗餘', desc:'無單點失效結構，任一保護點失效系統仍能運作' },
+    { letter:'E', word:'Efficient 效率', desc:'架設速度合理，速度就是安全邊際' },
+    { letter:'N', word:'No Extension 無延伸', desc:'保護點失效時不產生衝擊延伸，已加限位結' },
+    { letter:'E', word:'Escaped 易脫困', desc:'確保者可在不移除確保情況下脫離系統' }
+  ];
+  const checked = new Set();
+  const grid = document.getElementById('serene-grid');
+  const status = document.getElementById('serene-status');
+  const detail = document.getElementById('serene-detail');
+
+  ITEMS.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'serene-item';
+    el.innerHTML = `<span class="serene-letter">${item.letter}</span><div class="serene-word">${item.word}</div><span class="serene-check">✓</span>`;
+    el.addEventListener('click', () => {
+      if (checked.has(i)) { checked.delete(i); el.classList.remove('checked'); }
+      else { checked.add(i); el.classList.add('checked'); }
+      detail.textContent = item.desc;
+      const all = checked.size === ITEMS.length;
+      status.textContent = all ? '✓ 全部確認 — 系統可以使用' : `已確認 ${checked.size} / ${ITEMS.length} 項`;
+      status.className = 'serene-status' + (all ? ' pass' : '');
+    });
+    grid.appendChild(el);
+  });
+})();
+
+/* ============================================================
+   C2 — HITCH TABLE
+   ============================================================ */
+(function() {
+  const HITCHES = [
+    { name:'籃式套接 Basket Hitch', kn:'53 kN', cls:'kn-green', pct:100, barCls:'#2E7D52', scene:'樹木、岩柱水平繞接', note:'台灣教案首選，優先選擇' },
+    { name:'雙股平行繞套', kn:'~40 kN', cls:'kn-green', pct:75, barCls:'#2E7D52', scene:'較大岩石繞接', note:'次選，確保兩股均勻受力' },
+    { name:'8字結 Figure-8', kn:'~32 kN', cls:'kn-amber', pct:60, barCls:'#B89030', scene:'繩端固定，主受力點', note:'效率75–80%，標準救援繩結' },
+    { name:'索圈套接 Girth Hitch', kn:'20–21 kN', cls:'kn-amber', pct:40, barCls:'#B89030', scene:'扁帶連接鎖扣', note:'⚠ 強度損失50%，雙人救援慎用' },
+    { name:'繫索結 Clove Hitch', kn:'~18 kN', cls:'kn-amber', pct:34, barCls:'#D4781A', scene:'快速調整長度', note:'可承受多方向，效率60–70%' },
+    { name:'單結 Overhand', kn:'~15 kN', cls:'kn-red', pct:28, barCls:'#C8401A', scene:'扁帶限位結', note:'強度最低，僅限限位結用途' },
+  ];
+  const tbody = document.getElementById('hitch-tbody');
+  HITCHES.forEach(h => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${h.name}</td>
+      <td><span class="${h.cls}">${h.kn}</span></td>
+      <td><div class="bar-wrap"><div class="bar-fill" style="width:${h.pct}%;background:${h.barCls}"></div></div></td>
+      <td>${h.scene}</td>
+      <td>${h.note}</td>`;
+    tbody.appendChild(tr);
+  });
+})();
+
+/* ============================================================
+   C2 — TTRRS vs DMDB
+   ============================================================ */
+(function() {
+  const container = document.getElementById('ttrrs-compare');
+  const systems = [
+    {
+      cls: 'dmdb', name: 'DMDB 系統', tag: '傳統主繩／確保繩系統',
+      rows: [
+        { icon:'⚠', text:'主繩承受100%載荷，備份繩保持微幅鬆弛' },
+        { icon:'⚠', text:'一旦主繩斷裂，存在自由墜落「鬆弛距離」' },
+        { icon:'⚠', text:'動態墜落對備份錨點施加極高衝擊力' },
+        { icon:'⚠', text:'備份繩在通過銳角時極易被剪切力直接切斷' },
+        { icon:'✓', text:'架設較簡單，器材需求較少' },
+      ],
+      verdict: '傳統系統 · 有致命力學缺陷'
+    },
+    {
+      cls: 'ttrrs', name: 'TTRRS 系統', tag: '雙繩張力系統（台灣進階教案推薦）',
+      rows: [
+        { icon:'✓', text:'兩條繩索共同承受張力，各分擔約50%負載' },
+        { icon:'✓', text:'任一繩斷裂時無自由墜落，負載平滑轉移' },
+        { icon:'✓', text:'消除動態衝擊負荷（Shock Loading）' },
+        { icon:'✓', text:'銳邊磨耗率降至最低（每條只承受50%）' },
+        { icon:'✓', text:'進階搜救隊大坡度及垂直搬運的核心戰術' },
+      ],
+      verdict: '進階系統 · 台灣山域首選'
+    }
+  ];
+  systems.forEach(sys => {
+    const card = document.createElement('div');
+    card.className = `sys-card ${sys.cls}`;
+    card.innerHTML = `
+      <div class="sys-card-head">
+        <div class="sys-name">${sys.name}</div>
+        <div class="sys-tag">${sys.tag}</div>
+      </div>
+      <div class="sys-card-body">
+        ${sys.rows.map(r => `<div class="sys-row"><span class="sys-icon">${r.icon}</span><span>${r.text}</span></div>`).join('')}
+        <span class="sys-verdict">${sys.verdict}</span>
+      </div>`;
+    container.appendChild(card);
+  });
+})();
+
+/* ============================================================
+   C2 — DECISION TREE
+   ============================================================ */
+(function() {
+  const TREE = {
+    id: 'root',
+    q: '作業環境是否潮濕、水流或臨近海崖？',
+    yes: {
+      id: 'wet-yes',
+      q: '懸降結束後，是否需要完全回收所有裝備（無痕山林 / 禁止打栓）？',
+      yes: {
+        id: 'releasable',
+        result: {
+          icon: '🌊', title: '溪降可釋放架設系統',
+          strength: '依現場錨點而定，需全解除架設',
+          notes: ['使用 O環（不銹鋼圓環）作為繩索穿過媒介，不用梅龍鎖','採用 MMO（Munter Mule Overhand）或石結阻斷系統','瀑頂保留一條等同全繩距長度的備用繩','固定點盡量設於翻過岩角下游面，避免暴漲土石衝擊'],
+          taiwan: '<strong>台灣特殊注意</strong>：午後對流雨可在30分鐘內讓乾溪溝暴漲，每日13時前必須撤回安全位置。確保你的可釋放系統在急流中仍可操作。'
+        }
+      },
+      no: {
+        id: 'perm-wet',
+        result: {
+          icon: '🔩', title: '316不銹鋼或鈦合金螺栓錨點',
+          strength: '15 – 25 kN（依規格）',
+          notes: ['溪谷與海崖環境必須使用316級不銹鋼或鈦合金材質','螺栓、耳片及連接環應為同材質，嚴防電位差腐蝕','建議雙螺栓配合 Quad 扁帶架設','化學膠結型岩栓（Glue-in）比膨脹型更適合潮濕環境'],
+          taiwan: '<strong>台灣現場</strong>：山域熱門路線少數有固定螺栓，搜救現場通常需要臨時架設。評估岩質後可結合多株植物錨點聯動。'
+        }
+      }
+    },
+    no: {
+      id: 'dry-no',
+      q: '岩面上是否有適合放置岩楔或凸輪的裂隙？',
+      yes: {
+        id: 'crack-yes',
+        q: '裂隙是否為平行縫（寬度一致，約 2–8 cm）？',
+        yes: {
+          id: 'parallel',
+          result: {
+            icon: '⚙️', title: '主動凸輪裝置（Cam）',
+            strength: '4 – 14 kN（依型號）',
+            notes: ['外張率保持在 50%–80% 之間','受力方向必須與裂隙走向平行（向下或向外）','台灣板岩裂隙不規則，置放後必須手動測試是否鬆動','濕岩面摩擦係數降低，梅雨颱風後需特別謹慎'],
+            taiwan: '<strong>台灣板岩注意</strong>：節理極度發達，裂隙邊緣常呈鋸齒狀。單顆凸輪禁止作為救援主錨，必須配合岩楔或植物錨點聯動。'
+          }
+        },
+        no: {
+          id: 'tapered',
+          result: {
+            icon: '🔩', title: '被動岩楔（Nut/Stopper）',
+            strength: '2 – 14 kN（依型號）',
+            notes: ['放置於裂隙由寬漸窄（向下收縮）的位置','置放後用力向下拉扯測試，確認卡緊且無轉動','必須多點聯動，禁止單顆作為救援主錨','連接時使用延伸長扁帶（60–120cm）'],
+            taiwan: '<strong>台灣現場</strong>：岩楔通常作為凸輪的輔助保護點。在板岩環境，接觸面不穩定需特別測試，並與植物錨點形成聯動系統。'
+          }
+        }
+      },
+      no: {
+        id: 'no-crack',
+        q: '現場是否有直徑 ≥ 15cm 的健康喬木？',
+        yes: {
+          id: 'tree-yes',
+          result: {
+            icon: '🌲', title: '天然植物錨點（多株聯動）',
+            strength: '單株基部 20 – 40 kN，多株聯動更高',
+            notes: ['選直徑 ≥ 15cm 的健康活木，樹皮完整無腐朽','套接於樹幹基部 30cm 以內（利用根系抓地力）','單株嚴禁依賴，必須 ≥ 3株聯動均力','使用護套保護樹皮，避免扁帶磨損'],
+            taiwan: '<strong>台灣高山注意</strong>：鐵杉、冷杉、圓柏根系淺而水平分布，側向拉扯有連根拔起風險。多日降雨後土壤鬆軟，架設前必須重新評估根系抓地力。'
+          }
+        },
+        no: {
+          id: 'no-tree',
+          result: {
+            icon: '⛏️', title: '多點地錨釘串聯系統（Picket System）',
+            strength: '3根串聯可達 4.4 – 8.9 kN（緊實土質）',
+            notes: ['地錨釘與地面成 45°–60° 斜角（逆受力方向）打入','打入深度需達地錨釘長度的 2/3 以上','3根串聯間距約 80cm–1.2m，以扁帶斜向綁定','台灣高山腐植土薄，需增加地錨釘數量或配合石塊聯動'],
+            taiwan: '<strong>台灣颱風後特別警告</strong>：地面極度飽和時，地錨抗拉強度可能降低 50%–70%。此種情況下地錨釘僅可作為輔助點，必須尋找天然固定點支撐。'
+          }
+        }
+      }
+    }
+  };
+
+  let current = TREE;
+  let path = [];
+  const content = document.getElementById('dtree-content');
+  const progress = document.getElementById('dtree-progress');
+  const bc = document.getElementById('dtree-bc');
+  const MAX_STEPS = 5;
+
+  function updateProgress() {
+    document.querySelectorAll('.dtree-dot').forEach((d, i) => d.classList.toggle('done', i < path.length));
+  }
+
+  function updateBreadcrumb() {
+    bc.innerHTML = path.map(p => `<span class="dtree-bc-item">${p}</span>`).join('');
+  }
+
+  function render() {
+    updateProgress(); updateBreadcrumb();
+    if (current.result) {
+      const r = current.result;
+      content.innerHTML = `
+        <div class="dtree-result">
+          <div style="text-align:center;">
+            <div class="dtree-result-icon">${r.icon}</div>
+            <div class="dtree-result-title">${r.title}</div>
+            <div class="dtree-result-strength">${r.strength}</div>
+          </div>
+          <div class="dtree-result-notes">
+            <div class="rn-label">架設要點</div>
+            <ul>${r.notes.map(n => `<li>${n}</li>`).join('')}</ul>
+          </div>
+          <div class="dtree-taiwan">${r.taiwan}</div>
+          <div style="text-align:center;margin-top:1rem;">
+            <button class="dtree-restart" id="dtree-restart">↺ 重新開始</button>
+          </div>
+        </div>`;
+      document.getElementById('dtree-restart').addEventListener('click', () => {
+        current = TREE; path = []; render();
+      });
+    } else {
+      content.innerHTML = `
+        <div class="dtree-card">
+          <div class="dtree-step-num">問題 ${path.length + 1}</div>
+          <div class="dtree-question">${current.q}</div>
+          <div class="dtree-opts">
+            <button class="dtree-opt yes" id="dtree-yes">是 ✓</button>
+            <button class="dtree-opt" id="dtree-no">否 ✕</button>
+          </div>
+        </div>`;
+      document.getElementById('dtree-yes').addEventListener('click', () => {
+        path.push('是'); current = current.yes; render();
+      });
+      document.getElementById('dtree-no').addEventListener('click', () => {
+        path.push('否'); current = current.no; render();
+      });
+    }
+  }
+
+  render();
+})();
+
+/* ============================================================
+   C3 — SCENARIO SIMULATOR
+   ============================================================ */
+(function() {
+  const PERSONAS = [
+    { id:'solo', icon:'🏃', label:'單攻快走者 / 野跑者', sub:'裝備極簡 · 體力強 · 生還時窗短' },
+    { id:'group', icon:'👥', label:'一般健行團體', sub:'裝備齊全 · 易脫隊 · Downward Bias' },
+    { id:'senior', icon:'👴', label:'中高齡登山客', sub:'移動能力低 · 偏離100–300m即停' },
+    { id:'canyoner', icon:'🏊', label:'溯溪者', sub:'受峭壁限制 · 一維線性漂移' },
+    { id:'solo-exp', icon:'🧗', label:'獨攀者', sub:'LKP 冷跡 · 報案延遲1–3日' },
+  ];
+  const WEATHER = [
+    { id:'clear', icon:'☀️', label:'晴天 / 部分多雲', sub:'搜索條件最佳' },
+    { id:'fog', icon:'🌫️', label:'濃霧 / 低能見度', sub:'目視搜索失效 · POD 趨近零' },
+    { id:'rain', icon:'🌧️', label:'降雨中', sub:'落石風險 · 溪水暴漲' },
+    { id:'storm', icon:'⛈️', label:'雷雨 / 颱風外圍', sub:'地面搜索停止 · 安全紅線' },
+  ];
+  const TERRAINS = [
+    { id:'ridge', icon:'⛰️', label:'稜線步道', sub:'訊號好 · 搜索效率高' },
+    { id:'forest', icon:'🌲', label:'針闊混合林 / 箭竹', sub:'POD 低 · 間距需壓縮' },
+    { id:'valley', icon:'🏞️', label:'溪谷 / 乾溪溝', sub:'午後山洪 · 一維陷阱' },
+    { id:'scree', icon:'🪨', label:'碎石坡 / 崩塌地', sub:'落石高危 · 禁止下雨後進入' },
+    { id:'road', icon:'🛣️', label:'廢棄林道', sub:'人造誘導線 · 末端斷崖' },
+  ];
+
+  const state = { persona: null, weather: null, terrain: null };
+
+  function buildOptions(containerId, opts, key) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    opts.forEach(o => {
+      const row = document.createElement('div');
+      row.className = 'sim-opt';
+      row.dataset.id = o.id;
+      row.innerHTML = `<div class="sim-opt-radio"></div><span class="sim-opt-icon">${o.icon}</span><div><div class="sim-opt-label">${o.label}</div><div class="sim-opt-sub">${o.sub}</div></div>`;
+      row.addEventListener('click', () => {
+        el.querySelectorAll('.sim-opt').forEach(r => r.classList.remove('selected'));
+        row.classList.add('selected');
+        state[key] = o.id;
+        checkReady();
+      });
+      el.appendChild(row);
+    });
+  }
+
+  function checkReady() {
+    const ready = state.persona && state.weather && state.terrain;
+    document.getElementById('sim-run-btn').disabled = !ready;
+  }
+
+  function generate() {
+    const p = state.persona, w = state.weather, t = state.terrain;
+    const output = document.getElementById('sim-output');
+
+    // ---- tactic logic ----
+    const isHazardWeather = w === 'storm' || w === 'rain';
+    const isHazardTerrain = t === 'scree' || t === 'valley';
+    const isFogOrStorm = w === 'fog' || w === 'storm';
+    const isLinear = p === 'canyoner';
+    const isLowMobility = p === 'senior';
+    const isShortWindow = p === 'solo';
+    const isColdTrail = p === 'solo-exp';
+
+    let tactic, window_, spacing, speed;
+    if (w === 'storm') {
+      tactic = 'No-Go · 地面搜索暫停';
+      window_ = '0（地面安全紅線觸發）';
+      spacing = 'N/A';
+      speed = 'N/A';
+    } else if (isLinear) {
+      tactic = '沿水系線狀圍堵（Linear Containment）';
+      window_ = isHazardWeather ? '緊縮至13時前' : '全日可用（無午後雷雨時）';
+      spacing = '線性固定觀察哨';
+      speed = '0.2–0.5 km/h';
+    } else if (isLowMobility) {
+      tactic = '小間距密搜（Tight Grid Search）';
+      window_ = isHazardWeather ? '緊縮至13時前' : '標準6小時作業時窗';
+      spacing = '2–4 公尺';
+      speed = '0.4–0.8 km/h';
+    } else if (isShortWindow) {
+      tactic = '快速打擊戰術（Hasty Search）— 優先';
+      window_ = '黃金24小時 · 失溫風險高';
+      spacing = '視地形，稜線可拉至15m';
+      speed = '2–3 km/h（快速穿透）';
+    } else if (isColdTrail) {
+      tactic = '擴張搜索（Expansive Search）+ 外擴 ROW 邊界';
+      window_ = '冷跡，POS 隨時間快速衰退';
+      spacing = '依地形標準';
+      speed = '依地形標準';
+    } else {
+      tactic = '收斂策略：圍堵 + 快速路徑搜索';
+      window_ = isHazardWeather ? '縮短至13時前' : '標準6小時';
+      spacing = t === 'forest' ? '2–4 公尺' : t === 'ridge' ? '10–15 公尺' : '6–10 公尺';
+      speed = t === 'forest' ? '0.4–0.8 km/h' : t === 'ridge' ? '2–3 km/h' : '1–1.5 km/h';
+    }
+
+    // ---- hazard alerts ----
+    const alerts = [];
+    if (w === 'storm') alerts.push({ cls:'danger', text:'⛈ 雷雨 / 颱風外圍：地面搜索立即停止，全員撤回安全稜線。1小時累積雨量達15mm即觸發 No-Go。' });
+    if (w === 'rain') alerts.push({ cls:'warn', text:'🌧 降雨中：降雨量達日50mm時禁止進入崩塌地及碎石坡。落石風險上升，禁止人員在崩塌地下方停留。' });
+    if (w === 'fog') alerts.push({ cls:'warn', text:'🌫 濃霧：目視搜索失效，POD 趨近零。轉為定點圍堵或被動監控。強制依賴 GPS 導航，禁止分散搜索。' });
+    if (t === 'scree') alerts.push({ cls:'danger', text:'🪨 碎石坡：高墜與落石高危區。地震後或雨後48小時內禁止地面部隊進入。優先調派無人機清查。' });
+    if (t === 'valley') alerts.push({ cls:'warn', text:'🏞 溪谷：午後對流雨13–15時爆發。每日有效地面搜索時窗必須在13時前結束。出現山洪跡象立即撤至稜線。' });
+    if (t === 'road') alerts.push({ cls:'warn', text:'🛣 廢棄林道：末端多有颱風造成的崩塌斷崖。失蹤者極易因沉沒成本陷阱深陷其中，需特別搜查林道末端斷崖。' });
+    if (p === 'senior') alerts.push({ cls:'warn', text:'👴 中高齡族群：跌倒受傷佔台灣山難首要原因24%。移動能力極低，偏離步道100–300m即可能因失能停止移動。' });
+    if (isColdTrail) alerts.push({ cls:'warn', text:'🧗 獨攀者冷跡：PLS 極度模糊，報案常延遲1–3日。必須大幅擴展搜索邊界向 ROW 推進，並訪查同路線山友。' });
+    if (alerts.length === 0) alerts.push({ cls:'ok', text:'✓ 未發現立即性安全紅線觸發條件，維持標準安全程序執行。' });
+
+    // ---- search focus ----
+    const focusMap = {
+      solo: '步道外圍500m–1.5km隱蔽避風處、陡坡下方凹陷地形、樹洞石縫',
+      group: '步道旁陡坡下方、茂密灌木叢邊緣、主徑下方水系沿線',
+      senior: '偏離正路100–300m微地形、灌木叢邊緣、箭竹林凹陷處',
+      canyoner: '溪谷沙洲、瀑布下方岩石平台、主流支流交匯點、深潭周邊',
+      'solo-exp': 'V型谷斷崖下方、中級山探勘路線沿線、ROW外擴搜索區',
+    };
+
+    const personaName = PERSONAS.find(x=>x.id===p)?.label || p;
+    const weatherName = WEATHER.find(x=>x.id===w)?.label || w;
+    const terrainName = TERRAINS.find(x=>x.id===t)?.label || t;
+
+    output.innerHTML = `
+      <div class="sim-result-head">
+        <div class="sim-result-title">${tactic}</div>
+        <div class="sim-result-tags">
+          <span class="sim-result-tag">${personaName}</span>
+          <span class="sim-result-tag">${weatherName}</span>
+          <span class="sim-result-tag">${terrainName}</span>
+        </div>
+      </div>
+      <div class="sim-result-body">
+        <div class="sim-block">
+          <div class="sim-block-head">搜索時窗 · 間距 · 速率</div>
+          <div class="sim-block-body">
+            <div class="sim-window-bar"><span class="sim-window-label">有效搜索時窗</span><span class="sim-window-val">${window_}</span></div>
+            <div class="sim-window-bar" style="border-top:1px solid var(--rule);padding-top:.5rem;"><span class="sim-window-label">建議隊員間距</span><span class="sim-window-val">${spacing}</span></div>
+            <div class="sim-window-bar" style="border-top:1px solid var(--rule);padding-top:.5rem;"><span class="sim-window-label">推進速率</span><span class="sim-window-val">${speed}</span></div>
+          </div>
+        </div>
+
+        <div class="sim-block">
+          <div class="sim-block-head">危害警示</div>
+          <div class="sim-block-body">${alerts.map(a => `<div class="sim-alert-row ${a.cls}" style="margin-bottom:.4rem;">${a.text}</div>`).join('')}</div>
+        </div>
+
+        <div class="sim-block">
+          <div class="sim-block-head">優先搜索熱區</div>
+          <div class="sim-block-body">${focusMap[p] || '依現場情資調整'}</div>
+        </div>
+
+        <div class="sim-block">
+          <div class="sim-block-head">戰術建議</div>
+          <div class="sim-block-body">
+            <ul>
+              ${isLinear ? '<li>建立主流與支流交匯點、瀑布上方及深潭周邊定點觀察哨</li><li>搜索戰術由面網格轉為沿水系線狀圍堵</li>' : ''}
+              ${isShortWindow ? '<li>優先快速清查主稜、步道兩側、避風點，不做慢速密搜</li><li>以聲光呼引（Attraction）吸引清醒且有反應的失蹤者</li>' : ''}
+              ${isLowMobility ? '<li>搜索間距壓縮至 2–4m，重點清查灌木叢邊緣與步道旁微地形</li><li>特別注意陡坡下方箭竹叢中的蜷縮避風者（容易漏搜）</li>' : ''}
+              ${isColdTrail ? '<li>立即向 ROW 擴大邊界，向外擴展距離環</li><li>訪查所有同路線山友，重建完整時間線</li>' : ''}
+              <li>所有一線小組回傳 GPX 軌跡，計算實際 Coverage 與 POD</li>
+              <li>每2小時進行無線電定時回報，超過30分鐘未聯絡啟動緊急程序</li>
+              ${isHazardWeather ? '<li>天氣惡化立即執行 S.T.O.P. 評估，觸發 Go/No-Go 硬指標時強制撤退</li>' : ''}
+            </ul>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  buildOptions('sim-persona', PERSONAS, 'persona');
+  buildOptions('sim-weather', WEATHER, 'weather');
+  buildOptions('sim-terrain', TERRAINS, 'terrain');
+  document.getElementById('sim-run-btn').addEventListener('click', generate);
+})();
+
+})();
+</script>
+</body>
+</html>
