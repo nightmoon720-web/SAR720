@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣山域搜救 · T 地形導航</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS — identical to existing batches
+   ============================================================ */
+:root {
+  --paper:   #F5F0E8;
+  --stone:   #EDE7D9;
+  --stone2:  #E3DDD0;
+  --rule:    #CFC9BC;
+  --rule2:   #BDB6A8;
+  --ink:     #1C1A17;
+  --dim:     #6B6560;
+  --dim2:    #9A948E;
+  --fire:    #C8401A;
+  --fire-lt: #E85C30;
+  --ember:   #D4781A;
+  --amber:   #B89030;
+  --safe:    #2E7D52;
+  --safe-lt: #3A9A65;
+  --moss:    #3D5C3A;
+  --slate:   #2C4A6E;
+  --charcoal:#4A4540;
+
+  --accent-A: #C8401A;
+  --accent-E: #9B5E1A;
+  --accent-B: #3D5C3A;
+  --accent-C: #2C4A6E;
+  --accent-D: #4A4540;
+  --accent-T: #5C3A7A; /* T layer — deep violet */
+  --accent-T-lt: #7A5299;
+
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+
+  --nav-h: 56px;
+  --spine-w: 4px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── SPINE ── */
+.spine {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--spine-w);
+  background: var(--accent-T);
+  z-index: 200;
+}
+
+/* ── NAV ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center;
+  padding: 0 2rem; gap: 2rem;
+  z-index: 100;
+}
+.nav-logo {
+  font-family: var(--mono); font-weight: 700; font-size: 13px;
+  color: var(--fire); letter-spacing: .08em; white-space: nowrap; flex: none;
+}
+.nav-links {
+  display: flex; gap: .2rem;
+  overflow-x: auto; scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-link {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  color: var(--dim); text-decoration: none;
+  padding: .35rem .65rem; border-radius: 4px; white-space: nowrap;
+  transition: .15s;
+}
+.nav-link:hover { background: var(--stone); color: var(--ink); }
+.nav-link.active { color: var(--accent-T); background: var(--stone); }
+.nav-link[data-layer="T"] { color: var(--accent-T); }
+.nav-link[data-layer="T"]:hover { background: var(--stone); }
+.nav-divider {
+  width: 1px; height: 20px; background: var(--rule2);
+  align-self: center; flex: none;
+}
+.nav-home { color: var(--dim2) !important; }
+
+/* ── PAGE BODY ── */
+.page-body {
+  padding-top: calc(var(--nav-h) + 3rem);
+  padding-bottom: 8rem;
+  padding-left: calc(var(--spine-w) + clamp(1.5rem, 5vw, 4rem));
+  padding-right: clamp(1.5rem, 5vw, 4rem);
+  max-width: calc(var(--spine-w) + 960px);
+}
+
+/* ── SECTION HEADER ── */
+.sec-header {
+  padding: 4rem 0 2.5rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 2.5rem;
+}
+.sec-layer {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent-T); margin-bottom: .6rem;
+}
+.sec-title {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+  font-weight: 900; color: var(--ink); line-height: 1.15;
+}
+.sec-title em { color: var(--accent-T); font-style: normal; }
+.sec-sub {
+  margin-top: .75rem; font-size: 14px;
+  color: var(--dim); line-height: 1.6;
+}
+
+/* ── TOOL FRAME ── */
+.tool-frame {
+  background: var(--stone);
+  border: 1px solid var(--rule);
+  border-radius: 12px; overflow: hidden;
+  margin-bottom: 4rem;
+}
+.tool-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem 1.25rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--stone2);
+}
+.tool-label {
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  color: var(--accent-T); letter-spacing: .1em;
+}
+.tool-tag {
+  font-family: var(--mono); font-size: 11px; color: var(--dim2);
+}
+.tool-inner { padding: 1.5rem; }
+
+/* ── SECTION DIVIDER ── */
+.section-divider {
+  height: 1px; background: var(--rule);
+  margin: 0 0 1rem;
+}
+
+/* ── MODE TOGGLE (教室 / 現場) ── */
+.mode-toggle {
+  display: flex; gap: .5rem;
+  margin-bottom: 1.5rem;
+}
+.mode-btn {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .1em; padding: .45rem 1rem;
+  border: 1px solid var(--rule2); border-radius: 4px;
+  background: var(--paper); color: var(--dim2);
+  cursor: pointer; transition: .15s;
+}
+.mode-btn.active {
+  background: var(--accent-T); color: #fff;
+  border-color: var(--accent-T);
+}
+.mode-panel { display: none; }
+.mode-panel.active { display: block; }
+
+/* ── T1 — COORDINATE CONVERTER ── */
+.coord-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 600px) { .coord-grid { grid-template-columns: 1fr; } }
+
+.coord-group label {
+  display: block; font-family: var(--mono); font-size: 11px;
+  font-weight: 700; letter-spacing: .12em;
+  color: var(--dim2); margin-bottom: .5rem;
+}
+.coord-input {
+  width: 100%; font-family: var(--mono); font-size: 16px;
+  font-weight: 600; color: var(--ink);
+  background: var(--paper); border: 1px solid var(--rule2);
+  border-radius: 6px; padding: .65rem .85rem;
+  transition: border-color .15s;
+}
+.coord-input:focus {
+  outline: none; border-color: var(--accent-T);
+}
+.coord-input::placeholder { color: var(--dim2); font-weight: 400; }
+
+.coord-arrow {
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 20px; color: var(--accent-T);
+  padding: 1rem 0;
+}
+
+.coord-result-box {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 8px; padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+.coord-result-label {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .18em; color: var(--dim2); margin-bottom: .5rem;
+}
+.coord-result-value {
+  font-family: var(--mono); font-size: 18px; font-weight: 700;
+  color: var(--ink); margin-bottom: .3rem;
+}
+.coord-result-err {
+  font-family: var(--mono); font-size: 11px; color: var(--dim);
+}
+.coord-result-box.method-precise { border-left: 3px solid var(--safe); }
+.coord-result-box.method-simple  { border-left: 3px solid var(--ember); }
+
+.coord-copy-btn {
+  width: 100%; font-family: var(--mono); font-size: 12px; font-weight: 700;
+  letter-spacing: .1em; padding: .75rem;
+  background: var(--accent-T); color: #fff;
+  border: none; border-radius: 6px; cursor: pointer;
+  transition: opacity .15s; margin-top: 1rem;
+}
+.coord-copy-btn:hover { opacity: .85; }
+.coord-copy-btn.copied { background: var(--safe); }
+
+.coord-report-preview {
+  background: var(--ink); color: #E8E4DC;
+  font-family: var(--mono); font-size: 12px; line-height: 1.8;
+  border-radius: 8px; padding: 1rem 1.25rem;
+  margin-top: 1rem; display: none;
+  white-space: pre;
+}
+
+/* ── T2 — CONTOUR + NAVIGATION ── */
+.nav-method-tabs {
+  display: flex; gap: .5rem; margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.nav-tab {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .08em; padding: .45rem 1rem;
+  border: 1px solid var(--rule2); border-radius: 4px;
+  background: var(--paper); color: var(--dim2);
+  cursor: pointer; transition: .15s;
+}
+.nav-tab.active {
+  background: var(--accent-T); color: #fff; border-color: var(--accent-T);
+}
+.nav-method-panel { display: none; }
+.nav-method-panel.active { display: block; }
+
+/* classroom accordion */
+.edu-block {
+  border: 1px solid var(--rule); border-radius: 8px;
+  margin-bottom: .75rem; overflow: hidden;
+}
+.edu-block-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .9rem 1.1rem; cursor: pointer;
+  background: var(--paper); transition: background .15s;
+}
+.edu-block-hd:hover { background: var(--stone); }
+.edu-block-title {
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  letter-spacing: .08em; color: var(--ink);
+}
+.edu-block-arrow {
+  font-family: var(--mono); font-size: 14px;
+  color: var(--accent-T); transition: transform .2s;
+}
+.edu-block.open .edu-block-arrow { transform: rotate(90deg); }
+.edu-block-body {
+  display: none; padding: 1.1rem;
+  border-top: 1px solid var(--rule);
+  background: var(--stone);
+}
+.edu-block.open .edu-block-body { display: block; }
+
+/* field quick-cards (carousel) */
+.field-cards {
+  display: flex; gap: 1rem;
+  overflow-x: auto; padding-bottom: .5rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin; scrollbar-color: var(--rule2) transparent;
+}
+.field-card {
+  min-width: 260px; scroll-snap-align: start;
+  background: var(--paper); border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent-T);
+  border-radius: 8px; padding: 1.1rem 1.25rem;
+  flex: none;
+}
+.field-card-id {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .18em; color: var(--accent-T); margin-bottom: .4rem;
+}
+.field-card-title {
+  font-family: var(--serif); font-size: 15px; font-weight: 900;
+  color: var(--ink); margin-bottom: .85rem;
+}
+.field-row {
+  display: grid; grid-template-columns: 72px 1fr;
+  gap: .25rem .75rem; margin-bottom: .3rem;
+  font-size: 12px; line-height: 1.5;
+}
+.field-key {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--dim2); letter-spacing: .08em; padding-top: 1px;
+}
+.field-val { color: var(--ink); }
+
+/* contour SVG diagram */
+.contour-svg-wrap {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 8px; padding: 1rem;
+  margin-bottom: 1rem; text-align: center;
+}
+.contour-svg-cap {
+  font-family: var(--mono); font-size: 11px; color: var(--dim);
+  margin-top: .5rem;
+}
+
+/* combo table */
+.combo-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+.combo-table th {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .12em; color: var(--dim2);
+  border-bottom: 2px solid var(--rule2);
+  padding: .5rem .75rem; text-align: left;
+}
+.combo-table td {
+  padding: .55rem .75rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink); vertical-align: top;
+}
+.combo-table tr:last-child td { border-bottom: none; }
+.combo-table .tag-method {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  background: var(--accent-T); color: #fff;
+  padding: .15rem .4rem; border-radius: 3px;
+}
+
+/* ── T3 — COMPASS CALCULATOR ── */
+.compass-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 580px) { .compass-grid { grid-template-columns: 1fr; } }
+
+.cmp-label {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .12em; color: var(--dim2); margin-bottom: .5rem;
+  display: block;
+}
+.cmp-input {
+  width: 100%; font-family: var(--mono); font-size: 18px; font-weight: 700;
+  color: var(--ink); background: var(--paper);
+  border: 1px solid var(--rule2); border-radius: 6px;
+  padding: .6rem .85rem; transition: border-color .15s;
+}
+.cmp-input:focus { outline: none; border-color: var(--accent-T); }
+
+.cmp-region-seg {
+  display: flex; gap: .4rem; flex-wrap: wrap;
+}
+.cmp-region-btn {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .08em; padding: .4rem .75rem;
+  border: 1px solid var(--rule2); border-radius: 4px;
+  background: var(--paper); color: var(--dim);
+  cursor: pointer; transition: .15s;
+}
+.cmp-region-btn.active {
+  background: var(--accent-T); color: #fff; border-color: var(--accent-T);
+}
+
+.cmp-result {
+  background: var(--ink); color: #E8E4DC;
+  border-radius: 8px; padding: 1.25rem 1.5rem;
+  margin-top: 1rem;
+}
+.cmp-result-main {
+  font-family: var(--mono); font-size: 28px; font-weight: 700;
+  letter-spacing: -.02em; color: #fff; margin-bottom: .5rem;
+}
+.cmp-result-detail {
+  font-family: var(--mono); font-size: 11px;
+  color: #9A948E; line-height: 1.8;
+}
+
+/* intersection simulator */
+.isect-wrap {
+  display: grid; grid-template-columns: 1fr 280px; gap: 1.5rem;
+}
+@media (max-width: 640px) { .isect-wrap { grid-template-columns: 1fr; } }
+
+.isect-svg-box {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 8px; overflow: hidden;
+}
+.isect-controls { display: flex; flex-direction: column; gap: 1rem; }
+.isect-ctrl-group {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 8px; padding: 1rem;
+}
+.isect-ctrl-title {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .15em; color: var(--dim2); margin-bottom: .75rem;
+}
+.isect-row {
+  display: flex; align-items: center; gap: .6rem;
+  margin-bottom: .5rem; font-size: 12px;
+}
+.isect-row label {
+  font-family: var(--mono); font-size: 10px; color: var(--dim);
+  width: 32px; flex: none;
+}
+.isect-num {
+  width: 70px; font-family: var(--mono); font-size: 13px; font-weight: 700;
+  color: var(--ink); background: var(--stone);
+  border: 1px solid var(--rule); border-radius: 4px;
+  padding: .3rem .5rem; text-align: center;
+}
+.isect-num:focus { outline: none; border-color: var(--accent-T); }
+.isect-unit {
+  font-family: var(--mono); font-size: 10px; color: var(--dim2);
+}
+.isect-result-box {
+  background: var(--ink); color: #E8E4DC;
+  border-radius: 6px; padding: .85rem 1rem;
+  font-family: var(--mono); font-size: 12px; line-height: 1.8;
+}
+
+/* method toggle for T3 */
+.isect-method-btns { display: flex; gap: .5rem; margin-bottom: 1.25rem; }
+.isect-method-btn {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .08em; padding: .4rem .85rem;
+  border: 1px solid var(--rule2); border-radius: 4px;
+  background: var(--paper); color: var(--dim2); cursor: pointer; transition: .15s;
+}
+.isect-method-btn.active {
+  background: var(--accent-T); color: #fff; border-color: var(--accent-T);
+}
+.isect-method-panel { display: none; }
+.isect-method-panel.active { display: block; }
+
+/* ── T4 — TRAIL IDENTIFICATION ── */
+.trail-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+.trail-table th {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .14em; color: var(--dim2);
+  border-bottom: 2px solid var(--rule2);
+  padding: .6rem .85rem; text-align: left;
+  background: var(--stone2);
+}
+.trail-table td {
+  padding: .65rem .85rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top; line-height: 1.55;
+}
+.trail-table tr:last-child td { border-bottom: none; }
+.trail-table tr:hover td { background: var(--stone); }
+.trail-warn {
+  color: var(--fire); font-weight: 700;
+  font-family: var(--mono); font-size: 12px;
+}
+.trail-ok {
+  color: var(--safe); font-weight: 600;
+}
+.trail-indicator {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  color: var(--dim2); letter-spacing: .05em;
+}
+
+/* ── T5 — WATER HAZARDS ── */
+.water-tabs {
+  display: flex; gap: .5rem; margin-bottom: 1.5rem;
+}
+.water-tab {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .1em; padding: .5rem 1.1rem;
+  border: 1px solid var(--rule2); border-radius: 4px;
+  background: var(--paper); color: var(--dim2); cursor: pointer; transition: .15s;
+}
+.water-tab.active { background: var(--slate); color: #fff; border-color: var(--slate); }
+.water-tab[data-haz="hydraulic"].active { background: var(--fire); border-color: var(--fire); }
+.water-tab[data-haz="white"].active     { background: var(--ember); border-color: var(--ember); }
+.water-tab[data-haz="siphon"].active    { background: var(--slate); border-color: var(--slate); }
+
+.water-panel { display: none; }
+.water-panel.active { display: block; }
+
+.water-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+}
+@media (max-width: 640px) { .water-inner { grid-template-columns: 1fr; } }
+
+.water-viz {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 8px; overflow: hidden;
+}
+.water-viz-title {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .15em; color: var(--dim2);
+  padding: .6rem 1rem; border-bottom: 1px solid var(--rule);
+  background: var(--stone2);
+}
+
+.water-info { display: flex; flex-direction: column; gap: 1rem; }
+
+.water-checklist {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 8px; padding: 1rem;
+}
+.water-checklist-title {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .15em; color: var(--dim2); margin-bottom: .75rem;
+}
+.water-check-item {
+  display: flex; gap: .65rem; align-items: flex-start;
+  padding: .35rem 0; border-bottom: 1px solid var(--rule);
+  font-size: 12px; line-height: 1.5; color: var(--ink);
+}
+.water-check-item:last-child { border-bottom: none; }
+.water-check-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--rule2); flex: none; margin-top: 5px;
+}
+.water-check-item.danger .water-check-dot { background: var(--fire); }
+
+.water-flow {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 8px; padding: 1rem;
+}
+.water-flow-title {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .15em; color: var(--dim2); margin-bottom: .75rem;
+}
+.flow-step {
+  display: flex; gap: .75rem; align-items: flex-start;
+  margin-bottom: .6rem; font-size: 12px; line-height: 1.5;
+}
+.flow-step-n {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  color: var(--accent-T); width: 22px; flex: none; margin-top: 1px;
+}
+.flow-step-txt { color: var(--ink); }
+.flow-step-txt strong { color: var(--fire); }
+
+.water-warning {
+  background: var(--fire); color: #fff;
+  border-radius: 6px; padding: .75rem 1rem;
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .06em; line-height: 1.5;
+  margin-top: auto;
+}
+
+/* field mode for T5 */
+.water-field-cards {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem;
+  margin-bottom: 1rem;
+}
+@media (max-width: 640px) { .water-field-cards { grid-template-columns: 1fr; } }
+
+.water-field-card {
+  border-radius: 8px; padding: 1rem;
+  border: 1px solid var(--rule);
+}
+.water-field-card[data-haz="hydraulic"] { border-top: 3px solid var(--fire); }
+.water-field-card[data-haz="white"]     { border-top: 3px solid var(--ember); }
+.water-field-card[data-haz="siphon"]    { border-top: 3px solid var(--slate); }
+.wfc-title {
+  font-family: var(--serif); font-size: 13px; font-weight: 900;
+  color: var(--ink); margin-bottom: .65rem;
+}
+.wfc-row {
+  font-size: 11px; line-height: 1.6; color: var(--dim);
+  margin-bottom: .3rem;
+}
+.wfc-row strong { color: var(--ink); font-weight: 700; }
+
+/* ── SHARED UTILS ── */
+.info-note {
+  font-family: var(--mono); font-size: 11px; color: var(--dim);
+  background: var(--stone); border-left: 3px solid var(--rule2);
+  padding: .65rem .9rem; border-radius: 0 4px 4px 0;
+  margin: 1rem 0; line-height: 1.6;
+}
+.info-note.warn {
+  border-color: var(--fire); background: #FCF0EB;
+  color: var(--ink);
+}
+.t-label {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .18em; color: var(--dim2);
+  text-transform: uppercase; margin-bottom: .5rem; display: block;
+}
+p.body-text {
+  font-size: 14px; color: var(--dim); line-height: 1.7; margin-bottom: .85rem;
+}
+.compact-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: .75rem 0; }
+.compact-table th {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .12em; color: var(--dim2); border-bottom: 1px solid var(--rule2);
+  padding: .4rem .65rem; text-align: left;
+}
+.compact-table td { padding: .45rem .65rem; border-bottom: 1px solid var(--rule); }
+.compact-table tr:last-child td { border-bottom: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+  .water-tabs { flex-wrap: wrap; }
+  .mode-toggle { flex-wrap: wrap; }
+}
+
+/* iframe hide nav */
+html.in-iframe .nav   { display: none !important; }
+html.in-iframe .spine { display: none !important; }
+html.in-iframe .page-body { padding-top: 0 !important; padding-left: 1rem !important; }
+</style>
+<script>if(window.self!==window.top){document.documentElement.classList.add("in-iframe");}</script>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<nav class="nav">
+  <div class="nav-logo">SAR // TW</div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link nav-home">← 首頁</a>
+    <span class="nav-divider"></span>
+    <a href="#t1" class="nav-link active" data-layer="T">T1 座標轉換</a>
+    <a href="#t2" class="nav-link" data-layer="T">T2 等高線導航</a>
+    <a href="#t3" class="nav-link" data-layer="T">T3 指北針定位</a>
+    <a href="#t4" class="nav-link" data-layer="T">T4 獸徑辨識</a>
+    <a href="#t5" class="nav-link" data-layer="T">T5 水域危害</a>
+    <span class="nav-divider"></span>
+    <a href="sar_training_batch1.html#a1" class="nav-link nav-cross" data-layer="A">A · 搜救基礎</a>
+    <a href="sar_training_batch2.html#b1" class="nav-link nav-cross" data-layer="B">B · 決策規劃</a>
+    <a href="sar_training_batch3.html#c2" class="nav-link nav-cross" data-layer="C">C · 技術執行</a>
+  </div>
+</nav>
+
+<div class="page-body">
+
+<!-- ============================================================
+     T1 — COORDINATE CONVERTER
+     ============================================================ -->
+<section id="t1">
+  <div class="sec-header">
+    <div class="sec-layer">T1 · 地形導航</div>
+    <h2 class="sec-title">座標系統 · <em>通報轉換器</em></h2>
+    <p class="sec-sub">輸入 TWD67 二度分帶座標，即時換算為 TWD97 / WGS84 通報格式。現場使用，一鍵產生可直接傳送的通報文字。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">FIELD TOOL · 現場工具</span>
+      <span class="tool-tag">輸入即換算</span>
+    </div>
+    <div class="tool-inner">
+      <div class="coord-grid">
+        <div class="coord-group">
+          <label>TWD67 橫座標 E</label>
+          <input class="coord-input" id="t1-e67" type="number" placeholder="例：282500" inputmode="numeric">
+        </div>
+        <div class="coord-group">
+          <label>TWD67 縱座標 N</label>
+          <input class="coord-input" id="t1-n67" type="number" placeholder="例：2690300" inputmode="numeric">
+        </div>
+      </div>
+
+      <div id="t1-results" style="display:none">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem">
+          <div class="coord-result-box method-precise">
+            <div class="coord-result-label">精確換算（誤差 &lt; 2m）</div>
+            <div class="coord-result-value" id="t1-e97-precise">—</div>
+            <div class="coord-result-value" id="t1-n97-precise">—</div>
+            <div class="coord-result-err">二參數公式 · 建議用於正式通報</div>
+          </div>
+          <div class="coord-result-box method-simple">
+            <div class="coord-result-label">快速估算（誤差 &lt; 30m）</div>
+            <div class="coord-result-value" id="t1-e97-simple">—</div>
+            <div class="coord-result-value" id="t1-n97-simple">—</div>
+            <div class="coord-result-err">固定偏移 +828 / −207 · 無電腦時使用</div>
+          </div>
+        </div>
+        <button class="coord-copy-btn" id="t1-copy-btn" onclick="t1CopyReport()">產生通報格式並複製</button>
+        <div class="coord-report-preview" id="t1-report"></div>
+      </div>
+
+      <div class="info-note">
+        <strong>TWD97 ≈ WGS84</strong>（差距 &lt; 1m）— GPS 手機顯示的座標直接等同 TWD97，無需另行換算。誤差只存在於 TWD67 ↔ TWD97 之間。
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================
+     T2 — CONTOUR READING + NAVIGATION METHODS
+     ============================================================ -->
+<section id="t2">
+  <div class="sec-header">
+    <div class="sec-layer">T2 · 地形導航</div>
+    <h2 class="sec-title">等高線判讀 · <em>導航方法</em></h2>
+    <p class="sec-sub">等高線是讀地圖的基礎語言；三種導航方法是把地圖轉換成行動的工具。切換教室模式深入學習，或切換現場模式快速查閱。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">DUAL MODE · 雙模式</span>
+      <span class="tool-tag" id="t2-mode-tag">點擊切換使用情境</span>
+    </div>
+    <div class="tool-inner">
+      <div class="mode-toggle">
+        <button class="mode-btn active" onclick="t2Mode('classroom')">📚 教室模式</button>
+        <button class="mode-btn" onclick="t2Mode('field')">🏔 現場模式</button>
+      </div>
+
+      <!-- CLASSROOM MODE -->
+      <div class="mode-panel active" id="t2-classroom">
+
+        <!-- Contour basics accordion -->
+        <div class="edu-block open" id="edu-contour">
+          <div class="edu-block-hd" onclick="toggleEdu('edu-contour')">
+            <span class="edu-block-title">等高線基礎 — 台灣1:25,000地形圖</span>
+            <span class="edu-block-arrow">›</span>
+          </div>
+          <div class="edu-block-body">
+            <div class="contour-svg-wrap">
+              <svg viewBox="0 0 480 200" width="100%" style="max-width:480px">
+                <!-- mountain shape contours -->
+                <g fill="none" stroke="#BDB6A8" stroke-width="1">
+                  <ellipse cx="240" cy="100" rx="200" ry="80"/>
+                  <ellipse cx="240" cy="100" rx="160" ry="62"/>
+                  <ellipse cx="240" cy="100" rx="120" ry="46"/>
+                  <ellipse cx="240" cy="100" rx="80" ry="30"/>
+                </g>
+                <!-- index contour (bold) -->
+                <ellipse cx="240" cy="100" rx="40" ry="14" fill="none" stroke="#C8401A" stroke-width="2.5"/>
+                <!-- labels -->
+                <text x="245" y="97" font-family="IBM Plex Mono" font-size="9" fill="#C8401A" font-weight="700">100m</text>
+                <text x="302" y="103" font-family="IBM Plex Mono" font-size="8" fill="#6B6560">80m</text>
+                <text x="342" y="106" font-family="IBM Plex Mono" font-size="8" fill="#6B6560">60m</text>
+                <text x="382" y="111" font-family="IBM Plex Mono" font-size="8" fill="#6B6560">40m</text>
+                <!-- valley V -->
+                <polyline points="60,160 100,100 140,160" fill="none" stroke="#2C4A6E" stroke-width="1.5" stroke-dasharray="4,3"/>
+                <text x="85" y="185" font-family="IBM Plex Mono" font-size="8" fill="#2C4A6E">山谷（V朝上游）</text>
+                <!-- ridge V -->
+                <polyline points="320,40 360,100 400,40" fill="none" stroke="#3D5C3A" stroke-width="1.5" stroke-dasharray="4,3"/>
+                <text x="325" y="30" font-family="IBM Plex Mono" font-size="8" fill="#3D5C3A">稜線（V朝下坡）</text>
+              </svg>
+              <div class="contour-svg-cap">橘紅色粗線 = 計曲線（每100m一條）· 細線 = 首曲線（每20m一條）</div>
+            </div>
+            <table class="compact-table">
+              <thead><tr><th>類型</th><th>外觀</th><th>1:25,000 間距</th><th>用途</th></tr></thead>
+              <tbody>
+                <tr><td><strong>計曲線</strong></td><td>加粗實線，標高數值</td><td>100m</td><td>快速辨識高程帶</td></tr>
+                <tr><td><strong>首曲線</strong></td><td>細實線</td><td>20m</td><td>基本地形表現</td></tr>
+                <tr><td><strong>間曲線</strong></td><td>長虛線</td><td>10m</td><td>平坦地補充</td></tr>
+                <tr><td><strong>助曲線</strong></td><td>短點虛線</td><td>5m</td><td>極平坦地補充</td></tr>
+              </tbody>
+            </table>
+            <div class="info-note">
+              <strong>坡度計算</strong>：S(%) = (高度差 ÷ 水平距離) × 100 ／ 坡度角 = arctan(高度差 ÷ 距離)。台灣崩坡臨界值約 30°–45°。
+            </div>
+          </div>
+        </div>
+
+        <!-- Handrail accordion -->
+        <div class="edu-block" id="edu-handrail">
+          <div class="edu-block-hd" onclick="toggleEdu('edu-handrail')">
+            <span class="edu-block-title">扶手欄杆法 Handrail</span>
+            <span class="edu-block-arrow">›</span>
+          </div>
+          <div class="edu-block-body">
+            <p class="body-text">利用線型地物（稜線、溪流、等高線密集帶、道路）作為天然導引，平行或沿著它走，不需要持續看指北針。最適合視線不佳的環境。</p>
+            <div class="contour-svg-wrap">
+              <svg viewBox="0 0 480 180" width="100%" style="max-width:480px">
+                <!-- ridge line -->
+                <path d="M60,90 Q120,60 200,70 Q280,80 360,55 Q400,48 440,50" fill="none" stroke="#3D5C3A" stroke-width="3"/>
+                <text x="65" y="83" font-family="IBM Plex Mono" font-size="9" fill="#3D5C3A" font-weight="700">稜線（欄杆）</text>
+                <!-- hiker path -->
+                <path d="M80,110 Q130,85 210,92 Q290,100 370,75 Q405,68 435,68" fill="none" stroke="#C8401A" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <circle cx="80" cy="110" r="5" fill="#C8401A"/>
+                <text x="55" y="128" font-family="IBM Plex Mono" font-size="9" fill="#C8401A">起點</text>
+                <circle cx="435" cy="68" r="5" fill="#C8401A"/>
+                <text x="412" y="86" font-family="IBM Plex Mono" font-size="9" fill="#C8401A">目標</text>
+                <!-- fog overlay hint -->
+                <text x="180" y="160" font-family="IBM Plex Mono" font-size="8" fill="#9A948E">濃霧中沿稜線走 → 不會迷失方向</text>
+              </svg>
+              <div class="contour-svg-cap">沿稜線行進：即使能見度差，也能保持方向感</div>
+            </div>
+            <table class="compact-table">
+              <thead><tr><th>適用條件</th><th>失效條件</th><th>換方法時機</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>濃霧、夜間、林冠遮蔽視線</td>
+                  <td>欄杆地物消失或分叉</td>
+                  <td>地物不再連續時，立即停下，改用方位角行進</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bearing Walk accordion -->
+        <div class="edu-block" id="edu-bearing">
+          <div class="edu-block-hd" onclick="toggleEdu('edu-bearing')">
+            <span class="edu-block-title">方位角行進 Bearing Walk</span>
+            <span class="edu-block-arrow">›</span>
+          </div>
+          <div class="edu-block-body">
+            <p class="body-text">從指北針讀取方格方位角後，選定遠方一個<strong>肉眼可見</strong>的目標物（樹、岩石），走到後重新定向。避免因地形起伏累積偏移誤差。</p>
+            <div class="info-note">
+              <strong>磁偏角修正口訣（台灣）</strong><br>
+              北台灣：方格方位角 = 磁方位角 − 4°<br>
+              南台灣：方格方位角 = 磁方位角 − 3.5°<br>
+              偏角每年微幅增加，精確任務前查詢 NOAA Geomagnetic Calculator。
+            </div>
+            <div class="info-note warn">
+              <strong>⚠ 跳躍式定向節奏</strong>：每次只選一個目標物，走到了再選下一個。不要試圖「用肉眼看著終點走」——地形起伏會讓你不知不覺偏離。
+            </div>
+          </div>
+        </div>
+
+        <!-- Catching Feature accordion -->
+        <div class="edu-block" id="edu-catching">
+          <div class="edu-block-hd" onclick="toggleEdu('edu-catching')">
+            <span class="edu-block-title">收斂法 Catching Feature</span>
+            <span class="edu-block-arrow">›</span>
+          </div>
+          <div class="edu-block-body">
+            <p class="body-text">出發前在地圖上設定一個「就算走偏也一定會撞上」的大型地物作為收斂點。即使行進中有偏差，最終都能抵達。</p>
+            <table class="compact-table">
+              <thead><tr><th>收斂點選擇條件</th><th>失效條件</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>夠長（橫向延伸 &gt; 預估偏差量）<br>夠明顯（溪流、稜線、產業道路）<br>方向與行進方向大致垂直</td>
+                  <td>溪流分流<br>稜線轉向<br>道路終止</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="margin-top:1rem">
+              <span class="t-label">三種方法組合邏輯</span>
+              <table class="combo-table">
+                <thead><tr><th>情境</th><th>主要方法</th><th>輔助方法</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>濃霧 + 稜線清楚</td>
+                    <td><span class="tag-method">扶手欄杆</span></td>
+                    <td>—</td>
+                  </tr>
+                  <tr>
+                    <td>開闊地 + 目標遠</td>
+                    <td><span class="tag-method">方位角行進</span></td>
+                    <td>扶手欄杆輔助</td>
+                  </tr>
+                  <tr>
+                    <td>不熟路線 + 規劃階段</td>
+                    <td><span class="tag-method">收斂法</span>（先設定）</td>
+                    <td>行進中搭配前兩種</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end classroom -->
+
+      <!-- FIELD MODE -->
+      <div class="mode-panel" id="t2-field">
+        <div class="field-cards">
+
+          <div class="field-card">
+            <div class="field-card-id">HANDRAIL · 扶手欄杆法</div>
+            <div class="field-card-title">沿著地物走</div>
+            <div class="field-row"><div class="field-key">找什麼</div><div class="field-val">稜線、溪流、等高線密集帶、道路</div></div>
+            <div class="field-row"><div class="field-key">怎麼跟</div><div class="field-val">平行地物行進，定期確認距離不變</div></div>
+            <div class="field-row"><div class="field-key">何時換</div><div class="field-val">地物消失或分叉 → 停下，改方位角</div></div>
+          </div>
+
+          <div class="field-card">
+            <div class="field-card-id">BEARING WALK · 方位角行進</div>
+            <div class="field-card-title">跳躍式定向</div>
+            <div class="field-row"><div class="field-key">讀角度</div><div class="field-val">指北針讀磁方位角 → 扣磁偏角（北 −4°，南 −3.5°）</div></div>
+            <div class="field-row"><div class="field-key">選目標</div><div class="field-val">肉眼可見的樹或岩石，對準方格方位角</div></div>
+            <div class="field-row"><div class="field-key">重複</div><div class="field-val">走到目標 → 重新讀角 → 選下一個目標</div></div>
+          </div>
+
+          <div class="field-card">
+            <div class="field-card-id">CATCHING FEATURE · 收斂法</div>
+            <div class="field-card-title">出發前設定</div>
+            <div class="field-row"><div class="field-key">選收斂點</div><div class="field-val">大型地物，走偏也會撞上（溪流 / 稜線 / 道路）</div></div>
+            <div class="field-row"><div class="field-key">方向</div><div class="field-val">收斂點應大致垂直於行進方向</div></div>
+            <div class="field-row"><div class="field-key">到了之後</div><div class="field-val">沿收斂點確認現地位置，再重新規劃路線</div></div>
+          </div>
+
+        </div>
+        <div class="info-note">滑動可看全部三張速查卡 →</div>
+      </div><!-- end field -->
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================
+     T3 — COMPASS CALCULATOR
+     ============================================================ -->
+<section id="t3">
+  <div class="sec-header">
+    <div class="sec-layer">T3 · 地形導航</div>
+    <h2 class="sec-title">指北針定位 · <em>交會法模擬器</em></h2>
+    <p class="sec-sub">磁偏角修正計算器 + 前方交會法 / 後方交會法互動模擬。現場磁偏角修正即時可用；交會法模擬器供教室演練。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">INTERACTIVE · 互動工具</span>
+      <span class="tool-tag">磁偏角修正 + 交會法模擬</span>
+    </div>
+    <div class="tool-inner">
+
+      <!-- Declination calculator -->
+      <span class="t-label">磁偏角修正計算器（現場可用）</span>
+      <div class="compass-grid">
+        <div>
+          <label class="cmp-label">磁方位角 (°)</label>
+          <input class="cmp-input" id="t3-mag" type="number" placeholder="0 – 360" min="0" max="360" inputmode="numeric">
+          <div style="margin-top:.75rem">
+            <label class="cmp-label">地區</label>
+            <div class="cmp-region-seg">
+              <button class="cmp-region-btn active" data-dec="4"   onclick="t3Region(this)">北台灣 −4°</button>
+              <button class="cmp-region-btn"         data-dec="3.75" onclick="t3Region(this)">中台灣 −3.75°</button>
+              <button class="cmp-region-btn"         data-dec="3.5" onclick="t3Region(this)">南台灣 −3.5°</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="cmp-result">
+            <div style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.15em;color:#9A948E;margin-bottom:.35rem">方格方位角</div>
+            <div class="cmp-result-main" id="t3-result">—°</div>
+            <div class="cmp-result-detail" id="t3-detail">輸入磁方位角後自動計算</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:1px;background:var(--rule);margin:1.5rem 0"></div>
+
+      <!-- Intersection simulator -->
+      <span class="t-label">交會法模擬器（教室演練）</span>
+      <div class="isect-method-btns">
+        <button class="isect-method-btn active" onclick="t3Method('forward')">前方交會法</button>
+        <button class="isect-method-btn" onclick="t3Method('backward')">後方交會法</button>
+      </div>
+
+      <!-- Forward -->
+      <div class="isect-method-panel active" id="t3-forward">
+        <div class="info-note" style="margin-bottom:1.25rem">
+          <strong>前方交會法</strong>：觀測者位置已知，欲確認遠方目標的座標。從兩個已知觀測點分別量測目標方位角，兩條射線的交點即為目標位置。
+        </div>
+        <div class="isect-wrap">
+          <div class="isect-svg-box">
+            <svg id="t3f-svg" viewBox="0 0 360 300" width="100%">
+              <!-- grid -->
+              <defs>
+                <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                  <path d="M30,0 L0,0 0,30" fill="none" stroke="#CFC9BC" stroke-width=".5"/>
+                </pattern>
+              </defs>
+              <rect width="360" height="300" fill="#F5F0E8"/>
+              <rect width="360" height="300" fill="url(#grid)"/>
+              <!-- observer A -->
+              <circle id="t3f-a" cx="80" cy="220" r="7" fill="#3D5C3A"/>
+              <text x="88" y="225" font-family="IBM Plex Mono" font-size="10" fill="#3D5C3A" font-weight="700">A（已知）</text>
+              <!-- observer B -->
+              <circle id="t3f-b" cx="280" cy="220" r="7" fill="#2C4A6E"/>
+              <text x="215" y="225" font-family="IBM Plex Mono" font-size="10" fill="#2C4A6E" font-weight="700">B（已知）</text>
+              <!-- rays -->
+              <line id="t3f-ray-a" x1="80" y1="220" x2="80" y2="220" stroke="#3D5C3A" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <line id="t3f-ray-b" x1="280" y1="220" x2="280" y2="220" stroke="#2C4A6E" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <!-- target -->
+              <circle id="t3f-target" cx="-100" cy="-100" r="8" fill="none" stroke="#C8401A" stroke-width="2"/>
+              <line id="t3f-tx1" x1="-100" y1="-100" x2="-90" y2="-90" stroke="#C8401A" stroke-width="1.5"/>
+              <line id="t3f-tx2" x1="-110" y1="-90" x2="-100" y2="-100" stroke="#C8401A" stroke-width="1.5"/>
+              <text id="t3f-coord" x="-100" y="-100" font-family="IBM Plex Mono" font-size="9" fill="#C8401A" font-weight="700"></text>
+            </svg>
+          </div>
+          <div class="isect-controls">
+            <div class="isect-ctrl-group">
+              <div class="isect-ctrl-title">觀測點 A（綠色）</div>
+              <div class="isect-row">
+                <label>Mag</label>
+                <input class="isect-num" id="t3f-mag-a" type="number" value="45" min="0" max="360">
+                <span class="isect-unit">°磁</span>
+              </div>
+            </div>
+            <div class="isect-ctrl-group">
+              <div class="isect-ctrl-title">觀測點 B（藍色）</div>
+              <div class="isect-row">
+                <label>Mag</label>
+                <input class="isect-num" id="t3f-mag-b" type="number" value="315" min="0" max="360">
+                <span class="isect-unit">°磁</span>
+              </div>
+            </div>
+            <div class="isect-result-box" id="t3f-result">
+              輸入兩個磁方位角後自動計算
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backward -->
+      <div class="isect-method-panel" id="t3-backward">
+        <div class="info-note" style="margin-bottom:1.25rem">
+          <strong>後方交會法</strong>：觀測者位置不明，量測兩個已知目標的磁方位角，推算自身座標。反方位角 = 原角 + 180°（若 &gt; 360° 則減 360°）。
+        </div>
+        <div class="isect-wrap">
+          <div class="isect-svg-box">
+            <svg id="t3b-svg" viewBox="0 0 360 300" width="100%">
+              <rect width="360" height="300" fill="#F5F0E8"/>
+              <rect width="360" height="300" fill="url(#grid)"/>
+              <!-- known targets -->
+              <circle id="t3b-ta" cx="80" cy="60" r="7" fill="#3D5C3A"/>
+              <text x="88" y="65" font-family="IBM Plex Mono" font-size="10" fill="#3D5C3A" font-weight="700">山頭A（已知）</text>
+              <circle id="t3b-tb" cx="290" cy="80" r="7" fill="#2C4A6E"/>
+              <text x="200" y="75" font-family="IBM Plex Mono" font-size="10" fill="#2C4A6E" font-weight="700">山頭B（已知）</text>
+              <!-- back-rays -->
+              <line id="t3b-ray-a" x1="80" y1="60" x2="80" y2="60" stroke="#3D5C3A" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <line id="t3b-ray-b" x1="290" y1="80" x2="290" y2="80" stroke="#2C4A6E" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <!-- observer -->
+              <circle id="t3b-obs" cx="-100" cy="-100" r="8" fill="#C8401A"/>
+              <text id="t3b-coord" x="-100" y="-100" font-family="IBM Plex Mono" font-size="9" fill="#C8401A" font-weight="700"></text>
+            </svg>
+          </div>
+          <div class="isect-controls">
+            <div class="isect-ctrl-group">
+              <div class="isect-ctrl-title">朝山頭 A 的磁方位角</div>
+              <div class="isect-row">
+                <label>Mag</label>
+                <input class="isect-num" id="t3b-mag-a" type="number" value="330" min="0" max="360">
+                <span class="isect-unit">°磁</span>
+              </div>
+            </div>
+            <div class="isect-ctrl-group">
+              <div class="isect-ctrl-title">朝山頭 B 的磁方位角</div>
+              <div class="isect-row">
+                <label>Mag</label>
+                <input class="isect-num" id="t3b-mag-b" type="number" value="50" min="0" max="360">
+                <span class="isect-unit">°磁</span>
+              </div>
+            </div>
+            <div class="isect-result-box" id="t3b-result">
+              輸入兩個磁方位角後自動計算
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================
+     T4 — TRAIL IDENTIFICATION
+     ============================================================ -->
+<section id="t4">
+  <div class="sec-header">
+    <div class="sec-layer">T4 · 地形導航</div>
+    <h2 class="sec-title">獸徑辨識 · <em>現場速查</em></h2>
+    <p class="sec-sub">五個判斷指標，現場對照。警訊欄位出現紅字 → 立即停下，回到最後確定的正確路點，重新確認路線。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">FIELD REFERENCE · 現場速查</span>
+      <span class="tool-tag">紅字 = 警訊，立即停下</span>
+    </div>
+    <div class="tool-inner">
+      <table class="trail-table">
+        <thead>
+          <tr>
+            <th style="width:20%">判斷指標</th>
+            <th style="width:35%">正規步道</th>
+            <th style="width:45%">獸徑警訊</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="trail-indicator">路標</span></td>
+            <td class="trail-ok">登山布條、疊石、人工砍痕，間隔規律可見</td>
+            <td><span class="trail-warn">⚠ 路標消失超過 10 分鐘行程距離</span></td>
+          </tr>
+          <tr>
+            <td><span class="trail-indicator">路基</span></td>
+            <td class="trail-ok">踩踏面明顯，寬度約 50–80cm，大致一致</td>
+            <td><span class="trail-warn">⚠ 路基寬度不規則，時有時無，邊界模糊</span></td>
+          </tr>
+          <tr>
+            <td><span class="trail-indicator">通過高度</span></td>
+            <td class="trail-ok">站立姿態可通行，頭頂淨空</td>
+            <td><span class="trail-warn">⚠ 需要彎腰甚至蹲行，植被高度持續降低</span></td>
+          </tr>
+          <tr>
+            <td><span class="trail-indicator">走向</span></td>
+            <td class="trail-ok">沿稜線或大致平行等高線，符合預定路線</td>
+            <td><span class="trail-warn">⚠ 橫切坡面並持續向下傾斜，與預定方向偏離</span></td>
+          </tr>
+          <tr>
+            <td><span class="trail-indicator">GPS 比對</span></td>
+            <td class="trail-ok">與預載航跡偏差 &lt; 15m</td>
+            <td><span class="trail-warn">⚠ 偏離預載航跡 30m 以上，且偏差持續增加</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-note warn" style="margin-top:1.25rem">
+        <strong>迷途第一反應 — 停下來</strong><br>
+        發現警訊時，立即停止行進。回想走過的最後確定路標位置，評估能否原路返回。絕對不要「繼續走，看看前面有沒有路」——越走越偏，被搜救的難度以倍數增加。
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ============================================================
+     T5 — WATER HAZARDS
+     ============================================================ -->
+<section id="t5">
+  <div class="sec-header">
+    <div class="sec-layer">T5 · 地形導航</div>
+    <h2 class="sec-title">水域危害 · <em>辨識與應變</em></h2>
+    <p class="sec-sub">翻滾流、白水區、水洞——三種機制完全不同，應變方式各異。切換標籤查看各危害的辨識方法與應變流程。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">DUAL MODE · 雙模式</span>
+      <span class="tool-tag" id="t5-mode-tag">切換教室 / 現場模式</span>
+    </div>
+    <div class="tool-inner">
+
+      <div class="mode-toggle">
+        <button class="mode-btn active" onclick="t5Mode('classroom')">📚 教室模式</button>
+        <button class="mode-btn" onclick="t5Mode('field')">🏔 現場模式</button>
+      </div>
+
+      <!-- CLASSROOM -->
+      <div class="mode-panel active" id="t5-classroom">
+        <div class="water-tabs">
+          <button class="water-tab active" data-haz="hydraulic" onclick="t5Tab(this)">翻滾流 Hydraulic</button>
+          <button class="water-tab" data-haz="white" onclick="t5Tab(this)">白水區 Whitewater</button>
+          <button class="water-tab" data-haz="siphon" onclick="t5Tab(this)">水洞 Siphon</button>
+        </div>
+
+        <!-- HYDRAULIC panel -->
+        <div class="water-panel active" id="t5-hydraulic">
+          <div class="water-inner">
+            <div class="water-viz">
+              <div class="water-viz-title">HYDRAULIC · 三層回流結構</div>
+              <svg viewBox="0 0 320 220" width="100%" id="t5-hyd-svg">
+                <defs>
+                  <linearGradient id="waterGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#6BA3C8" stop-opacity=".8"/>
+                    <stop offset="100%" stop-color="#2C5A8E" stop-opacity=".9"/>
+                  </linearGradient>
+                </defs>
+                <!-- cliff -->
+                <rect x="0" y="0" width="60" height="140" fill="#8B7355"/>
+                <text x="5" y="155" font-family="IBM Plex Mono" font-size="8" fill="#6B6560">瀑頂</text>
+                <!-- water body -->
+                <rect x="60" y="80" width="260" height="140" fill="url(#waterGrad)" opacity=".7"/>
+                <!-- surface flow arrow -->
+                <path d="M80,95 Q160,88 290,92" fill="none" stroke="#E8F4FF" stroke-width="2"/>
+                <polygon points="290,89 300,92 290,95" fill="#E8F4FF"/>
+                <text x="140" y="83" font-family="IBM Plex Mono" font-size="8" fill="#E8F4FF">① 表層→下游</text>
+                <!-- downward flow -->
+                <path d="M75,110 L75,175" fill="none" stroke="#FFD580" stroke-width="2" stroke-dasharray="4,2"/>
+                <polygon points="72,175 75,185 78,175" fill="#FFD580"/>
+                <text x="80" y="170" font-family="IBM Plex Mono" font-size="8" fill="#FFD580">② 下壓</text>
+                <!-- return flow -->
+                <path d="M200,185 Q140,190 80,178" fill="none" stroke="#FF8080" stroke-width="2"/>
+                <polygon points="80,175 70,178 80,181" fill="#FF8080"/>
+                <text x="120" y="200" font-family="IBM Plex Mono" font-size="8" fill="#FF8080">③ 底層回流→源頭</text>
+                <!-- person icon -->
+                <circle cx="155" cy="115" r="8" fill="none" stroke="#fff" stroke-width="1.5"/>
+                <line x1="155" y1="123" x2="155" y2="145" stroke="#fff" stroke-width="1.5"/>
+                <text x="165" y="132" font-family="IBM Plex Mono" font-size="8" fill="#fff">受困</text>
+              </svg>
+            </div>
+            <div class="water-info">
+              <div class="water-checklist">
+                <div class="water-checklist-title">辨識方法</div>
+                <div class="water-check-item danger"><div class="water-check-dot"></div>瀑布底部、低頭堰下方出現持續翻攪白浪</div>
+                <div class="water-check-item danger"><div class="water-check-dot"></div>水面漂浮物被吸入後反覆浮出同一位置</div>
+                <div class="water-check-item"><div class="water-check-dot"></div>攔砂壩（滾水壩）整個壩頂均勻出水</div>
+                <div class="water-check-item danger"><div class="water-check-dot"></div>高浮力救生衣在此反效果：把人鎖在回流帶</div>
+              </div>
+              <div class="water-flow">
+                <div class="water-flow-title">上方救援流程（有 MMO 架繩時）</div>
+                <div class="flow-step"><div class="flow-step-n">①</div><div class="flow-step-txt">確認隊員受困翻滾流</div></div>
+                <div class="flow-step"><div class="flow-step-n">②</div><div class="flow-step-txt"><strong>立即釋放主繩</strong>（MMO 拉開騾耳結）</div></div>
+                <div class="flow-step"><div class="flow-step-n">③</div><div class="flow-step-txt">受困者因重力下移，通過循環核心</div></div>
+                <div class="flow-step"><div class="flow-step-n">④</div><div class="flow-step-txt">降入下方深潭 → 拋繩袋拉靠岸</div></div>
+              </div>
+              <div class="water-warning">⚠ 旁觀者禁止直接跳入施救<br>連環溺水風險 — 呼叫救援，使用拋繩袋</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WHITEWATER panel -->
+        <div class="water-panel" id="t5-white">
+          <div class="water-inner">
+            <div class="water-viz">
+              <div class="water-viz-title">WHITEWATER · 低密度浮力陷阱</div>
+              <svg viewBox="0 0 320 220" width="100%">
+                <defs>
+                  <linearGradient id="wwGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#B8D4E8" stop-opacity=".6"/>
+                    <stop offset="100%" stop-color="#4A8AB0" stop-opacity=".9"/>
+                  </linearGradient>
+                </defs>
+                <rect width="320" height="220" fill="#F5F0E8"/>
+                <!-- rocks -->
+                <ellipse cx="130" cy="110" rx="28" ry="20" fill="#8B7355"/>
+                <ellipse cx="200" cy="95" rx="22" ry="16" fill="#7A6548"/>
+                <!-- water rapid -->
+                <path d="M0,100 Q40,85 80,105 Q100,115 130,90 Q160,70 200,79 Q230,88 280,75 Q300,70 320,78 L320,220 L0,220 Z" fill="url(#wwGrad)" opacity=".75"/>
+                <!-- bubbles -->
+                <g fill="#E8F4FF" opacity=".6">
+                  <circle cx="90" cy="115" r="3"/><circle cx="105" cy="108" r="2"/>
+                  <circle cx="155" cy="100" r="3"/><circle cx="170" cy="112" r="2"/>
+                  <circle cx="245" cy="98" r="3"/><circle cx="258" cy="108" r="2"/>
+                </g>
+                <!-- person sinking -->
+                <circle cx="170" cy="140" r="8" fill="none" stroke="#C8401A" stroke-width="2"/>
+                <line x1="170" y1="148" x2="170" y2="165" stroke="#C8401A" stroke-width="1.5"/>
+                <path d="M170,165 L162,178 M170,165 L178,178" stroke="#C8401A" stroke-width="1.5"/>
+                <!-- density label -->
+                <rect x="8" y="150" width="110" height="36" rx="4" fill="#1C1A17" opacity=".8"/>
+                <text x="14" y="162" font-family="IBM Plex Mono" font-size="8" fill="#E8F4FF">正常水密度: 1000</text>
+                <text x="14" y="174" font-family="IBM Plex Mono" font-size="8" fill="#FF8080">白水密度: ~600</text>
+                <text x="14" y="182" font-family="IBM Plex Mono" font-size="8" fill="#FFD580">浮力僅剩 60%</text>
+              </svg>
+            </div>
+            <div class="water-info">
+              <div class="water-checklist">
+                <div class="water-checklist-title">辨識方法</div>
+                <div class="water-check-item danger"><div class="water-check-dot"></div>高速水流撞擊岩石後的大量白色泡沫區</div>
+                <div class="water-check-item danger"><div class="water-check-dot"></div>泡沫區內救生衣浮力顯著下降</div>
+                <div class="water-check-item"><div class="water-check-dot"></div>泡沫阻斷光線，落水後方向感完全喪失</div>
+              </div>
+              <div class="water-flow">
+                <div class="water-flow-title">自救步驟</div>
+                <div class="flow-step"><div class="flow-step-n">①</div><div class="flow-step-txt"><strong>防禦式游泳</strong>：仰躺，雙腳朝下游，腳掌朝上</div></div>
+                <div class="flow-step"><div class="flow-step-n">②</div><div class="flow-step-txt">雙臂展開保持平衡，被動漂流通過急流</div></div>
+                <div class="flow-step"><div class="flow-step-n">③</div><div class="flow-step-txt">絕對不要站起來——腳易被石縫夾住</div></div>
+                <div class="flow-step"><div class="flow-step-n">④</div><div class="flow-step-txt">進入平靜水域後 → 攻擊式游泳靠岸</div></div>
+                <div class="flow-step"><div class="flow-step-n">⑤</div><div class="flow-step-txt">尋找洄水區（岩石後方逆流緩水帶）</div></div>
+              </div>
+              <div class="water-warning">⚠ 旁觀者禁止直接跳入施救<br>使用拋繩袋從岸邊協助</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIPHON panel -->
+        <div class="water-panel" id="t5-siphon">
+          <div class="water-inner">
+            <div class="water-viz">
+              <div class="water-viz-title">SIPHON · 水洞截面圖</div>
+              <svg viewBox="0 0 320 220" width="100%">
+                <rect width="320" height="220" fill="#F5F0E8"/>
+                <!-- water surface -->
+                <path d="M0,80 Q80,70 160,75 Q240,80 320,72 L320,220 L0,220Z" fill="#5A8AB0" opacity=".5"/>
+                <!-- boulder -->
+                <ellipse cx="160" cy="110" rx="70" ry="55" fill="#6B5A3E"/>
+                <!-- siphon tunnel -->
+                <path d="M100,145 Q130,165 160,168 Q190,165 220,145" fill="#2C3E50" opacity=".9"/>
+                <!-- water flowing into siphon -->
+                <path d="M60,130 Q90,138 105,148" fill="none" stroke="#90C8E8" stroke-width="2.5"/>
+                <polygon points="103,145 108,151 112,145" fill="#90C8E8"/>
+                <!-- water exits -->
+                <path d="M218,145 Q235,137 260,132" fill="none" stroke="#90C8E8" stroke-width="2.5"/>
+                <polygon points="257,129 263,132 258,136" fill="#90C8E8"/>
+                <!-- invisible label -->
+                <rect x="8" y="30" width="130" height="28" rx="4" fill="#1C1A17" opacity=".85"/>
+                <text x="14" y="42" font-family="IBM Plex Mono" font-size="8" fill="#FF8080" font-weight="700">水面下看不見！</text>
+                <text x="14" y="52" font-family="IBM Plex Mono" font-size="8" fill="#E8E4DC">水流從岩石下穿過</text>
+                <!-- debris block -->
+                <rect x="140" y="152" width="36" height="12" rx="3" fill="#8B6914" opacity=".9"/>
+                <text x="145" y="161" font-family="IBM Plex Mono" font-size="7" fill="#fff">殘骸堵塞</text>
+                <text x="182" y="195" font-family="IBM Plex Mono" font-size="8" fill="#C8401A" font-weight="700">⚠ 入口堵塞 = 致命</text>
+              </svg>
+            </div>
+            <div class="water-info">
+              <div class="water-checklist">
+                <div class="water-checklist-title">辨識方法（水洞通常不可見）</div>
+                <div class="water-check-item danger"><div class="water-check-dot"></div>平靜水潭接收大量水流，卻找不到表面出水口</div>
+                <div class="water-check-item danger"><div class="water-check-dot"></div>漂浮樹葉被吸向岩石底部並消失</div>
+                <div class="water-check-item danger"><div class="water-check-dot"></div>水流從某方向消失，找不到去向</div>
+                <div class="water-check-item"><div class="water-check-dot"></div>水面下可見黑暗的空腔形狀</div>
+              </div>
+              <div class="water-flow">
+                <div class="water-flow-title">應變流程</div>
+                <div class="flow-step"><div class="flow-step-n">①</div><div class="flow-step-txt">發現任何水洞跡象 → <strong>全隊上岸繞行</strong></div></div>
+                <div class="flow-step"><div class="flow-step-n">②</div><div class="flow-step-txt">若必須通過：在背包繫繩，先送背包測試通道</div></div>
+                <div class="flow-step"><div class="flow-step-n">③</div><div class="flow-step-txt">若人被吸入入口卡住 → 順水流方向拉出，逆向只會更緊</div></div>
+                <div class="flow-step"><div class="flow-step-n">④</div><div class="flow-step-txt">自救幾乎不可能 → 立即呼叫消防水下救援</div></div>
+              </div>
+              <div class="water-warning">⚠ 水洞自救成功率接近零<br>預防是唯一有效的應對方式</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- end classroom -->
+
+      <!-- FIELD MODE -->
+      <div class="mode-panel" id="t5-field">
+        <div class="water-field-cards">
+          <div class="water-field-card" data-haz="hydraulic">
+            <div class="wfc-title">翻滾流 Hydraulic</div>
+            <div class="wfc-row"><strong>形成：</strong>瀑布底部、攔砂壩下方</div>
+            <div class="wfc-row"><strong>看到：</strong>持續翻攪白浪，漂浮物反覆出現</div>
+            <div class="wfc-row"><strong>禁止：</strong>跳入施救、靠近邊緣</div>
+            <div class="wfc-row"><strong>救援：</strong>釋放主繩 → 拋繩袋</div>
+          </div>
+          <div class="water-field-card" data-haz="white">
+            <div class="wfc-title">白水區 Whitewater</div>
+            <div class="wfc-row"><strong>形成：</strong>急流撞岩後的泡沫區</div>
+            <div class="wfc-row"><strong>風險：</strong>浮力降至 60%，方向感喪失</div>
+            <div class="wfc-row"><strong>自救：</strong>仰躺、腳朝下游、被動漂流</div>
+            <div class="wfc-row"><strong>禁止：</strong>站立涉水（腳卡石縫）</div>
+          </div>
+          <div class="water-field-card" data-haz="siphon">
+            <div class="wfc-title">水洞 Siphon</div>
+            <div class="wfc-row"><strong>辨識：</strong>水流消失、葉片被吸走</div>
+            <div class="wfc-row"><strong>應對：</strong>繞行，無例外</div>
+            <div class="wfc-row"><strong>若被吸：</strong>順水流方向拉出</div>
+            <div class="wfc-row"><strong>救援：</strong>呼叫消防水下搜救</div>
+          </div>
+        </div>
+        <div class="water-warning" style="border-radius:8px">
+          ⚠ 三種水域危害的共同原則：旁觀者禁止直接跳入施救。使用拋繩袋、岸邊確保繩、或等待專業救援。
+        </div>
+      </div><!-- end field -->
+
+    </div>
+  </div>
+</section>
+
+</div><!-- end page-body -->
+
+<script>
+(function(){
+
+/* ── T1 COORDINATE CONVERTER ── */
+const A = 0.00001549, B = 0.000006521;
+
+function t1Convert(){
+  const e67 = parseFloat(document.getElementById('t1-e67').value);
+  const n67 = parseFloat(document.getElementById('t1-n67').value);
+  if(isNaN(e67)||isNaN(n67)){
+    document.getElementById('t1-results').style.display='none'; return;
+  }
+  // precise
+  const e97p = e67 + 807.8 + A*e67 + B*n67;
+  const n97p = n67 - 248.6 + A*n67 + B*e67;
+  // simple
+  const e97s = e67 + 828;
+  const n97s = n67 - 207;
+
+  document.getElementById('t1-e97-precise').textContent = 'E ' + Math.round(e97p).toLocaleString();
+  document.getElementById('t1-n97-precise').textContent = 'N ' + Math.round(n97p).toLocaleString();
+  document.getElementById('t1-e97-simple').textContent  = 'E ' + Math.round(e97s).toLocaleString();
+  document.getElementById('t1-n97-simple').textContent  = 'N ' + Math.round(n97s).toLocaleString();
+  document.getElementById('t1-results').style.display='block';
+
+  // store for report
+  window._t1 = {e67, n67, e97p: Math.round(e97p), n97p: Math.round(n97p)};
+}
+
+window.t1CopyReport = function(){
+  if(!window._t1) return;
+  const d = window._t1;
+  const txt =
+`【座標通報】
+基準：TWD97（≈ WGS84）
+E：${d.e97p.toLocaleString()}　N：${d.n97p.toLocaleString()}
+（原始 TWD67 輸入：E：${d.e67.toLocaleString()}　N：${d.n67.toLocaleString()}）
+換算方式：二參數公式，誤差 < 2m`;
+  const box = document.getElementById('t1-report');
+  box.textContent = txt;
+  box.style.display = 'block';
+  navigator.clipboard.writeText(txt).then(()=>{
+    const btn = document.getElementById('t1-copy-btn');
+    btn.textContent = '✓ 已複製到剪貼簿';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='產生通報格式並複製'; btn.classList.remove('copied'); }, 2000);
+  }).catch(()=>{
+    document.getElementById('t1-copy-btn').textContent = '已產生（請手動複製）';
+  });
+};
+
+document.getElementById('t1-e67').addEventListener('input', t1Convert);
+document.getElementById('t1-n67').addEventListener('input', t1Convert);
+
+/* ── T2 MODE TOGGLE ── */
+window.t2Mode = function(m){
+  document.querySelectorAll('#t2 .mode-btn').forEach(b=>b.classList.toggle('active', b.textContent.includes(m==='classroom'?'教室':'現場')));
+  document.getElementById('t2-classroom').classList.toggle('active', m==='classroom');
+  document.getElementById('t2-field').classList.toggle('active', m==='field');
+  document.getElementById('t2-mode-tag').textContent = m==='classroom' ? '展開各區塊深入學習' : '左右滑動切換速查卡';
+};
+
+window.toggleEdu = function(id){
+  document.getElementById(id).classList.toggle('open');
+};
+
+/* ── T3 COMPASS ── */
+let t3dec = 4;
+
+window.t3Region = function(btn){
+  document.querySelectorAll('.cmp-region-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  t3dec = parseFloat(btn.dataset.dec);
+  t3CalcMag();
+};
+
+function t3CalcMag(){
+  const mag = parseFloat(document.getElementById('t3-mag').value);
+  if(isNaN(mag)){ document.getElementById('t3-result').textContent='—°'; return; }
+  let grid = mag - t3dec;
+  if(grid < 0) grid += 360;
+  if(grid >= 360) grid -= 360;
+  document.getElementById('t3-result').textContent = grid.toFixed(1) + '°';
+  document.getElementById('t3-detail').textContent =
+    `磁方位角 ${mag.toFixed(1)}° − 磁偏角 ${t3dec}° = 方格方位角 ${grid.toFixed(1)}°`;
+}
+document.getElementById('t3-mag').addEventListener('input', t3CalcMag);
+
+window.t3Method = function(m){
+  document.querySelectorAll('.isect-method-btn').forEach(b=>b.classList.toggle('active', b.textContent.includes(m==='forward'?'前方':'後方')));
+  document.getElementById('t3-forward').classList.toggle('active', m==='forward');
+  document.getElementById('t3-backward').classList.toggle('active', m==='backward');
+};
+
+// Forward intersection SVG
+function t3fDraw(){
+  const magA = parseFloat(document.getElementById('t3f-mag-a').value)||0;
+  const magB = parseFloat(document.getElementById('t3f-mag-b').value)||0;
+  const gridA = ((magA - t3dec) % 360 + 360) % 360;
+  const gridB = ((magB - t3dec) % 360 + 360) % 360;
+
+  const ax=80, ay=220, bx=280, by=220;
+  const len=280;
+  const rax = ax + len*Math.sin(gridA*Math.PI/180);
+  const ray = ay - len*Math.cos(gridA*Math.PI/180);
+  const rbx = bx + len*Math.sin(gridB*Math.PI/180);
+  const rby = by - len*Math.cos(gridB*Math.PI/180);
+
+  document.getElementById('t3f-ray-a').setAttribute('x2', rax);
+  document.getElementById('t3f-ray-a').setAttribute('y2', ray);
+  document.getElementById('t3f-ray-b').setAttribute('x2', rbx);
+  document.getElementById('t3f-ray-b').setAttribute('y2', rby);
+
+  // intersection
+  const dx1=rax-ax, dy1=ray-ay, dx2=rbx-bx, dy2=rby-by;
+  const denom = dx1*dy2 - dy1*dx2;
+  let res = document.getElementById('t3f-result');
+  if(Math.abs(denom)<0.001){
+    document.getElementById('t3f-target').setAttribute('cx','-100');
+    res.innerHTML='射線平行，無交點<br>請調整方位角使夾角接近 90°';
+    return;
+  }
+  const t = ((bx-ax)*dy2-(by-ay)*dx2)/denom;
+  const ix = ax+t*dx1, iy = ay+t*dy1;
+  const inBounds = ix>0&&ix<360&&iy>0&&iy<300;
+  document.getElementById('t3f-target').setAttribute('cx', inBounds?ix:-100);
+  document.getElementById('t3f-target').setAttribute('cy', inBounds?iy:-100);
+  document.getElementById('t3f-coord').setAttribute('x', inBounds?ix+10:-100);
+  document.getElementById('t3f-coord').setAttribute('y', inBounds?iy-10:-100);
+  document.getElementById('t3f-coord').textContent = inBounds?`P(${Math.round(ix)},${Math.round(iy)})`:'';
+
+  const angleDiff = Math.abs(((gridA-gridB+360)%360));
+  const qualAngle = Math.min(angleDiff, 360-angleDiff);
+  const quality = qualAngle > 30 && qualAngle < 150 ? '良好' : '⚠ 夾角過小，誤差大';
+  res.innerHTML =
+    `方格A: ${gridA.toFixed(1)}°<br>方格B: ${gridB.toFixed(1)}°<br>` +
+    (inBounds ? `交叉點：圖上 (${Math.round(ix)}, ${Math.round(iy)})` : '交叉點超出圖幅，請調整角度') +
+    `<br>夾角品質：${quality}`;
+}
+
+['t3f-mag-a','t3f-mag-b'].forEach(id=>document.getElementById(id).addEventListener('input',t3fDraw));
+t3fDraw();
+
+// Backward intersection SVG
+function t3bDraw(){
+  const magA = parseFloat(document.getElementById('t3b-mag-a').value)||0;
+  const magB = parseFloat(document.getElementById('t3b-mag-b').value)||0;
+  const gridA = ((magA - t3dec) % 360 + 360) % 360;
+  const gridB = ((magB - t3dec) % 360 + 360) % 360;
+  // back azimuth
+  const backA = (gridA + 180) % 360;
+  const backB = (gridB + 180) % 360;
+
+  const tax=80, tay=60, tbx=290, tby=80;
+  const len=260;
+  const rax = tax + len*Math.sin(backA*Math.PI/180);
+  const ray = tay - len*Math.cos(backA*Math.PI/180);
+  const rbx = tbx + len*Math.sin(backB*Math.PI/180);
+  const rby = tby - len*Math.cos(backB*Math.PI/180);
+
+  document.getElementById('t3b-ray-a').setAttribute('x2', rax);
+  document.getElementById('t3b-ray-a').setAttribute('y2', ray);
+  document.getElementById('t3b-ray-b').setAttribute('x2', rbx);
+  document.getElementById('t3b-ray-b').setAttribute('y2', rby);
+
+  const dx1=rax-tax, dy1=ray-tay, dx2=rbx-tbx, dy2=rby-tby;
+  const denom = dx1*dy2-dy1*dx2;
+  let res = document.getElementById('t3b-result');
+  if(Math.abs(denom)<0.001){
+    document.getElementById('t3b-obs').setAttribute('cx','-100');
+    res.innerHTML='射線平行，無法定位<br>請選擇方位角差距較大的兩個目標';
+    return;
+  }
+  const t = ((tbx-tax)*dy2-(tby-tay)*dx2)/denom;
+  const ix=tax+t*dx1, iy=tay+t*dy1;
+  const inBounds = ix>0&&ix<360&&iy>0&&iy<300;
+  document.getElementById('t3b-obs').setAttribute('cx', inBounds?ix:-100);
+  document.getElementById('t3b-obs').setAttribute('cy', inBounds?iy:-100);
+  document.getElementById('t3b-coord').setAttribute('x', inBounds?ix+10:-100);
+  document.getElementById('t3b-coord').setAttribute('y', inBounds?iy+5:-100);
+  document.getElementById('t3b-coord').textContent = inBounds?`我在此 (${Math.round(ix)},${Math.round(iy)})`:'';
+
+  res.innerHTML =
+    `磁A: ${magA}° → 反方位角: ${backA.toFixed(1)}°<br>` +
+    `磁B: ${magB}° → 反方位角: ${backB.toFixed(1)}°<br>` +
+    (inBounds ? `觀測者位置：圖上 (${Math.round(ix)}, ${Math.round(iy)})` : '交叉點超出圖幅，請調整角度');
+}
+
+['t3b-mag-a','t3b-mag-b'].forEach(id=>document.getElementById(id).addEventListener('input',t3bDraw));
+t3bDraw();
+
+/* ── T5 WATER HAZARDS ── */
+window.t5Mode = function(m){
+  document.querySelectorAll('#t5 .mode-btn').forEach(b=>b.classList.toggle('active', b.textContent.includes(m==='classroom'?'教室':'現場')));
+  document.getElementById('t5-classroom').classList.toggle('active', m==='classroom');
+  document.getElementById('t5-field').classList.toggle('active', m==='field');
+};
+
+window.t5Tab = function(btn){
+  const haz = btn.dataset.haz;
+  document.querySelectorAll('.water-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.water-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('t5-'+haz).classList.add('active');
+};
+
+/* ── NAV ACTIVE STATE ── */
+const sections = ['t1','t2','t3','t4','t5'];
+const navLinks = {};
+sections.forEach(id=>{
+  const el = document.querySelector(`.nav-link[href="#${id}"]`);
+  if(el) navLinks[id]=el;
+});
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting && navLinks[e.target.id]){
+      document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+      navLinks[e.target.id].classList.add('active');
+    }
+  });
+},{threshold:.25});
+sections.forEach(id=>{ const el=document.getElementById(id); if(el) obs.observe(el); });
+
+})();
+</script>
+</body>
+</html>
