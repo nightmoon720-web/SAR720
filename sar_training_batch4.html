@@ -45,6 +45,13 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); -w
 .nav-link { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--dim); text-decoration: none; padding: .35rem .65rem; border-radius: 4px; white-space: nowrap; transition: .15s; border-left: 3px solid var(--charcoal, #4A4540); }
 .nav-link:hover { color: var(--ink); background: var(--stone); }
 .nav-link.active { color: var(--fire); background: #C8401A18; }
+.nav-link[data-layer="A"] { border-left: 3px solid #C8401A; }
+.nav-link[data-layer="B"] { border-left: 3px solid #3D5C3A; }
+.nav-link[data-layer="C"] { border-left: 3px solid #2C4A6E; }
+.nav-home { color: #C8401A !important; font-weight: 700; border-left: none !important; }
+.nav-cross { opacity: .65; }
+.nav-cross:hover { opacity: 1; }
+.nav-divider { width: 1px; height: 16px; background: #CFC9BC; flex: none; margin: 0 .2rem; align-self: center; display: inline-block; }
 .page-body { padding-top: var(--nav-h); padding-left: calc(var(--spine-w) + 2rem); padding-right: 2rem; }
 .sec-header { padding: 4rem 0 2.5rem; border-bottom: 1px solid var(--rule); margin-bottom: 2.5rem; }
 .sec-layer { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--dim2); margin-bottom: .6rem; }
@@ -203,10 +210,16 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); -w
 <div class="spine"></div>
 
 <nav class="nav">
-  <div class="nav-logo">SAR // TW · BATCH 04</div>
+  <div class="nav-logo">SAR // TW</div>
   <div class="nav-links">
+    <a href="index.html"                        class="nav-link nav-home">← 首頁</a>
+    <span class="nav-divider"></span>
     <a href="#d1" class="nav-link active">D1 三地統計對照</a>
     <a href="#d2" class="nav-link">D2 YOSAR 案例</a>
+    <span class="nav-divider"></span>
+    <a href="sar_training_batch1.html#a1" class="nav-link nav-cross" data-layer="A">A · 搜救基礎</a>
+    <a href="sar_training_batch2.html#b1" class="nav-link nav-cross" data-layer="B">B · 決策規劃</a>
+    <a href="sar_training_batch3.html#c2" class="nav-link nav-cross" data-layer="C">C · 技術執行</a>
   </div>
 </nav>
 

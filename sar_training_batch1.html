@@ -108,6 +108,10 @@ body {
 .nav-link[data-layer="B"] { border-left: 3px solid var(--accent-B); }
 .nav-link[data-layer="C"] { border-left: 3px solid var(--accent-C); }
 .nav-link[data-layer="D"] { border-left: 3px solid var(--accent-D); }
+.nav-home { color: var(--fire) !important; font-weight: 700; border-left: none !important; }
+.nav-cross { opacity: .65; }
+.nav-cross:hover { opacity: 1; }
+.nav-divider { width: 1px; height: 16px; background: var(--rule); flex: none; margin: 0 .2rem; align-self: center; display: inline-block; }
 
 /* ============================================================
    SPINE LINE
@@ -1256,84 +1260,21 @@ input[type="range"].hyp-range::-webkit-slider-thumb {
 <nav class="nav">
   <div class="nav-logo">SAR // TW</div>
   <div class="nav-links">
-    <a href="#hero"  class="nav-link active">首頁</a>
-    <a href="#a1"    class="nav-link" data-layer="A">A1 四個詞</a>
-    <a href="#a2"    class="nav-link" data-layer="A">A2 失溫333</a>
-    <a href="#e1"    class="nav-link" data-layer="E">E1 危害速查</a>
-    <a href="#e2"    class="nav-link" data-layer="E">E2 捷思陷阱</a>
-    <a href="#e3"    class="nav-link" data-layer="E">E3 評估表</a>
+    <a href="index.html"                        class="nav-link nav-home">← 首頁</a>
+    <span class="nav-divider"></span>
+    <a href="#a1"    class="nav-link active"    data-layer="A">A1 四個詞</a>
+    <a href="#a2"    class="nav-link"           data-layer="A">A2 失溫333</a>
+    <a href="#e1"    class="nav-link"           data-layer="E">E1 危害速查</a>
+    <a href="#e2"    class="nav-link"           data-layer="E">E2 捷思陷阱</a>
+    <a href="#e3"    class="nav-link"           data-layer="E">E3 評估表</a>
+    <span class="nav-divider"></span>
+    <a href="sar_training_batch2.html#b1" class="nav-link nav-cross" data-layer="B">B · 決策規劃</a>
+    <a href="sar_training_batch3.html#c2" class="nav-link nav-cross" data-layer="C">C · 技術執行</a>
+    <a href="sar_training_batch4.html#d1" class="nav-link nav-cross" data-layer="D">D · 延伸研究</a>
   </div>
 </nav>
 
 <div class="page-body">
-
-<!-- ============================================================
-     HERO
-     ============================================================ -->
-<section id="hero">
-  <div class="hero-eyebrow">SAR · TACTICAL TRAINING PLATFORM</div>
-  <div class="hero-title">SEARCH &amp; RESCUE</div>
-  <div class="hero-title">TACTICAL TRAINING</div>
-  <div class="hero-title-cjk">台灣山域搜救</div>
-  <div class="hero-rule"></div>
-
-  <div class="hero-sources">
-    <strong>數據來源涵蓋</strong><br>
-    <div class="src-item"><span class="src-dot"></span>ICAR · UIAA · AMGA · YOSAR · NFPA 1983</div>
-    <div class="src-item"><span class="src-dot"></span>消防署山難統計 · 張博崴山難一審判決書</div>
-    <div class="src-item"><span class="src-dot"></span>FFME 溪谷分級體系 · 人為因素與風險決策教案</div>
-  </div>
-
-  <div class="module-grid">
-    <a href="#a1" class="mod-card" style="--card-accent: var(--accent-A)">
-      <div class="mod-id">A1 · 搜救基礎</div>
-      <div class="mod-name">四個詞</div>
-      <div class="mod-desc">W · Coverage · POD · POS 一次搞懂</div>
-      <div class="mod-arrow">互動工具 →</div>
-    </a>
-    <a href="#a2" class="mod-card" style="--card-accent: var(--accent-A)">
-      <div class="mod-id">A2 · 搜救基礎</div>
-      <div class="mod-name">失溫 333 倒數</div>
-      <div class="mod-desc">黃金時窗壓縮模擬器</div>
-      <div class="mod-arrow">互動工具 →</div>
-    </a>
-    <a href="#e1" class="mod-card" style="--card-accent: var(--accent-E)">
-      <div class="mod-id">E1 · 人為因素</div>
-      <div class="mod-name">危害因子速查</div>
-      <div class="mod-desc">台灣山域四大類危害完整清單</div>
-      <div class="mod-arrow">速查卡片 →</div>
-    </a>
-    <a href="#e2" class="mod-card" style="--card-accent: var(--accent-E)">
-      <div class="mod-id">E2 · 人為因素</div>
-      <div class="mod-name">五大捷思陷阱</div>
-      <div class="mod-desc">情境辨識 + 互動測驗</div>
-      <div class="mod-arrow">互動測驗 →</div>
-    </a>
-    <a href="#e3" class="mod-card" style="--card-accent: var(--accent-E)">
-      <div class="mod-id">E3 · 人為因素</div>
-      <div class="mod-name">個人風險評估表</div>
-      <div class="mod-desc">行動前填寫 · 自動計算風險等級</div>
-      <div class="mod-arrow">填寫表單 →</div>
-    </a>
-    <div class="mod-card" style="--card-accent: var(--accent-B); opacity: .5; cursor: default;">
-      <div class="mod-id">B1–B3 · 決策規劃</div>
-      <div class="mod-name">環境認知 / 搜救決策 / 失蹤者行為</div>
-      <div class="mod-desc">第二批</div>
-    </div>
-    <div class="mod-card" style="--card-accent: var(--accent-C); opacity: .5; cursor: default;">
-      <div class="mod-id">C1–C3 · 技術執行</div>
-      <div class="mod-name">繩索力學 / 固定點 / 情境模擬器</div>
-      <div class="mod-desc">第三批</div>
-    </div>
-    <div class="mod-card" style="--card-accent: var(--accent-D); opacity: .5; cursor: default;">
-      <div class="mod-id">D1–D2 · 延伸研究</div>
-      <div class="mod-name">三地統計 / YOSAR 案例</div>
-      <div class="mod-desc">第四批</div>
-    </div>
-  </div>
-</section>
-
-<div class="section-divider"></div>
 
 <!-- ============================================================
      A1 — FOUR TERMS
