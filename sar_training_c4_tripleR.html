@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣山域搜救 · C4 tripleR 戰術架設</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:   #F5F0E8;
+  --stone:   #EDE7D9;
+  --stone2:  #E3DDD0;
+  --rule:    #CFC9BC;
+  --rule2:   #BDB6A8;
+  --ink:     #1C1A17;
+  --dim:     #6B6560;
+  --dim2:    #9A948E;
+  --fire:    #C8401A;
+  --ember:   #D4781A;
+  --amber:   #B89030;
+  --safe:    #2E7D52;
+  --moss:    #3D5C3A;
+  --slate:   #2C4A6E;
+  --violet:  #6B4FA0;
+  --danger:  #A82010;
+  --warn:    #9A7010;
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+  --nav-h: 56px;
+  --spine-w: 4px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+.spine { position: fixed; left: 0; top: var(--nav-h); bottom: 0; width: var(--spine-w); background: var(--slate); z-index: 90; }
+.nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: var(--paper); border-bottom: 1px solid var(--rule); display: flex; align-items: center; padding: 0 2rem; gap: 2rem; z-index: 100; }
+.nav-logo { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--fire); letter-spacing: .08em; white-space: nowrap; flex: none; }
+.nav-links { display: flex; gap: .2rem; overflow-x: auto; scrollbar-width: none; }
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-link { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--dim); text-decoration: none; padding: .35rem .65rem; border-radius: 4px; white-space: nowrap; transition: .15s; border-left: 3px solid var(--slate); }
+.nav-link:hover { color: var(--ink); background: var(--stone); }
+.nav-link.active { color: var(--slate); background: #2C4A6E18; }
+.nav-link[data-layer="A"] { border-left: 3px solid #C8401A; }
+.nav-link[data-layer="B"] { border-left: 3px solid #7A3A6E; }
+.nav-link[data-layer="D"] { border-left: 3px solid #3D5C3A; }
+.nav-home { color: #C8401A !important; font-weight: 700; border-left: none !important; }
+.nav-cross { opacity: .65; }
+.nav-cross:hover { opacity: 1; }
+.nav-divider { width: 1px; height: 16px; background: #CFC9BC; flex: none; margin: 0 .2rem; align-self: center; display: inline-block; }
+.page-body { padding-top: var(--nav-h); padding-left: calc(var(--spine-w) + 2rem); padding-right: 2rem; }
+
+.sec-header { padding: 4rem 0 2.5rem; border-bottom: 1px solid var(--rule); margin-bottom: 2.5rem; }
+.sec-layer { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--dim2); margin-bottom: .6rem; }
+.sec-title { font-family: var(--serif); font-size: clamp(1.6rem, 3.5vw, 2.8rem); font-weight: 900; color: var(--ink); line-height: 1.15; }
+.sec-title em { color: var(--slate); font-style: normal; }
+.sec-sub { margin-top: .75rem; font-size: 14px; color: var(--dim); line-height: 1.6; }
+
+.tool-frame { background: var(--stone); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; margin-bottom: 4rem; }
+.tool-bar { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1.25rem; border-bottom: 1px solid var(--rule); background: var(--stone2); }
+.tool-label { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--slate); letter-spacing: .1em; }
+.tool-tag { font-family: var(--mono); font-size: 11px; color: var(--dim2); }
+.tool-inner { padding: 1.5rem; }
+.section-divider { height: 1px; background: var(--rule); margin: 3rem 0; }
+
+.callout { border-radius: 8px; padding: .85rem 1.1rem; font-size: 13px; line-height: 1.6; margin-top: .75rem; }
+.callout-warn  { background: #FFF8E0; border: 1px solid #E8D890; border-left: 4px solid var(--amber); color: #5A4200; }
+.callout-info  { background: #EEF4FF; border: 1px solid #B8CCE8; border-left: 4px solid var(--slate); color: var(--slate); }
+.callout-danger { background: #FFF0EE; border: 1px solid #E8B0A0; border-left: 4px solid var(--fire); color: #7A1A0A; }
+.callout-safe  { background: #F0F8F4; border: 1px solid #B8D8C8; border-left: 4px solid var(--safe); color: #1C5430; }
+
+/* ============================================================
+   MODULE 01 — TYPE MATRIX CARDS
+   ============================================================ */
+.type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+.type-card {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
+  border-top: 4px solid var(--tc-col, var(--rule2)); cursor: pointer; transition: .18s;
+}
+.type-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.07); }
+.type-card.active { box-shadow: 0 0 0 2px var(--tc-col, var(--rule2)); }
+.tc-head { padding: .85rem 1.1rem; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: flex-start; }
+.tc-title { font-family: var(--serif); font-weight: 700; font-size: 15px; }
+.tc-code { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--tc-col, var(--dim2)); letter-spacing: .08em; margin-top: .2rem; }
+.tc-ascii {
+  font-family: var(--mono); font-size: 13px; line-height: 1.6; padding: .85rem 1.1rem;
+  background: var(--stone); border-bottom: 1px solid var(--rule); color: var(--dim);
+  min-height: 78px; display: flex; align-items: center;
+}
+.tc-body { padding: .85rem 1.1rem; }
+.tc-terrain { font-size: 12px; color: var(--dim); line-height: 1.6; margin-bottom: .75rem; }
+.tc-metrics { display: flex; gap: .5rem; flex-wrap: wrap; }
+.tc-badge {
+  font-family: var(--mono); font-size: 10px; font-weight: 700; padding: .2rem .6rem;
+  border-radius: 4px; border: 1px solid; display: flex; align-items: center; gap: .35rem;
+}
+.badge-system { background: var(--stone); border-color: var(--rule2); color: var(--dim); }
+.badge-low  { background: #E8F5EE; border-color: #90C8A8; color: #1C5430; }
+.badge-med  { background: #FFF8E0; border-color: #D8C060; color: #7A5A00; }
+.badge-high { background: #FFF0EE; border-color: #E8A890; color: #8A2010; }
+.badge-crit { background: #C8401A; border-color: #C8401A; color: #fff; }
+
+/* detail panel */
+.type-detail-panel {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 10px;
+  overflow: hidden; margin-top: 1rem; display: none;
+}
+.type-detail-panel.show { display: block; }
+.tdp-head { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .85rem 1.25rem; display: flex; align-items: center; gap: 1rem; }
+.tdp-title { font-family: var(--serif); font-weight: 900; font-size: 17px; flex: 1; }
+.tdp-close { font-family: var(--mono); font-size: 11px; color: var(--dim2); cursor: pointer; padding: .2rem .6rem; border: 1px solid var(--rule); border-radius: 4px; background: var(--paper); transition: .15s; }
+.tdp-close:hover { background: var(--stone); color: var(--ink); }
+.tdp-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.tdp-col { padding: 1.1rem 1.25rem; }
+.tdp-col:first-child { border-right: 1px solid var(--rule); }
+.tdp-section-label { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .12em; color: var(--dim2); margin-bottom: .75rem; text-transform: uppercase; }
+.tdp-item { display: flex; align-items: flex-start; gap: .6rem; font-size: 12px; line-height: 1.55; margin-bottom: .6rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+.tdp-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.tdp-item-icon { flex: none; font-size: 14px; margin-top: .05rem; }
+.tdp-item-text strong { display: block; font-weight: 700; font-size: 12px; margin-bottom: .15rem; }
+.tdp-item-text span { color: var(--dim); }
+
+/* svg terrain sketch */
+.tdp-sketch { margin: 0 1.25rem 1.1rem; background: var(--stone); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.tdp-sketch-label { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--dim2); padding: .5rem .85rem; border-bottom: 1px solid var(--rule); letter-spacing: .08em; }
+.tdp-sketch svg { display: block; width: 100%; }
+
+/* ============================================================
+   MODULE 02 — DECISION FLOWCHART
+   ============================================================ */
+.flow-wrap { position: relative; }
+.flow-node {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 10px;
+  padding: .85rem 1.1rem; position: relative; transition: .18s;
+}
+.flow-node.decision { border-style: dashed; background: var(--stone); }
+.flow-node.action-A { border-left: 4px solid var(--fire); }
+.flow-node.action-B { border-left: 4px solid var(--ember); }
+.flow-node.action-C { border-left: 4px solid var(--slate); }
+.flow-node.action-D { border-left: 4px solid var(--moss); }
+.flow-node.terminal { border-left: 4px solid var(--safe); background: #F0F8F4; }
+.fn-label { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .1em; color: var(--dim2); margin-bottom: .3rem; }
+.fn-title { font-family: var(--serif); font-weight: 700; font-size: 14px; margin-bottom: .4rem; }
+.fn-body { font-size: 12px; color: var(--dim); line-height: 1.6; }
+.fn-answers { display: flex; gap: .5rem; margin-top: .75rem; flex-wrap: wrap; }
+.fn-answer-btn {
+  font-family: var(--mono); font-size: 11px; font-weight: 700; padding: .35rem .85rem;
+  border-radius: 6px; border: 1.5px solid var(--rule2); background: var(--stone);
+  color: var(--ink); cursor: pointer; transition: .15s;
+}
+.fn-answer-btn:hover { background: var(--stone2); border-color: var(--dim2); }
+.fn-answer-btn.selected { background: var(--slate); border-color: var(--slate); color: #fff; }
+.flow-connector { display: flex; align-items: center; justify-content: center; height: 32px; }
+.flow-connector::after { content: '↓'; font-family: var(--mono); font-size: 16px; color: var(--rule2); }
+.flow-connector.branch { height: 24px; }
+.flow-branches { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.flow-branch-label { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--dim2); text-align: center; margin-bottom: .4rem; letter-spacing: .06em; }
+
+/* result card */
+.flow-result {
+  background: var(--paper); border: 2px solid var(--slate); border-radius: 12px;
+  overflow: hidden; display: none; margin-top: 1rem;
+}
+.flow-result.show { display: block; }
+.fr-head { background: var(--slate); padding: 1rem 1.25rem; display: flex; align-items: center; gap: .75rem; }
+.fr-icon { font-size: 22px; }
+.fr-title { font-family: var(--serif); font-weight: 900; font-size: 18px; color: #fff; flex: 1; }
+.fr-type { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,.65); }
+.fr-body { padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: .85rem; }
+.fr-block { background: var(--stone); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.fr-block-head { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .5rem .9rem; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--dim2); letter-spacing: .08em; }
+.fr-block-body { padding: .85rem .9rem; font-size: 12px; line-height: 1.65; color: var(--ink); }
+.fr-block-body ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; padding: 0; }
+.fr-block-body ul li { padding-left: 1.2rem; position: relative; }
+.fr-block-body ul li::before { content: '›'; position: absolute; left: 0; color: var(--slate); font-weight: 700; font-family: var(--mono); }
+.fr-alert { display: flex; align-items: flex-start; gap: .6rem; padding: .5rem .75rem; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.fr-alert.danger { background: #FFF0EE; border: 1px solid #E8B0A0; color: var(--fire); }
+.fr-alert.warn   { background: #FFF8E0; border: 1px solid #E8D890; color: var(--amber); }
+.fr-alert.ok     { background: #F0F8F4; border: 1px solid #B8D8C8; color: var(--safe); }
+.fr-reset { font-family: var(--mono); font-size: 12px; color: var(--dim2); cursor: pointer; padding: .35rem .75rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--stone); transition: .15s; display: inline-block; margin-top: .25rem; }
+.fr-reset:hover { background: var(--stone2); color: var(--ink); }
+
+/* ============================================================
+   MODULE 03 — ROBUSTNESS COMPARISON TABLE
+   ============================================================ */
+.robust-table-wrap { overflow-x: auto; }
+.robust-table { border-collapse: collapse; font-size: 12px; width: 100%; min-width: 580px; }
+.robust-table th {
+  background: var(--stone2); font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+  color: var(--dim); padding: .6rem .85rem; border: 1px solid var(--rule); font-weight: 700;
+  text-align: left; white-space: nowrap;
+}
+.robust-table th.type-col { width: 130px; }
+.robust-table td { padding: .7rem .85rem; border: 1px solid var(--rule); vertical-align: top; }
+.robust-table tr:hover td { background: var(--stone); }
+.robust-table .row-head { font-family: var(--serif); font-weight: 700; font-size: 13px; white-space: nowrap; }
+.rc-tag {
+  display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 700;
+  padding: .15rem .5rem; border-radius: 3px; margin: .1rem;
+}
+.rc-low  { background: #E8F5EE; color: #1C5430; }
+.rc-med  { background: #FFF8E0; color: #7A5A00; }
+.rc-high { background: #FFF0EE; color: #8A2010; }
+.rc-crit { background: #C8401A; color: #fff; }
+.rc-bar { height: 6px; border-radius: 3px; margin-top: .35rem; }
+.crew-bar { display: flex; gap: 3px; margin-top: .35rem; }
+.crew-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--slate); flex: none; }
+.crew-dot.off { background: var(--rule2); }
+
+/* ============================================================
+   MODULE 04 — EDGE MANAGEMENT QUICK-REF
+   ============================================================ */
+.edge-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: .85rem; }
+.edge-card {
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 8px;
+  overflow: hidden; border-top: 3px solid var(--ec-col, var(--rule2));
+}
+.ec-head { padding: .75rem .9rem; border-bottom: 1px solid var(--rule); }
+.ec-id { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--ec-col, var(--dim2)); letter-spacing: .1em; margin-bottom: .2rem; }
+.ec-name { font-family: var(--serif); font-weight: 700; font-size: 14px; }
+.ec-body { padding: .75rem .9rem; font-size: 12px; color: var(--dim); line-height: 1.6; }
+.ec-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .6rem; }
+.ec-tag { font-family: var(--mono); font-size: 10px; padding: .15rem .45rem; border-radius: 3px; background: var(--stone); border: 1px solid var(--rule2); color: var(--dim); }
+
+/* FOOTER */
+.page-footer { border-top: 1px solid var(--rule); padding: 2rem 0; margin-top: 4rem; display: flex; justify-content: space-between; align-items: center; }
+.footer-left { font-family: var(--mono); font-size: 12px; color: var(--dim); line-height: 1.6; }
+.footer-left strong { color: var(--ink); }
+.footer-right { font-family: var(--mono); font-size: 11px; color: var(--dim2); text-align: right; line-height: 1.6; }
+
+@media (max-width: 768px) {
+  .type-grid, .tdp-body, .flow-branches, .edge-grid { grid-template-columns: 1fr; }
+  .tdp-col:first-child { border-right: none; border-bottom: 1px solid var(--rule); }
+}
+html.in-iframe .nav { display: none !important; }
+html.in-iframe .spine { display: none !important; }
+html.in-iframe .page-body { padding-top: 0 !important; padding-left: 1rem !important; }
+</style>
+<script>if(window.self!==window.top){document.documentElement.classList.add("in-iframe");}</script>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<nav class="nav">
+  <div class="nav-logo">SAR // TW</div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link nav-home">← 首頁</a>
+    <span class="nav-divider"></span>
+    <a href="#c4-matrix" class="nav-link active">C4-1 戰術型態矩陣</a>
+    <a href="#c4-flow"   class="nav-link">C4-2 決策路徑</a>
+    <a href="#c4-robust" class="nav-link">C4-3 強韌度對照</a>
+    <a href="#c4-edge"   class="nav-link">C4-4 邊緣管理速查</a>
+    <span class="nav-divider"></span>
+    <a href="sar_training_batch1.html#a1" class="nav-link nav-cross" data-layer="A">A · 搜救基礎</a>
+    <a href="sar_training_batch2.html#b1" class="nav-link nav-cross" data-layer="B">B · 高山醫療</a>
+    <a href="sar_training_batch4.html#d1" class="nav-link nav-cross" data-layer="D">D · 延伸研究</a>
+  </div>
+</nav>
+
+<div class="page-body">
+
+<!-- ============================================================
+     SECTION HEADER
+     ============================================================ -->
+<section id="c4-matrix">
+  <div class="sec-header">
+    <div class="sec-layer">C4 · 技術執行 · RIGGING-TACTICS</div>
+    <h2 class="sec-title">tripleR 戰術架設<br><em>決策路徑與型態矩陣</em></h2>
+    <p class="sec-sub">由 Axel Manz 提出的 <strong>Robust Rescue Rigging（強韌救援架設）</strong>框架。核心邏輯：依據地形幾何（跨距、深度、落差）進行系統科學化篩選，而非盲目嘗試複雜架設。搜救團隊應優先評估邊緣轉折點（Edge Management）與人員負載負荷，再決定戰術型態。</p>
+  </div>
+
+  <!-- MODULE 01: TYPE MATRIX -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">MODULE 01 · 五型戰術評估矩陣</span>
+      <span class="tool-tag">點選型態卡片展開詳細技術說明</span>
+    </div>
+    <div class="tool-inner">
+
+      <div class="type-grid" id="type-grid">
+
+        <!-- TYPE 01 -->
+        <div class="type-card" style="--tc-col: #2C4A6E" data-type="01" onclick="toggleType(this,'01')">
+          <div class="tc-head">
+            <div>
+              <div class="tc-title">第一型　純橫渡跨越</div>
+              <div class="tc-code">TR-A // TYPE-01 · HORIZONTAL TRAVERSE</div>
+            </div>
+          </div>
+          <div class="tc-ascii">[ ───→ ─── ]<br>│ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│<br>│ &nbsp;障礙區 │</div>
+          <div class="tc-body">
+            <div class="tc-terrain">窄跨距、有深度障礙，負載不需下放谷底。兩側皆有穩固站立平台。</div>
+            <div class="tc-metrics">
+              <span class="tc-badge badge-system">雙線張力 / 軌道線</span>
+              <span class="tc-badge badge-low">邊緣風險 LOW</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TYPE 02 -->
+        <div class="type-card" style="--tc-col: #C8401A" data-type="02" onclick="toggleType(this,'02')">
+          <div class="tc-head">
+            <div>
+              <div class="tc-title">第二型　垂直下放轉平移</div>
+              <div class="tc-code">TR-B // TYPE-02 · LOWER + TRAVERSE</div>
+            </div>
+          </div>
+          <div class="tc-ascii">┌─↓ ──┐<br>│ │ &nbsp;&nbsp;&nbsp;│<br>│ └──→│</div>
+          <div class="tc-body">
+            <div class="tc-terrain">U型或L型深落差（天井、垂直峭壁後接平台）。需分段執行垂放與牽引。</div>
+            <div class="tc-metrics">
+              <span class="tc-badge badge-system">垂放索 + 平移牽引</span>
+              <span class="tc-badge badge-crit">邊緣風險 CRITICAL</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TYPE 03 -->
+        <div class="type-card" style="--tc-col: #D4781A" data-type="03" onclick="toggleType(this,'03')">
+          <div class="tc-head">
+            <div>
+              <div class="tc-title">第三型　斜坡弧形偏向</div>
+              <div class="tc-code">TR-C // TYPE-03 · DEFLECTION LINE</div>
+            </div>
+          </div>
+          <div class="tc-ascii">└──╲<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;╲ ↘<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└───</div>
+          <div class="tc-body">
+            <div class="tc-terrain">溪谷、碎石坡。負載沿一定斜度之拋物線推進，適合有自然地形導引的場景。</div>
+            <div class="tc-metrics">
+              <span class="tc-badge badge-system">偏向線系統</span>
+              <span class="tc-badge badge-med">邊緣風險 MEDIUM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TYPE 04/05 -->
+        <div class="type-card" style="--tc-col: #3D5C3A" data-type="04" onclick="toggleType(this,'04')">
+          <div class="tc-head">
+            <div>
+              <div class="tc-title">第四／五型　高空雙樞紐</div>
+              <div class="tc-code">TR-D // TYPE-04/05 · REEVING</div>
+            </div>
+          </div>
+          <div class="tc-ascii">┌───────┐<br>│ &nbsp;&nbsp;&nbsp;↓ &nbsp;&nbsp;│<br>│ ──┼── │</div>
+          <div class="tc-body">
+            <div class="tc-terrain">寬闊峽谷。負載需在障礙中央進行三維控制，操作人員分布兩側遠端。</div>
+            <div class="tc-metrics">
+              <span class="tc-badge badge-system">Reeving / English Reeving</span>
+              <span class="tc-badge badge-high">邊緣風險 HIGH</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /type-grid -->
+
+      <!-- Detail Panels -->
+      <div class="type-detail-panel" id="detail-01">
+        <div class="tdp-head">
+          <div class="tdp-title">TYPE-01 · 純橫渡跨越 — 技術細節</div>
+          <span class="tdp-close" onclick="closeDetail('01')">✕ 關閉</span>
+        </div>
+        <div class="tdp-sketch">
+          <div class="tdp-sketch-label">地形示意 · TERRAIN SKETCH</div>
+          <svg viewBox="0 0 500 140" xmlns="http://www.w3.org/2000/svg" style="padding:12px 20px;">
+            <!-- Left platform -->
+            <rect x="10" y="80" width="100" height="50" rx="4" fill="#EDE7D9" stroke="#CFC9BC" stroke-width="1.5"/>
+            <text x="60" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6B6560">A 站</text>
+            <!-- Right platform -->
+            <rect x="390" y="80" width="100" height="50" rx="4" fill="#EDE7D9" stroke="#CFC9BC" stroke-width="1.5"/>
+            <text x="440" y="110" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6B6560">B 站</text>
+            <!-- Gap (obstacle) -->
+            <rect x="115" y="90" width="270" height="50" rx="2" fill="#F0EDEA" stroke="#BDB6A8" stroke-width="1" stroke-dasharray="4,3"/>
+            <text x="250" y="122" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#9A948E">障礙區（深坑 / 溪流）</text>
+            <!-- Traverse line -->
+            <line x1="110" y1="68" x2="390" y2="68" stroke="#2C4A6E" stroke-width="2.5"/>
+            <!-- Load dot -->
+            <circle cx="250" cy="68" r="10" fill="#2C4A6E"/>
+            <text x="250" y="72" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">L</text>
+            <!-- Arrows -->
+            <path d="M220 68 L240 68" stroke="#fff" stroke-width="1.5" marker-end="url(#arr)"/>
+            <defs><marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2C4A6E"/></marker></defs>
+            <!-- Labels -->
+            <text x="250" y="52" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#2C4A6E" font-weight="700">軌道線 / 雙線張力系統</text>
+          </svg>
+        </div>
+        <div class="tdp-body">
+          <div class="tdp-col">
+            <div class="tdp-section-label">架設要素</div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">🔩</span>
+              <div class="tdp-item-text"><strong>張力索設置</strong><span>主線張力需足以承載負載並限制垂度（Sag），張力越高所需錨點強度越大，計算時須考量夾角擴展力。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">🏔️</span>
+              <div class="tdp-item-text"><strong>兩端固定點</strong><span>SERENE 評估兩側錨點，若跨距 &gt;15m 建議加設中間支撐或使用滑輪軌道系統。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">⚡</span>
+              <div class="tdp-item-text"><strong>荷載計算</strong><span>V 型垂度 α 角小時張力倍率驟增。垂度 5% 跨距時，各端錨點受力約為負載的 5.7 倍。</span></div>
+            </div>
+          </div>
+          <div class="tdp-col">
+            <div class="tdp-section-label">操作要點與風險</div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">✅</span>
+              <div class="tdp-item-text"><strong>適用條件</strong><span>兩端站立平台穩固、跨距在合理張力範圍內（建議 &lt;25m 無中間支撐）、地形無需垂直下放。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">⚠️</span>
+              <div class="tdp-item-text"><strong>邊緣磨損</strong><span>本型邊緣磨損最低；若跨越點有尖銳岩脊，仍需加裝邊緣保護（Edge Roller / Pad）。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">👥</span>
+              <div class="tdp-item-text"><strong>最低人力</strong><span>建議 3 人：A 站 1 人控制、B 站 1 人接應、1 人監控負載狀態。</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="type-detail-panel" id="detail-02">
+        <div class="tdp-head">
+          <div class="tdp-title">TYPE-02 · 垂直下放轉平移 — 技術細節</div>
+          <span class="tdp-close" onclick="closeDetail('02')">✕ 關閉</span>
+        </div>
+        <div class="tdp-sketch">
+          <div class="tdp-sketch-label">地形示意 · TERRAIN SKETCH</div>
+          <svg viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg" style="padding:12px 20px;">
+            <!-- Top platform -->
+            <rect x="10" y="10" width="130" height="40" rx="4" fill="#EDE7D9" stroke="#CFC9BC" stroke-width="1.5"/>
+            <text x="75" y="35" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6B6560">上方 A 站</text>
+            <!-- Vertical wall -->
+            <rect x="60" y="50" width="30" height="70" rx="2" fill="#E3DDD0" stroke="#BDB6A8" stroke-width="1.5"/>
+            <!-- Bottom platform -->
+            <rect x="10" y="120" width="350" height="35" rx="4" fill="#EDE7D9" stroke="#CFC9BC" stroke-width="1.5"/>
+            <text x="300" y="143" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6B6560">底部平台 B 站</text>
+            <!-- Vertical lower line -->
+            <line x1="90" y1="10" x2="90" y2="120" stroke="#C8401A" stroke-width="2.5" stroke-dasharray="6,3"/>
+            <!-- Horizontal traverse line -->
+            <line x1="90" y1="108" x2="350" y2="108" stroke="#2C4A6E" stroke-width="2.5"/>
+            <!-- Load at bottom of lower -->
+            <circle cx="90" cy="94" r="9" fill="#C8401A"/>
+            <text x="90" y="98" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">L</text>
+            <!-- Arrow down -->
+            <text x="105" y="80" font-family="IBM Plex Mono" font-size="11" fill="#C8401A" font-weight="700">① 垂放</text>
+            <!-- Arrow right -->
+            <text x="180" y="100" font-family="IBM Plex Mono" font-size="11" fill="#2C4A6E" font-weight="700">② 平移牽引 →</text>
+            <!-- Edge point warning -->
+            <circle cx="90" cy="120" r="5" fill="#C8401A" opacity=".7"/>
+            <text x="100" y="135" font-family="IBM Plex Mono" font-size="10" fill="#C8401A">邊緣轉折點（磨繩率最高）</text>
+          </svg>
+        </div>
+        <div class="tdp-body">
+          <div class="tdp-col">
+            <div class="tdp-section-label">架設要素</div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">🔻</span>
+              <div class="tdp-item-text"><strong>雙索系統</strong><span>垂放索（Lower Line）與平移牽引索（Haul/Tag Line）必須獨立控制，切勿共用制動點。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">🔩</span>
+              <div class="tdp-item-text"><strong>轉折點保護</strong><span>L 型轉角處為摩擦集中點，需使用 Edge Roller 或角墊（Corner Pad），並定期確認磨損狀況。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">📡</span>
+              <div class="tdp-item-text"><strong>通訊協定</strong><span>垂放與牽引操作人員視線受阻，強制要求無線電或燈號指揮系統，並設立專責通訊員。</span></div>
+            </div>
+          </div>
+          <div class="tdp-col">
+            <div class="tdp-section-label">操作要點與風險</div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">🚨</span>
+              <div class="tdp-item-text"><strong>邊緣風險 CRITICAL</strong><span>此型態邊緣磨繩率最高，特別是第一段垂放結束、轉入水平牽引的瞬間。若保護不足，5 分鐘即可切斷 10mm 動力繩。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">⚠️</span>
+              <div class="tdp-item-text"><strong>荷載分配</strong><span>垂放與牽引同時施力時，需確保制動系統已做好防止意外滑出的備份（Backup Device）。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">👥</span>
+              <div class="tdp-item-text"><strong>最低人力</strong><span>建議 6 人：A 站垂放 2 人、通訊 1 人、底部接應 2 人、邊緣監控 1 人。低於 4 人不建議執行。</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="type-detail-panel" id="detail-03">
+        <div class="tdp-head">
+          <div class="tdp-title">TYPE-03 · 斜坡弧形偏向 — 技術細節</div>
+          <span class="tdp-close" onclick="closeDetail('03')">✕ 關閉</span>
+        </div>
+        <div class="tdp-sketch">
+          <div class="tdp-sketch-label">地形示意 · TERRAIN SKETCH</div>
+          <svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg" style="padding:12px 20px;">
+            <!-- Slope background -->
+            <polygon points="30,20 480,20 480,140 30,140" fill="#F0EDEA" stroke="none"/>
+            <!-- Slope surface -->
+            <line x1="30" y1="30" x2="460" y2="130" stroke="#BDB6A8" stroke-width="2"/>
+            <!-- Deflection anchor -->
+            <circle cx="250" cy="50" r="7" fill="#D4781A"/>
+            <text x="260" y="45" font-family="IBM Plex Mono" font-size="10" fill="#D4781A" font-weight="700">偏向固定點</text>
+            <!-- Load path -->
+            <path d="M50,40 Q250,50 440,125" stroke="#D4781A" stroke-width="2.5" fill="none" stroke-dasharray="8,4"/>
+            <!-- Load -->
+            <circle cx="160" cy="73" r="9" fill="#D4781A"/>
+            <text x="160" y="77" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">L</text>
+            <!-- Arrow -->
+            <text x="300" y="110" font-family="IBM Plex Mono" font-size="11" fill="#D4781A" font-weight="700">↘ 拋物線推進</text>
+            <!-- Rock debris indicators -->
+            <text x="50" y="70" font-size="14">🪨</text>
+            <text x="370" y="125" font-size="14">🪨</text>
+            <!-- Label -->
+            <text x="50" y="140" font-family="IBM Plex Mono" font-size="10" fill="#9A948E">碎石坡 / 溪谷地形</text>
+          </svg>
+        </div>
+        <div class="tdp-body">
+          <div class="tdp-col">
+            <div class="tdp-section-label">架設要素</div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">📐</span>
+              <div class="tdp-item-text"><strong>偏向線角度</strong><span>偏向固定點的選擇決定路徑曲率。偏向角過大（&gt;90°）時，偏向點承受的合力超過負載，需特別加強錨點。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">🏔️</span>
+              <div class="tdp-item-text"><strong>自然地形利用</strong><span>善用溪谷自然曲率設置偏向點，減少人工錨點需求。岩石突出點可作為偏向點（需確認穩固性）。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">🪨</span>
+              <div class="tdp-item-text"><strong>落石防護</strong><span>碎石坡移動時必然擾動坡面，操作人員須在落石安全區外，戴頭盔並設立落石哨。</span></div>
+            </div>
+          </div>
+          <div class="tdp-col">
+            <div class="tdp-section-label">操作要點與風險</div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">⚠️</span>
+              <div class="tdp-item-text"><strong>拖行風險</strong><span>負載在斜坡上移動時，患者若有意識需事先告知會有傾斜感；擔架系統需抗翻滾設計（Side Rails）。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">🔄</span>
+              <div class="tdp-item-text"><strong>速度控制</strong><span>斜坡助力使下行速度難以控制，制動系統（Belay）必須隨時準備制停，不得僅靠重力自然滑行。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">👥</span>
+              <div class="tdp-item-text"><strong>最低人力</strong><span>建議 4 人：頂部控制 2 人、底部引導 1 人、落石哨 1 人。地形複雜時加人。</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="type-detail-panel" id="detail-04">
+        <div class="tdp-head">
+          <div class="tdp-title">TYPE-04/05 · 高空雙樞紐 Reeving — 技術細節</div>
+          <span class="tdp-close" onclick="closeDetail('04')">✕ 關閉</span>
+        </div>
+        <div class="tdp-sketch">
+          <div class="tdp-sketch-label">地形示意 · TERRAIN SKETCH</div>
+          <svg viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg" style="padding:12px 20px;">
+            <!-- Left cliff -->
+            <rect x="10" y="10" width="80" height="140" rx="4" fill="#EDE7D9" stroke="#CFC9BC" stroke-width="1.5"/>
+            <text x="50" y="90" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6B6560">A<br/>站</text>
+            <!-- Right cliff -->
+            <rect x="410" y="10" width="80" height="140" rx="4" fill="#EDE7D9" stroke="#CFC9BC" stroke-width="1.5"/>
+            <text x="450" y="90" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#6B6560">B<br/>站</text>
+            <!-- Canyon floor -->
+            <rect x="95" y="120" width="310" height="35" rx="2" fill="#F0EDEA" stroke="#BDB6A8" stroke-width="1"/>
+            <text x="250" y="143" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#9A948E">寬闊峽谷谷底</text>
+            <!-- Main span line A -->
+            <line x1="90" y1="35" x2="410" y2="35" stroke="#3D5C3A" stroke-width="2.5"/>
+            <!-- Main span line B -->
+            <line x1="90" y1="55" x2="410" y2="55" stroke="#3D5C3A" stroke-width="1.5" stroke-dasharray="6,3"/>
+            <!-- Control lines from A -->
+            <line x1="90" y1="35" x2="90" y2="90" stroke="#3D5C3A" stroke-width="1.5"/>
+            <!-- Control lines from B -->
+            <line x1="410" y1="35" x2="410" y2="90" stroke="#3D5C3A" stroke-width="1.5"/>
+            <!-- Load in center -->
+            <rect x="230" y="65" width="40" height="30" rx="4" fill="#3D5C3A"/>
+            <text x="250" y="84" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#fff">LOAD</text>
+            <!-- Vertical support from main line -->
+            <line x1="250" y1="35" x2="250" y2="65" stroke="#3D5C3A" stroke-width="2"/>
+            <!-- Labels -->
+            <text x="250" y="22" text-anchor="middle" font-family="IBM Plex Mono" font-size="11" fill="#3D5C3A" font-weight="700">主跨距張力索</text>
+            <text x="155" y="110" font-family="IBM Plex Mono" font-size="10" fill="#3D5C3A">← A 端控制</text>
+            <text x="305" y="110" font-family="IBM Plex Mono" font-size="10" fill="#3D5C3A">B 端控制 →</text>
+          </svg>
+        </div>
+        <div class="tdp-body">
+          <div class="tdp-col">
+            <div class="tdp-section-label">架設要素</div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">🔗</span>
+              <div class="tdp-item-text"><strong>Reeving 穿繩系統</strong><span>繩索穿越兩端滑輪組，形成可雙向控制的懸吊系統。English Reeving 型態可從單側操作雙向移動，減少通訊負擔。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">⚡</span>
+              <div class="tdp-item-text"><strong>高張力荷載</strong><span>長跨距主索在高張力下，兩端錨點承受的水平分力極大，需使用 High Strength（≥ 70kN）的錨點系統，且不得使用自然錨點（石頭、樹木）作為唯一錨點。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">📐</span>
+              <div class="tdp-item-text"><strong>三維位置控制</strong><span>需同時控制 X（橫向）、Y（高度）、Z（旋轉）三個軸向，每個軸向均需獨立的控制索，操作複雜度最高。</span></div>
+            </div>
+          </div>
+          <div class="tdp-col">
+            <div class="tdp-section-label">操作要點與風險</div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">🔴</span>
+              <div class="tdp-item-text"><strong>系統複雜度最高</strong><span>此型態 Robustness 最低，任何單一環節故障均可能導致系統失效。必須在訓練環境下模擬過才可實際部署。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">📡</span>
+              <div class="tdp-item-text"><strong>通訊極度關鍵</strong><span>A / B 兩站視線受阻，加上繩系複雜，通訊錯誤幾乎必然導致事故。強制配備無線電，並指定唯一指揮員（IC）。</span></div>
+            </div>
+            <div class="tdp-item">
+              <span class="tdp-item-icon">👥</span>
+              <div class="tdp-item-text"><strong>最低人力</strong><span>強烈建議 8 人以上：A 站 3 人、B 站 3 人、IC 1 人、患者監護 1 人。少於 6 人應考慮改用第三型。</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warn" style="margin-top:1rem;">
+        ⚠️ <strong>戰術安全提示：</strong>系統越複雜（如第四、五型），容錯率（Robustness）越低，操作人員間的通訊難度將呈幾何級數上升。若現場人力少於 6 人，應積極將地形條件轉化為第三型或第一型操作。
+      </div>
+
+    </div><!-- /tool-inner -->
+  </div><!-- /tool-frame -->
+</section>
+
+<!-- ============================================================
+     MODULE 02 — DECISION FLOWCHART
+     ============================================================ -->
+<section id="c4-flow">
+  <div class="sec-header">
+    <div class="sec-layer">C4-2 · 戰術決策路徑</div>
+    <h2 class="sec-title">地形幾何評估<br><em>逐步篩選決策流程</em></h2>
+    <p class="sec-sub">依序回答地形幾何問題，系統將自動推導出建議戰術型態、人力需求與關鍵風險提示。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">MODULE 02 · 互動式決策路徑</span>
+      <span class="tool-tag">逐步選擇地形條件，產出架設建議</span>
+    </div>
+    <div class="tool-inner">
+
+      <!-- Step 1 -->
+      <div class="flow-node decision" id="step1">
+        <div class="fn-label">STEP 01 · 地形幾何評估</div>
+        <div class="fn-title">障礙物是否需要橫向跨越（水平方向移動）？</div>
+        <div class="fn-body">評估從受困位置到安全區的主要移動方向。若主要是水平穿越障礙（峽谷、溪流、裂縫），選「是」；若主要是垂直下放或斜坡移動，選「否」。</div>
+        <div class="fn-answers">
+          <button class="fn-answer-btn" onclick="flowStep(1,'yes')">✅ 是，需要橫向跨越</button>
+          <button class="fn-answer-btn" onclick="flowStep(1,'no')">❌ 否，以垂直 / 斜坡為主</button>
+        </div>
+      </div>
+
+      <!-- Step 1 branches -->
+      <div id="step1-yes-branch" style="display:none">
+        <div class="flow-connector"></div>
+        <div class="flow-node decision" id="step2a">
+          <div class="fn-label">STEP 02A · 跨距評估</div>
+          <div class="fn-title">跨距是否超過 20 公尺？</div>
+          <div class="fn-body">估算從 A 站到 B 站的水平直線距離。20m 以下可用簡易雙線系統；超過 20m 通常需要張力計算或 Reeving 系統支撐。</div>
+          <div class="fn-answers">
+            <button class="fn-answer-btn" onclick="flowStep(2,'short')">📏 跨距 &lt; 20m（窄）</button>
+            <button class="fn-answer-btn" onclick="flowStep(2,'long')">📏 跨距 ≥ 20m（寬）</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="step1-no-branch" style="display:none">
+        <div class="flow-connector"></div>
+        <div class="flow-node decision" id="step2b">
+          <div class="fn-label">STEP 02B · 地形形狀評估</div>
+          <div class="fn-title">地形是「垂直落差後接水平平台（L/U 型）」還是「連續斜坡」？</div>
+          <div class="fn-body">觀察地形剖面。天井、峭壁底接平台為 L/U 型；碎石坡、溪谷斜坡為連續斜坡型態。</div>
+          <div class="fn-answers">
+            <button class="fn-answer-btn" onclick="flowStep(3,'lu')">🏔️ L 型 / U 型（垂直後接平台）</button>
+            <button class="fn-answer-btn" onclick="flowStep(3,'slope')">⛰️ 連續斜坡 / 弧形地形</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Final recommendation -->
+      <div class="flow-result" id="result-type1">
+        <div class="fr-head">
+          <div class="fr-icon">🏁</div>
+          <div class="fr-title">建議戰術：TYPE-01 純橫渡跨越</div>
+          <div class="fr-type">TR-A // HORIZONTAL TRAVERSE</div>
+        </div>
+        <div class="fr-body">
+          <div class="fr-block">
+            <div class="fr-block-head">推薦系統</div>
+            <div class="fr-block-body"><ul><li>雙線張力系統（Two-Line System）或軌道線（Trolley System）</li><li>張力索兩端使用 SERENE 評估的錨點組</li><li>負載滑輪使用 NFPA 認證滑輪（&gt;4:1 滑輪比效率）</li></ul></div>
+          </div>
+          <div class="fr-block">
+            <div class="fr-block-head">關鍵執行步驟</div>
+            <div class="fr-block-body"><ul><li>計算跨距與預估垂度（Sag），確認錨點受力</li><li>架設主線並以拉力計測試張力至設計值</li><li>配置邊緣保護（若有岩脊）</li><li>測試空載移動後，再實施有負載移動</li></ul></div>
+          </div>
+          <div class="fr-alert ok">✅ 邊緣風險 LOW：本型態磨繩率最低，操作最直覺，適合現場快速架設。</div>
+          <span class="fr-reset" onclick="resetFlow()">↺ 重新評估</span>
+        </div>
+      </div>
+
+      <div class="flow-result" id="result-type4">
+        <div class="fr-head">
+          <div class="fr-icon">⚠️</div>
+          <div class="fr-title">建議戰術：TYPE-04/05 高空雙樞紐 Reeving</div>
+          <div class="fr-type">TR-D // ENGLISH REEVING SYSTEM</div>
+        </div>
+        <div class="fr-body">
+          <div class="fr-block">
+            <div class="fr-block-head">推薦系統</div>
+            <div class="fr-block-body"><ul><li>English Reeving（單側操作雙向移動）或標準 Reeving</li><li>高強度張力索（≥ 12mm 靜力繩，最小破斷力 ≥ 36kN）</li><li>兩端高強度錨點組（建議 ≥ 45kN 系統強度）</li></ul></div>
+          </div>
+          <div class="fr-block">
+            <div class="fr-block-head">人力與通訊需求</div>
+            <div class="fr-block-body"><ul><li>最低建議 8 人（A 站 3、B 站 3、IC 1、患者監護 1）</li><li>強制配備無線電，指定單一 IC 負責所有指令發送</li><li>指令標準化：使用國際繩索技術協定（IRATA/NFPA）標準口令</li></ul></div>
+          </div>
+          <div class="fr-alert danger">🚨 人力少於 6 人時，應重新評估能否轉化為 TYPE-03（斜坡偏向）解決問題。</div>
+          <span class="fr-reset" onclick="resetFlow()">↺ 重新評估</span>
+        </div>
+      </div>
+
+      <div class="flow-result" id="result-type2">
+        <div class="fr-head">
+          <div class="fr-icon">🔻</div>
+          <div class="fr-title">建議戰術：TYPE-02 垂直下放轉平移</div>
+          <div class="fr-type">TR-B // LOWER + HORIZONTAL TRAVERSE</div>
+        </div>
+        <div class="fr-body">
+          <div class="fr-block">
+            <div class="fr-block-head">推薦系統</div>
+            <div class="fr-block-body"><ul><li>垂放索（Lower Line）+ 水平牽引索（Tag / Haul Line）獨立系統</li><li>L 型轉折點：Edge Roller 或硬質角墊保護，每 15 分鐘檢查一次磨損</li><li>垂放系統：MPD / Clutch 或 ID（制動器）控制</li></ul></div>
+          </div>
+          <div class="fr-block">
+            <div class="fr-block-head">最高風險節點</div>
+            <div class="fr-block-body"><ul><li>垂放轉平移的瞬間：繩索由垂直轉水平，張力突然轉換方向</li><li>此瞬間兩套制動系統必須同時保持受控</li><li>指揮員需提前預告「轉換即將發生」，所有人員就定位後才執行</li></ul></div>
+          </div>
+          <div class="fr-alert danger">🚨 邊緣風險 CRITICAL：此為五型中邊緣磨損最嚴峻的型態。Edge Protection 是系統生死關鍵。</div>
+          <span class="fr-reset" onclick="resetFlow()">↺ 重新評估</span>
+        </div>
+      </div>
+
+      <div class="flow-result" id="result-type3">
+        <div class="fr-head">
+          <div class="fr-icon">⛰️</div>
+          <div class="fr-title">建議戰術：TYPE-03 斜坡弧形偏向</div>
+          <div class="fr-type">TR-C // DEFLECTION LINE SYSTEM</div>
+        </div>
+        <div class="fr-body">
+          <div class="fr-block">
+            <div class="fr-block-head">推薦系統</div>
+            <div class="fr-block-body"><ul><li>偏向線系統（Deflection Line）：主控索 + 偏向固定點（自然地形或人工）</li><li>配置制動索（Belay）防止意外加速滑行</li><li>擔架系統選擇抗傾翻設計（Side Rails / Pontoon Rails）</li></ul></div>
+          </div>
+          <div class="fr-block">
+            <div class="fr-block-head">落石防護要求</div>
+            <div class="fr-block-body"><ul><li>移動擔架前，先清除路徑上所有不穩定石塊</li><li>指派落石哨站於安全位置，持續監控上方坡面</li><li>所有人員強制配戴頭盔，下方區域設立禁止進入範圍</li></ul></div>
+          </div>
+          <div class="fr-alert warn">⚠️ 邊緣風險 MEDIUM：斜坡拖行易造成患者二次傷害，需全程保持擔架水平並固定患者。</div>
+          <span class="fr-reset" onclick="resetFlow()">↺ 重新評估</span>
+        </div>
+      </div>
+
+    </div><!-- /tool-inner -->
+  </div><!-- /tool-frame -->
+</section>
+
+<!-- ============================================================
+     MODULE 03 — ROBUSTNESS TABLE
+     ============================================================ -->
+<section id="c4-robust">
+  <div class="sec-header">
+    <div class="sec-layer">C4-3 · 強韌度對照</div>
+    <h2 class="sec-title">五型系統<em>強韌度比較矩陣</em></h2>
+    <p class="sec-sub">Robustness（強韌度）指系統在單一環節故障時，維持可接受狀態的能力。越複雜的系統，強韌度通常越低，容錯空間越小。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">MODULE 03 · 強韌度對照矩陣</span>
+      <span class="tool-tag">從系統複雜度、人力、邊緣風險等多維度評比</span>
+    </div>
+    <div class="tool-inner">
+      <div class="robust-table-wrap">
+        <table class="robust-table">
+          <thead>
+            <tr>
+              <th class="type-col">架設型態</th>
+              <th>系統強韌度</th>
+              <th>邊緣風險</th>
+              <th>最低人力</th>
+              <th>通訊難度</th>
+              <th>建議使用時機</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-head">TYPE-01<br><span style="font-family:var(--mono);font-size:10px;color:var(--dim2)">純橫渡跨越</span></td>
+              <td>
+                <span class="rc-tag rc-low">★★★★★</span>
+                <div class="rc-bar" style="width:90%;background:#2E7D52;"></div>
+                <div style="font-size:11px;color:var(--dim);margin-top:.3rem;">系統最簡，容錯率最高</div>
+              </td>
+              <td><span class="rc-tag rc-low">LOW</span></td>
+              <td>
+                <div class="crew-bar">
+                  <div class="crew-dot"></div><div class="crew-dot"></div><div class="crew-dot"></div>
+                  <div class="crew-dot off"></div><div class="crew-dot off"></div><div class="crew-dot off"></div>
+                </div>
+                <div style="font-size:11px;color:var(--dim);margin-top:.25rem;">最低 3 人</div>
+              </td>
+              <td><span class="rc-tag rc-low">低</span></td>
+              <td style="font-size:12px;color:var(--dim);">兩側均有平台，跨距窄，優先選擇此型。</td>
+            </tr>
+            <tr>
+              <td class="row-head">TYPE-02<br><span style="font-family:var(--mono);font-size:10px;color:var(--dim2)">垂直轉平移</span></td>
+              <td>
+                <span class="rc-tag rc-high">★★☆☆☆</span>
+                <div class="rc-bar" style="width:35%;background:#C8401A;"></div>
+                <div style="font-size:11px;color:var(--dim);margin-top:.3rem;">雙索切換，容錯低</div>
+              </td>
+              <td><span class="rc-tag rc-crit">CRITICAL</span></td>
+              <td>
+                <div class="crew-bar">
+                  <div class="crew-dot"></div><div class="crew-dot"></div><div class="crew-dot"></div>
+                  <div class="crew-dot"></div><div class="crew-dot"></div><div class="crew-dot"></div>
+                </div>
+                <div style="font-size:11px;color:var(--dim);margin-top:.25rem;">最低 6 人</div>
+              </td>
+              <td><span class="rc-tag rc-crit">極高</span></td>
+              <td style="font-size:12px;color:var(--dim);">L/U 型地形必要時才使用，充分架設 Edge Protection。</td>
+            </tr>
+            <tr>
+              <td class="row-head">TYPE-03<br><span style="font-family:var(--mono);font-size:10px;color:var(--dim2)">斜坡偏向</span></td>
+              <td>
+                <span class="rc-tag rc-med">★★★☆☆</span>
+                <div class="rc-bar" style="width:60%;background:#B89030;"></div>
+                <div style="font-size:11px;color:var(--dim);margin-top:.3rem;">地形依賴性強，可接受</div>
+              </td>
+              <td><span class="rc-tag rc-med">MEDIUM</span></td>
+              <td>
+                <div class="crew-bar">
+                  <div class="crew-dot"></div><div class="crew-dot"></div><div class="crew-dot"></div><div class="crew-dot"></div>
+                  <div class="crew-dot off"></div><div class="crew-dot off"></div>
+                </div>
+                <div style="font-size:11px;color:var(--dim);margin-top:.25rem;">最低 4 人</div>
+              </td>
+              <td><span class="rc-tag rc-med">中</span></td>
+              <td style="font-size:12px;color:var(--dim);">連續斜坡、溪谷地形；落石風險須評估。</td>
+            </tr>
+            <tr>
+              <td class="row-head">TYPE-04/05<br><span style="font-family:var(--mono);font-size:10px;color:var(--dim2)">高空雙樞紐</span></td>
+              <td>
+                <span class="rc-tag rc-high">★★☆☆☆</span>
+                <div class="rc-bar" style="width:30%;background:#C8401A;"></div>
+                <div style="font-size:11px;color:var(--dim);margin-top:.3rem;">最複雜，容錯最低</div>
+              </td>
+              <td><span class="rc-tag rc-high">HIGH</span></td>
+              <td>
+                <div class="crew-bar">
+                  <div class="crew-dot"></div><div class="crew-dot"></div><div class="crew-dot"></div>
+                  <div class="crew-dot"></div><div class="crew-dot"></div><div class="crew-dot"></div>
+                </div>
+                <div style="font-size:11px;color:var(--dim);margin-top:.25rem;">最低 8 人（建議）</div>
+              </td>
+              <td><span class="rc-tag rc-crit">極高</span></td>
+              <td style="font-size:12px;color:var(--dim);">寬峽谷三維控制唯一選擇；需充分訓練與演練。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-info" style="margin-top:1.25rem;">
+        ℹ️ <strong>強韌度原則（tripleR Core Principle）：</strong>在現場條件允許時，永遠優先選擇強韌度較高的型態。能用 TYPE-01 解決的問題，不使用 TYPE-04。系統複雜化不代表能力提升，反而代表風險累積。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MODULE 04 — EDGE MANAGEMENT
+     ============================================================ -->
+<section id="c4-edge">
+  <div class="sec-header">
+    <div class="sec-layer">C4-4 · 邊緣管理</div>
+    <h2 class="sec-title">Edge Management<em>轉折點速查表</em></h2>
+    <p class="sec-sub">邊緣管理（Edge Management）是所有跨越型救援架設中最容易被低估的致命環節。繩索在邊緣轉折點的磨損率，遠超過靜態承載狀態，在動態操作（移動負載）中尤甚。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">MODULE 04 · 邊緣管理速查表</span>
+      <span class="tool-tag">六種邊緣情境與對應保護方案</span>
+    </div>
+    <div class="tool-inner">
+      <div class="edge-grid">
+
+        <div class="edge-card" style="--ec-col: #2C4A6E">
+          <div class="ec-head">
+            <div class="ec-id">EDGE-01 · 圓滑岩脊</div>
+            <div class="ec-name">平滑自然邊緣</div>
+          </div>
+          <div class="ec-body">
+            無銳角，繩索接觸面積大，摩擦均勻分布。風險相對最低，但仍需確認岩石穩固性，防止崩解。
+            <div class="ec-tags">
+              <span class="ec-tag">風險 LOW</span>
+              <span class="ec-tag">繩墊即可</span>
+              <span class="ec-tag">定期目視</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="edge-card" style="--ec-col: #B89030">
+          <div class="ec-head">
+            <div class="ec-id">EDGE-02 · 尖銳岩角</div>
+            <div class="ec-name">銳角岩石邊緣</div>
+          </div>
+          <div class="ec-body">
+            接觸面積極小，壓力高度集中。動態移動時可在數分鐘內切斷 10mm 靜力繩。需使用硬質角墊（Hard Edge Pad）或 Edge Roller。
+            <div class="ec-tags">
+              <span class="ec-tag">風險 HIGH</span>
+              <span class="ec-tag">硬質角墊必備</span>
+              <span class="ec-tag">15min 檢查</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="edge-card" style="--ec-col: #C8401A">
+          <div class="ec-head">
+            <div class="ec-id">EDGE-03 · L 型轉折</div>
+            <div class="ec-name">垂直轉水平轉折點</div>
+          </div>
+          <div class="ec-body">
+            TYPE-02 的核心風險點。繩索同時承受垂直張力與水平牽引力，轉折角度可達 90°，是最惡劣的邊緣情境。必須使用 Edge Roller + 額外繩墊雙重保護。
+            <div class="ec-tags">
+              <span class="ec-tag">風險 CRITICAL</span>
+              <span class="ec-tag">Edge Roller 必備</span>
+              <span class="ec-tag">即時監控</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="edge-card" style="--ec-col: #6B4FA0">
+          <div class="ec-head">
+            <div class="ec-id">EDGE-04 · 沙土邊緣</div>
+            <div class="ec-name">鬆散土質邊緣</div>
+          </div>
+          <div class="ec-body">
+            土質鬆軟，繩索磨損較低，但邊緣崩塌風險高。操作人員避免站在土質邊緣上方 1m 內。需先夯實或使用保護板分散重量。
+            <div class="ec-tags">
+              <span class="ec-tag">崩塌風險 HIGH</span>
+              <span class="ec-tag">保護板</span>
+              <span class="ec-tag">禁止站邊</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="edge-card" style="--ec-col: #D4781A">
+          <div class="ec-head">
+            <div class="ec-id">EDGE-05 · 動態磨損</div>
+            <div class="ec-name">移動負載下的磨損</div>
+          </div>
+          <div class="ec-body">
+            靜止測試通過≠動態安全。移動時繩索與邊緣的微振動（Vibration）可加速磨損達 3–5 倍。務必在空載動態測試後，目視確認磨損量再進行有載操作。
+            <div class="ec-tags">
+              <span class="ec-tag">必做空載測試</span>
+              <span class="ec-tag">動態磨損率</span>
+              <span class="ec-tag">目視確認</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="edge-card" style="--ec-col: #2E7D52">
+          <div class="ec-head">
+            <div class="ec-id">EDGE-06 · 人工邊緣</div>
+            <div class="ec-name">混凝土 / 鋼構邊緣</div>
+          </div>
+          <div class="ec-body">
+            都市救援場景。混凝土邊角銳度可達尖銳岩角等級，且表面常有碎粒附著，產生研磨效果。鋼構邊緣若有鏽蝕，更需特別注意。
+            <div class="ec-tags">
+              <span class="ec-tag">風險 HIGH</span>
+              <span class="ec-tag">Edge Roller</span>
+              <span class="ec-tag">清除碎粒</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /edge-grid -->
+
+      <div class="callout callout-danger" style="margin-top:1.25rem;">
+        🚨 <strong>磨損監控原則：</strong>任何繩索在邊緣保護裝置下操作達 30 分鐘、或移動超過 3 次後，必須停止操作並目視檢查繩索磨損狀況（外皮切割、起毛）。若磨損超過外皮直徑的 1/3，立即更換並重新評估保護方案。
+      </div>
+
+    </div><!-- /tool-inner -->
+  </div><!-- /tool-frame -->
+
+  <footer class="page-footer">
+    <div class="footer-left">
+      <strong>SAR // TW · 台灣山域搜救訓練平台</strong><br>
+      C4 · tripleR 戰術架設與決策路徑 · Robust Rescue Rigging（Axel Manz）
+    </div>
+    <div class="footer-right">
+      技術執行層 · LAYER C<br>
+      C1 繩索力學 · C2 固定點 · C3 情境模擬 · C4 tripleR
+    </div>
+  </footer>
+
+</section>
+</div><!-- /page-body -->
+
+<script>
+/* ——— TYPE CARD TOGGLE ——— */
+function toggleType(el, id) {
+  const panel = document.getElementById('detail-' + id);
+  const allPanels = document.querySelectorAll('.type-detail-panel');
+  const allCards  = document.querySelectorAll('.type-card');
+
+  const isOpen = panel.classList.contains('show');
+
+  // Close all
+  allPanels.forEach(p => { p.classList.remove('show'); });
+  allCards.forEach(c  => { c.classList.remove('active'); });
+
+  if (!isOpen) {
+    panel.classList.add('show');
+    el.classList.add('active');
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  }
+}
+
+function closeDetail(id) {
+  document.getElementById('detail-' + id).classList.remove('show');
+  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('active'));
+}
+
+/* ——— FLOW CHART ——— */
+function flowStep(step, choice) {
+  // Mark button as selected
+  if (step === 1) {
+    document.querySelectorAll('#step1 .fn-answer-btn').forEach(b => b.classList.remove('selected'));
+    event.target.classList.add('selected');
+
+    // Hide both branches first
+    document.getElementById('step1-yes-branch').style.display = 'none';
+    document.getElementById('step1-no-branch').style.display = 'none';
+    hideAllResults();
+
+    if (choice === 'yes') {
+      document.getElementById('step1-yes-branch').style.display = 'block';
+    } else {
+      document.getElementById('step1-no-branch').style.display = 'block';
+    }
+  }
+
+  if (step === 2) {
+    document.querySelectorAll('#step2a .fn-answer-btn').forEach(b => b.classList.remove('selected'));
+    event.target.classList.add('selected');
+    hideAllResults();
+
+    if (choice === 'short') {
+      showResult('result-type1');
+    } else {
+      showResult('result-type4');
+    }
+  }
+
+  if (step === 3) {
+    document.querySelectorAll('#step2b .fn-answer-btn').forEach(b => b.classList.remove('selected'));
+    event.target.classList.add('selected');
+    hideAllResults();
+
+    if (choice === 'lu') {
+      showResult('result-type2');
+    } else {
+      showResult('result-type3');
+    }
+  }
+}
+
+function hideAllResults() {
+  document.querySelectorAll('.flow-result').forEach(r => r.classList.remove('show'));
+}
+
+function showResult(id) {
+  const el = document.getElementById(id);
+  el.classList.add('show');
+  setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+}
+
+function resetFlow() {
+  hideAllResults();
+  document.getElementById('step1-yes-branch').style.display = 'none';
+  document.getElementById('step1-no-branch').style.display = 'none';
+  document.querySelectorAll('.fn-answer-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('step1').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ——— NAV ACTIVE ——— */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link:not(.nav-home):not(.nav-cross)');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.nav-link[href="#' + e.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

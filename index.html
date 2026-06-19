@@ -22,8 +22,10 @@
   --accent-C: #2C4A6E;
   --accent-D: #3D5C3A;
   --accent-T: #5C3A7A;
+  --accent-S: #1A6B6B;
   --accent-R: #8B4A1A;
   --accent-W: #1A5C6B;
+  --accent-M: #8B2A2A;
   --mono: 'IBM Plex Mono', monospace;
   --sans: 'Noto Sans TC', sans-serif;
   --nav-h: 52px;
@@ -31,31 +33,193 @@
   --gutter: clamp(1.5rem, 5vw, 3.5rem);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; min-height: 100vh; font-size: 14px; line-height: 1.65; }
-.spine { position: fixed; left: 0; top: 0; bottom: 0; width: var(--spine); background: var(--fire); z-index: 200; }
-.top-nav { position: fixed; top: 0; left: var(--spine); right: 0; height: var(--nav-h); background: var(--paper); border-bottom: 1px solid var(--rule); display: flex; align-items: center; padding: 0 var(--gutter); gap: 1.5rem; z-index: 100; }
-.nav-logo { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--fire); letter-spacing: .1em; text-decoration: none; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* SPINE */
+.spine {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--spine);
+  background: var(--fire);
+  z-index: 200;
+}
+
+/* NAV */
+.top-nav {
+  position: fixed; top: 0;
+  left: var(--spine); right: 0;
+  height: var(--nav-h);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center;
+  padding: 0 var(--gutter);
+  gap: 1.5rem;
+  z-index: 100;
+}
+.nav-logo {
+  font-family: var(--mono); font-weight: 700; font-size: 13px;
+  color: var(--fire); letter-spacing: .1em; text-decoration: none;
+}
 .nav-meta { font-family: var(--mono); font-size: 11px; color: var(--dim2); }
-.page { padding-top: calc(var(--nav-h) + 3.5rem); padding-bottom: 8rem; padding-left: calc(var(--spine) + var(--gutter)); padding-right: var(--gutter); max-width: calc(var(--spine) + 1000px); }
-.hero-eyebrow { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--fire); letter-spacing: .22em; text-transform: uppercase; margin-bottom: 1rem; }
-.hero-title { font-family: var(--mono); font-size: clamp(2rem, 6vw, 4rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.0; color: var(--ink); margin-bottom: .1em; }
-.hero-title-cjk { font-family: var(--mono); font-size: clamp(1rem, 3vw, 1.6rem); font-weight: 700; color: var(--dim2); letter-spacing: .06em; margin-bottom: 2rem; }
+.nav-count {
+  margin-left: auto;
+  font-family: var(--mono); font-size: 10px; color: var(--dim2);
+  letter-spacing: .08em;
+}
+
+/* PAGE */
+.page {
+  padding-top: calc(var(--nav-h) + 3.5rem);
+  padding-bottom: 8rem;
+  padding-left: calc(var(--spine) + var(--gutter));
+  padding-right: var(--gutter);
+  max-width: calc(var(--spine) + 1040px);
+}
+
+/* HERO */
+.hero-eyebrow {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--fire); letter-spacing: .22em; text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.hero-title {
+  font-family: var(--mono); font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 700; letter-spacing: -.02em; line-height: 1.0;
+  color: var(--ink); margin-bottom: .1em;
+}
+.hero-title-cjk {
+  font-family: var(--mono); font-size: clamp(1rem, 3vw, 1.6rem);
+  font-weight: 700; color: var(--dim2); letter-spacing: .06em;
+  margin-bottom: 2rem;
+}
 .hero-rule { height: 1px; background: var(--rule); margin-bottom: 2rem; }
-.hero-sources { font-family: var(--mono); font-size: 11px; color: var(--dim2); line-height: 2; margin-bottom: 3.5rem; }
+.hero-sources {
+  font-family: var(--mono); font-size: 11px; color: var(--dim2);
+  line-height: 2; margin-bottom: 3.5rem;
+}
 .hero-sources strong { color: var(--ink); }
 .src-item { display: flex; align-items: center; gap: .5rem; }
-.src-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--fire); flex-shrink: 0; }
-.group-label { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--gl-color, var(--dim2)); letter-spacing: .18em; text-transform: uppercase; display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; margin-top: 2.5rem; padding-bottom: .5rem; border-bottom: 1px solid var(--rule); }
-.group-label span { display: inline-block; width: 18px; height: 18px; background: var(--gl-color, var(--dim2)); border-radius: 2px; flex-shrink: 0; }
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: .5rem; }
-.mod-card { background: var(--paper); border: 1px solid var(--rule); border-top: 3px solid var(--card-accent, var(--dim2)); border-radius: 4px; padding: 1.1rem 1rem; text-decoration: none; color: var(--ink); display: flex; flex-direction: column; gap: .4rem; transition: border-color .15s, box-shadow .15s, background .15s; }
-.mod-card:hover { background: var(--stone); box-shadow: 0 2px 12px rgba(0,0,0,.06); }
-.mod-id { font-family: var(--mono); font-size: 9px; color: var(--card-accent, var(--dim2)); letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
-.mod-name { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.3; margin-bottom: .35rem; }
-.mod-desc { font-size: 11px; color: var(--dim); line-height: 1.55; }
-.mod-arrow { display: inline-block; font-family: var(--mono); font-size: 11px; color: var(--card-accent, var(--dim2)); margin-top: .65rem; }
-@media (max-width: 600px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 400px) { .card-grid { grid-template-columns: 1fr; } }
+.src-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--fire); flex-shrink: 0;
+}
+
+/* MODULE COUNT BADGE */
+.hero-stats {
+  display: flex; gap: 2rem; margin-bottom: 3rem;
+  padding: 1rem 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.stat-item { display: flex; flex-direction: column; gap: .2rem; }
+.stat-num {
+  font-family: var(--mono); font-size: 1.6rem; font-weight: 700;
+  color: var(--ink); line-height: 1;
+}
+.stat-label {
+  font-family: var(--mono); font-size: 10px; color: var(--dim2);
+  letter-spacing: .1em; text-transform: uppercase;
+}
+
+/* GROUP LABEL */
+.group-label {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  color: var(--gl-color, var(--dim2)); letter-spacing: .18em;
+  text-transform: uppercase; display: flex; align-items: center;
+  gap: .75rem; margin-bottom: 1rem; margin-top: 2.5rem;
+  padding-bottom: .5rem; border-bottom: 1px solid var(--rule);
+}
+.group-label-bar {
+  display: inline-block; width: 18px; height: 18px;
+  background: var(--gl-color, var(--dim2)); border-radius: 2px; flex-shrink: 0;
+}
+.group-label-count {
+  margin-left: auto;
+  font-size: 10px; color: var(--dim2); font-weight: 400;
+  letter-spacing: .04em;
+}
+
+/* CARD GRID */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem; margin-bottom: .5rem;
+}
+.card-grid.wide {
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+/* MODULE CARD */
+.mod-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--card-accent, var(--dim2));
+  border-radius: 4px; padding: 1.1rem 1rem;
+  text-decoration: none; color: var(--ink);
+  display: flex; flex-direction: column; gap: .4rem;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+  position: relative;
+}
+.mod-card:hover {
+  background: var(--stone);
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+.mod-id {
+  font-family: var(--mono); font-size: 9px;
+  color: var(--card-accent, var(--dim2));
+  letter-spacing: .12em; text-transform: uppercase; font-weight: 700;
+}
+.mod-name {
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  color: var(--ink); line-height: 1.3; margin-bottom: .35rem;
+}
+.mod-desc {
+  font-size: 11px; color: var(--dim); line-height: 1.55;
+  flex: 1;
+}
+.mod-tag {
+  display: inline-block; font-family: var(--mono); font-size: 9px;
+  padding: .15rem .4rem; border-radius: 2px;
+  background: color-mix(in srgb, var(--card-accent, var(--dim2)) 10%, transparent);
+  color: var(--card-accent, var(--dim2));
+  font-weight: 700; letter-spacing: .06em;
+  margin-top: .3rem;
+}
+.mod-arrow {
+  display: inline-block; font-family: var(--mono); font-size: 11px;
+  color: var(--card-accent, var(--dim2)); margin-top: .65rem;
+}
+
+/* NEW badge */
+.mod-new {
+  position: absolute; top: .6rem; right: .6rem;
+  font-family: var(--mono); font-size: 8px; font-weight: 700;
+  color: var(--paper); background: var(--card-accent, var(--fire));
+  padding: .1rem .35rem; border-radius: 2px; letter-spacing: .06em;
+}
+
+/* FOOTER */
+.page-footer {
+  border-top: 1px solid var(--rule); padding: 2rem 0; margin-top: 5rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-left { font-family: var(--mono); font-size: 11px; color: var(--dim); line-height: 1.8; }
+.footer-left strong { color: var(--ink); }
+.footer-right { font-family: var(--mono); font-size: 10px; color: var(--dim2); text-align: right; }
+
+@media (max-width: 640px) {
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-stats { gap: 1.2rem; flex-wrap: wrap; }
+}
+@media (max-width: 400px) {
+  .card-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -63,149 +227,341 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); -w
 <nav class="top-nav">
   <div class="nav-logo">SAR // TW</div>
   <div class="nav-meta">北搜 徐汶翰</div>
+  <div class="nav-count">9 GROUPS · 30+ MODULES</div>
 </nav>
+
 <main class="page">
+
   <div class="hero-eyebrow">SAR · TACTICAL TRAINING PLATFORM</div>
   <div class="hero-title">SEARCH &amp; RESCUE</div>
   <div class="hero-title">TACTICAL TRAINING</div>
   <div class="hero-title-cjk">台灣山域搜救</div>
   <div class="hero-rule"></div>
+
   <div class="hero-sources">
     <strong>數據來源涵蓋</strong><br>
     <div class="src-item"><span class="src-dot"></span>ICAR · UIAA · AMGA · YOSAR · NFPA 1983</div>
     <div class="src-item"><span class="src-dot"></span>消防署山難統計 · 張博崴山難一審判決書</div>
     <div class="src-item"><span class="src-dot"></span>FFME 溪谷分級體系 · 人為因素與風險決策教案</div>
   </div>
-  <!-- GROUP A -->
-  <div class="group-label" style="--gl-color: var(--accent-A)"><span></span>A · 搜救基礎</div>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">9</div>
+      <div class="stat-label">訓練群組</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">30+</div>
+      <div class="stat-label">互動模組</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">8</div>
+      <div class="stat-label">訓練頁面</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">TW</div>
+      <div class="stat-label">台灣現地化</div>
+    </div>
+  </div>
+
+  <!-- ── GROUP A · 搜救基礎 ── -->
+  <div class="group-label" style="--gl-color: var(--accent-A)">
+    <span class="group-label-bar"></span>A · 搜救基礎
+    <span class="group-label-count">2 modules · batch1.html</span>
+  </div>
   <div class="card-grid">
     <a class="mod-card" style="--card-accent: var(--accent-A)" href="sar_training_batch1.html#a1">
       <div class="mod-id">A1 · 搜救基礎</div>
       <div class="mod-name">四個詞</div>
       <div class="mod-desc">W · Coverage · POD · POS 一次搞懂</div>
-      <div class="mod-arrow">互動工具 →</div>
+      <span class="mod-tag">互動工具</span>
+      <div class="mod-arrow">→</div>
     </a>
     <a class="mod-card" style="--card-accent: var(--accent-A)" href="sar_training_batch1.html#a2">
       <div class="mod-id">A2 · 搜救基礎</div>
       <div class="mod-name">失溫 333 倒數</div>
       <div class="mod-desc">黃金時窗壓縮模擬器</div>
-      <div class="mod-arrow">互動工具 →</div>
+      <span class="mod-tag">互動工具</span>
+      <div class="mod-arrow">→</div>
     </a>
   </div>
-  <!-- GROUP E -->
-  <div class="group-label" style="--gl-color: var(--accent-E)"><span></span>E · 人為因素</div>
+
+  <!-- ── GROUP E · 人為因素 ── -->
+  <div class="group-label" style="--gl-color: var(--accent-E)">
+    <span class="group-label-bar"></span>E · 人為因素
+    <span class="group-label-count">3 modules · batch1.html</span>
+  </div>
   <div class="card-grid">
     <a class="mod-card" style="--card-accent: var(--accent-E)" href="sar_training_batch1.html#e1">
       <div class="mod-id">E1 · 人為因素</div>
       <div class="mod-name">危害速查</div>
       <div class="mod-desc">環境 · 技術 · 人員三大危害類別速查表</div>
-      <div class="mod-arrow">速查表 →</div>
+      <span class="mod-tag">速查表</span>
+      <div class="mod-arrow">→</div>
     </a>
     <a class="mod-card" style="--card-accent: var(--accent-E)" href="sar_training_batch1.html#e2">
       <div class="mod-id">E2 · 人為因素</div>
       <div class="mod-name">捷思陷阱</div>
       <div class="mod-desc">Summit Fever · 計畫謬誤 · 群體迷思互動測驗</div>
-      <div class="mod-arrow">互動測驗 →</div>
+      <span class="mod-tag">互動測驗</span>
+      <div class="mod-arrow">→</div>
     </a>
     <a class="mod-card" style="--card-accent: var(--accent-E)" href="sar_training_batch1.html#e3">
       <div class="mod-id">E3 · 人為因素</div>
       <div class="mod-name">評估表</div>
       <div class="mod-desc">Go / No-Go 決策矩陣產生器</div>
-      <div class="mod-arrow">決策矩陣 →</div>
+      <span class="mod-tag">決策矩陣</span>
+      <div class="mod-arrow">→</div>
     </a>
   </div>
-  <!-- GROUP B -->
-  <div class="group-label" style="--gl-color: var(--accent-B)"><span></span>B · 高山醫療</div>
+
+  <!-- ── GROUP B · 高山醫療 ── -->
+  <div class="group-label" style="--gl-color: var(--accent-B)">
+    <span class="group-label-bar"></span>B · 高山醫療
+    <span class="group-label-count">5 modules · batch2.html + med_b.html</span>
+  </div>
   <div class="card-grid">
     <a class="mod-card" style="--card-accent: var(--accent-B)" href="sar_training_batch2.html#b1">
       <div class="mod-id">B1 · 高山醫療</div>
       <div class="mod-name">失溫分級處置</div>
       <div class="mod-desc">瑞士分期 · 現場復溫順序 · 禁忌動作</div>
-      <div class="mod-arrow">處置流程 →</div>
+      <span class="mod-tag">處置流程</span>
+      <div class="mod-arrow">→</div>
     </a>
     <a class="mod-card" style="--card-accent: var(--accent-B)" href="sar_training_batch2.html#b2">
       <div class="mod-id">B2 · 高山醫療</div>
       <div class="mod-name">高山反應評估</div>
       <div class="mod-desc">Lake Louise Score · AMS / HACE / HAPE 鑑別</div>
-      <div class="mod-arrow">評估工具 →</div>
+      <span class="mod-tag">評估工具</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-B)" href="sar_training_batch2.html#b3">
+      <div class="mod-id">B3 · 高山醫療</div>
+      <div class="mod-name">失蹤者行為模型</div>
+      <div class="mod-desc">依族群推算行動半徑 · 地形偏好熱區分析</div>
+      <span class="mod-tag">行為預測</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-M)" href="sar_training_med_b.html">
+      <div class="mod-new">FULL</div>
+      <div class="mod-id">B · 高山醫療完整模組</div>
+      <div class="mod-name">野外創傷 · 生存環境評估</div>
+      <div class="mod-desc">生存環境評估 · 野外創傷咬傷出血 · 生命甦醒與傷患轉移技術</div>
+      <span class="mod-tag">綜合模組</span>
+      <div class="mod-arrow">→</div>
     </a>
   </div>
-  <!-- GROUP C -->
-  <div class="group-label" style="--gl-color: var(--accent-C)"><span></span>C · 技術執行</div>
+
+  <!-- ── GROUP C · 技術執行 ── -->
+  <div class="group-label" style="--gl-color: var(--accent-C)">
+    <span class="group-label-bar"></span>C · 技術執行
+    <span class="group-label-count">4 modules · batch2–3.html + c4.html</span>
+  </div>
   <div class="card-grid">
     <a class="mod-card" style="--card-accent: var(--accent-C)" href="sar_training_batch2.html#c1">
       <div class="mod-id">C1 · 技術執行</div>
       <div class="mod-name">繩索力學三件事</div>
       <div class="mod-desc">滑輪省力比 · V 字雙錨點夾角 · 轉向點合力</div>
-      <div class="mod-arrow">力學計算 →</div>
+      <span class="mod-tag">力學計算</span>
+      <div class="mod-arrow">→</div>
     </a>
     <a class="mod-card" style="--card-accent: var(--accent-C)" href="sar_training_batch3.html#c2">
       <div class="mod-id">C2 · 技術執行</div>
       <div class="mod-name">固定點技術 × 選型決策樹</div>
       <div class="mod-desc">SERENE 評估、套接強度、TTRRS vs DMDB 比較</div>
-      <div class="mod-arrow">決策樹 →</div>
+      <span class="mod-tag">決策樹</span>
+      <div class="mod-arrow">→</div>
     </a>
     <a class="mod-card" style="--card-accent: var(--accent-C)" href="sar_training_batch3.html#c3">
       <div class="mod-id">C3 · 技術執行</div>
       <div class="mod-name">情境模擬器</div>
       <div class="mod-desc">輸入失蹤者類型、天氣、地形，產出建議戰術與危害警示</div>
-      <div class="mod-arrow">進入模擬 →</div>
+      <span class="mod-tag">進入模擬</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-C)" href="sar_training_c4_tripleR.html">
+      <div class="mod-new">NEW</div>
+      <div class="mod-id">C4 · 技術執行</div>
+      <div class="mod-name">tripleR 戰術架設</div>
+      <div class="mod-desc">決策路徑與型態矩陣 · 地形幾何評估 · 五型系統強韌度比較 · 邊緣管理</div>
+      <span class="mod-tag">決策路徑</span>
+      <div class="mod-arrow">→</div>
     </a>
   </div>
-  <!-- GROUP D -->
-  <div class="group-label" style="--gl-color: var(--accent-D)"><span></span>D · 延伸研究</div>
+
+  <!-- ── GROUP T · 地形導航 ── -->
+  <div class="group-label" style="--gl-color: var(--accent-T)">
+    <span class="group-label-bar"></span>T · 地形導航
+    <span class="group-label-count">5 modules · batch5.html</span>
+  </div>
+  <div class="card-grid">
+    <a class="mod-card" style="--card-accent: var(--accent-T)" href="sar_training_batch5.html#t1">
+      <div class="mod-id">T1 · 地形導航</div>
+      <div class="mod-name">座標系統 · 通報轉換器</div>
+      <div class="mod-desc">TWD67 / TWD97 / WGS84 即時轉換，搜救通報格式產生</div>
+      <span class="mod-tag">轉換工具</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-T)" href="sar_training_batch5.html#t2">
+      <div class="mod-id">T2 · 地形導航</div>
+      <div class="mod-name">等高線判讀 · 導航方法</div>
+      <div class="mod-desc">坡度計算、稜線鞍部辨識、地形特徵速查</div>
+      <span class="mod-tag">判讀訓練</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-T)" href="sar_training_batch5.html#t3">
+      <div class="mod-id">T3 · 地形導航</div>
+      <div class="mod-name">指北針定位 · 交會法模擬器</div>
+      <div class="mod-desc">前方位交會、後方位定位、偏差修正互動操作</div>
+      <span class="mod-tag">模擬器</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-T)" href="sar_training_batch5.html#t4">
+      <div class="mod-id">T4 · 地形導航</div>
+      <div class="mod-name">獸徑辨識 · 現場速查</div>
+      <div class="mod-desc">人跡 vs 動物路徑辨識、追蹤指標、台灣山域常見動線特徵</div>
+      <span class="mod-tag">速查表</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-T)" href="sar_training_batch5.html#t5">
+      <div class="mod-id">T5 · 地形導航</div>
+      <div class="mod-name">水域危害 · 辨識與應變</div>
+      <div class="mod-desc">河流危害類型、水位讀取、急流等級對應搜救限制</div>
+      <span class="mod-tag">危害評估</span>
+      <div class="mod-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- ── GROUP S · 溯溪技術 ── -->
+  <div class="group-label" style="--gl-color: var(--accent-S)">
+    <span class="group-label-bar"></span>S · 溯溪技術
+    <span class="group-label-count">5 modules · batch6.html</span>
+  </div>
+  <div class="card-grid">
+    <a class="mod-card" style="--card-accent: var(--accent-S)" href="sar_training_batch6.html#s1">
+      <div class="mod-id">S1 · 溯溪技術</div>
+      <div class="mod-name">溪谷水流力學</div>
+      <div class="mod-desc">通道判斷模擬器 · 水力陷阱識別 · 台灣溪谷流態分類</div>
+      <span class="mod-tag">模擬器</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-S)" href="sar_training_batch6.html#s2">
+      <div class="mod-id">S2 · 溯溪技術</div>
+      <div class="mod-name">氣象監測</div>
+      <div class="mod-desc">72小時決策時間軸 · 雨量門檻設定 · 撤退時機判斷</div>
+      <span class="mod-tag">時間軸</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-S)" href="sar_training_batch6.html#s3">
+      <div class="mod-id">S3 · 溯溪技術</div>
+      <div class="mod-name">溪谷通訊</div>
+      <div class="mod-desc">哨音手勢翻牌練習 · 噪音環境下的指令系統</div>
+      <span class="mod-tag">翻牌練習</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-S)" href="sar_training_batch6.html#s5">
+      <div class="mod-id">S5 · 溯溪技術</div>
+      <div class="mod-name">架繩系統</div>
+      <div class="mod-desc">MMO 步驟教學 · 主繩 / 確保繩配置 · 固定點選擇原則</div>
+      <span class="mod-tag">步驟教學</span>
+      <div class="mod-arrow">→</div>
+    </a>
+    <a class="mod-card" style="--card-accent: var(--accent-S)" href="sar_training_batch6.html#s6">
+      <div class="mod-id">S6 · 溯溪技術</div>
+      <div class="mod-name">鐘擺技術</div>
+      <div class="mod-desc">四種情境力學 · 繩長計算 · 渡河角度最佳化</div>
+      <span class="mod-tag">力學分析</span>
+      <div class="mod-arrow">→</div>
+    </a>
+  </div>
+
+  <!-- ── GROUP D · 延伸研究 ── -->
+  <div class="group-label" style="--gl-color: var(--accent-D)">
+    <span class="group-label-bar"></span>D · 延伸研究
+    <span class="group-label-count">2 modules · batch4.html</span>
+  </div>
   <div class="card-grid">
     <a class="mod-card" style="--card-accent: var(--accent-D)" href="sar_training_batch4.html#d1">
       <div class="mod-id">D1 · 延伸研究</div>
       <div class="mod-name">三地統計對照</div>
       <div class="mod-desc">台灣 × 美國 × 歐洲攀岩溯溪意外統計，消防署、YOSAR、ICAR 數據</div>
-      <div class="mod-arrow">統計圖表 →</div>
+      <span class="mod-tag">統計圖表</span>
+      <div class="mod-arrow">→</div>
     </a>
     <a class="mod-card" style="--card-accent: var(--accent-D)" href="sar_training_batch4.html#d2">
       <div class="mod-id">D2 · 延伸研究</div>
       <div class="mod-name">YOSAR × El Capitan 案例</div>
       <div class="mod-desc">大岩壁高角度救援最高標準，懸吊救援與 TTRRS 實戰應用</div>
-      <div class="mod-arrow">案例深讀 →</div>
+      <span class="mod-tag">案例深讀</span>
+      <div class="mod-arrow">→</div>
     </a>
   </div>
-  <!-- GROUP R -->
-  <div class="group-label" style="--gl-color: var(--accent-R)"><span></span>R · 野外求生資源</div>
+
+  <!-- ── GROUP R · 野外求生資源 ── -->
+  <div class="group-label" style="--gl-color: var(--accent-R)">
+    <span class="group-label-bar"></span>R · 野外求生資源
+    <span class="group-label-count">4 modules · batch_RW.html</span>
+  </div>
   <div class="card-grid">
     <a class="mod-card" style="--card-accent: var(--accent-R)" href="sar_training_batch_RW.html#r1">
       <div class="mod-id">R1 · 野外求生資源</div>
       <div class="mod-name">基礎生火要素</div>
       <div class="mod-desc">三級燃料分類 · 潮濕應變 · 火堆形狀匹配 · 台灣現地植物引燃</div>
-      <div class="mod-arrow">互動工具 →</div>
+      <span class="mod-tag">互動工具</span>
+      <div class="mod-arrow">→</div>
     </a>
     <a class="mod-card" style="--card-accent: var(--accent-R)" href="sar_training_batch_RW.html#r2">
       <div class="mod-id">R2 · 野外求生資源</div>
       <div class="mod-name">水源搜索與淨化</div>
       <div class="mod-desc">高山煮沸模擬 · 克難預濾 · 能量陷阱評估 · 台灣水源決策矩陣</div>
-      <div class="mod-arrow">決策矩陣 →</div>
+      <span class="mod-tag">決策矩陣</span>
+      <div class="mod-arrow">→</div>
     </a>
     <a class="mod-card" style="--card-accent: var(--accent-R)" href="sar_training_batch_RW.html#r3">
       <div class="mod-id">R3 · 野外求生資源</div>
       <div class="mod-name">外帳選址教學</div>
       <div class="mod-desc">外帳幾何特性 · 選址評估 · 地表熱傳導 · 台灣植物建材速查</div>
-      <div class="mod-arrow">互動評估 →</div>
+      <span class="mod-tag">互動評估</span>
+      <div class="mod-arrow">→</div>
     </a>
     <a class="mod-card" style="--card-accent: var(--accent-R)" href="sar_training_batch_RW.html#r4">
       <div class="mod-id">R4 · 野外求生資源</div>
       <div class="mod-name">野外動植物食材</div>
       <div class="mod-desc">魚類漁具 · 昆蟲採集 · 哺乳類圈套 · 兩棲爬蟲 · 衛生處理程序</div>
-      <div class="mod-arrow">處理指南 →</div>
+      <span class="mod-tag">處理指南</span>
+      <div class="mod-arrow">→</div>
     </a>
   </div>
-  <!-- GROUP W -->
-  <div class="group-label" style="--gl-color: var(--accent-W)"><span></span>W · 環境氣象判讀</div>
+
+  <!-- ── GROUP W · 環境氣象判讀 ── -->
+  <div class="group-label" style="--gl-color: var(--accent-W)">
+    <span class="group-label-bar"></span>W · 環境氣象判讀
+    <span class="group-label-count">1 module · batch_RW.html</span>
+  </div>
   <div class="card-grid">
     <a class="mod-card" style="--card-accent: var(--accent-W)" href="sar_training_batch_RW.html#w1">
       <div class="mod-id">W1 · 環境氣象判讀</div>
       <div class="mod-name">微觀觀測與氣象判讀</div>
       <div class="mod-desc">山谷風循環 · 焚風效應估算 · 雲層圖鑑 · 生態指標 · 蒲氏風力安全對照</div>
-      <div class="mod-arrow">氣象工具 →</div>
+      <span class="mod-tag">氣象工具</span>
+      <div class="mod-arrow">→</div>
     </a>
   </div>
+
+  <!-- PAGE FOOTER -->
+  <div class="page-footer">
+    <div class="footer-left">
+      <strong>SAR · TW</strong> · 台灣山域搜救訓練平台<br>
+      北搜 徐汶翰 · ICAR · UIAA · AMGA · YOSAR · NFPA 1983<br>
+      消防署山難統計 · 張博崴山難一審判決書 · FFME 溪谷分級體系
+    </div>
+    <div class="footer-right">
+      9 GROUPS<br>
+      30+ MODULES<br>
+      VERSION 2025
+    </div>
+  </div>
+
 </main>
 </body>
 </html>

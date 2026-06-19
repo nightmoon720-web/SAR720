@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣山域搜救 · B · 高山醫療與野外搜救綜合模組</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:   #F5F0E8;
+  --stone:   #EDE7D9;
+  --stone2:  #E3DDD0;
+  --rule:    #CFC9BC;
+  --rule2:   #BDB6A8;
+  --ink:     #1C1A17;
+  --dim:     #6B6560;
+  --dim2:    #9A948E;
+  --fire:    #C8401A;
+  --ember:   #D4781A;
+  --amber:   #B89030;
+  --safe:    #2E7D52;
+  --moss:    #3D5C3A;
+  --slate:   #2C4A6E;
+  --violet:  #6B4FA0;
+  --charcoal:#4A4540;
+  --accent-B: #3D5C3A;
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+  --nav-h: 56px;
+  --spine-w: 4px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+/* ── SPINE ── */
+.spine { position: fixed; left: 0; top: var(--nav-h); bottom: 0; width: var(--spine-w); background: var(--moss); z-index: 90; }
+
+/* ── NAV ── */
+.nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: var(--paper); border-bottom: 1px solid var(--rule); display: flex; align-items: center; padding: 0 2rem; gap: 2rem; z-index: 100; }
+.nav-logo { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--fire); letter-spacing: .08em; white-space: nowrap; flex: none; }
+.nav-links { display: flex; gap: .2rem; overflow-x: auto; scrollbar-width: none; }
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-link { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--dim); text-decoration: none; padding: .35rem .65rem; border-radius: 4px; white-space: nowrap; transition: .15s; letter-spacing: .04em; }
+.nav-link:hover { color: var(--ink); background: var(--stone); }
+.nav-link.active { color: var(--moss); background: #3D5C3A18; }
+.nav-link[data-layer="B"] { border-left: 3px solid var(--moss); }
+.nav-link[data-layer="A"] { border-left: 3px solid var(--fire); }
+.nav-link[data-layer="C"] { border-left: 3px solid var(--slate); }
+.nav-link[data-layer="D"] { border-left: 3px solid var(--charcoal); }
+.nav-home { color: var(--fire) !important; font-weight: 700; border-left: none !important; }
+.nav-cross { opacity: .65; }
+.nav-cross:hover { opacity: 1; }
+.nav-divider { width: 1px; height: 16px; background: var(--rule); flex: none; margin: 0 .2rem; align-self: center; display: inline-block; }
+
+/* ── LAYOUT ── */
+.page-body { padding-top: var(--nav-h); padding-left: calc(var(--spine-w) + 2rem); padding-right: 2rem; }
+
+/* ── SECTION HEADER ── */
+.sec-header { padding: 4rem 0 2.5rem; border-bottom: 1px solid var(--rule); margin-bottom: 2.5rem; }
+.sec-layer { font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--dim2); margin-bottom: .6rem; }
+.sec-title { font-family: var(--serif); font-size: clamp(1.6rem, 3.5vw, 2.8rem); font-weight: 900; color: var(--ink); line-height: 1.15; }
+.sec-title em { font-style: normal; color: var(--moss); }
+.sec-sub { margin-top: .75rem; font-size: 14px; color: var(--dim); line-height: 1.6; }
+
+/* ── TOOL FRAME ── */
+.tool-frame { background: var(--stone); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; margin-bottom: 4rem; }
+.tool-bar { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1.25rem; border-bottom: 1px solid var(--rule); background: var(--stone2); }
+.tool-label { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .1em; }
+.tool-tag { font-family: var(--mono); font-size: 11px; color: var(--dim2); }
+.tool-inner { padding: 1.5rem; }
+.section-divider { height: 1px; background: var(--rule); margin: 2rem 0; }
+
+/* ── CALLOUTS ── */
+.callout { border-radius: 8px; padding: .85rem 1.1rem; font-size: 13px; line-height: 1.65; }
+.callout-B      { background: #F0F5F0; border: 1px solid #B8D0B8; border-left: 4px solid var(--moss); color: #1A3A1A; }
+.callout-danger { background: #FFF0EE; border: 1px solid #E8B0A0; border-left: 4px solid var(--fire); color: #7A1A0A; }
+.callout-warn   { background: #FFF8E0; border: 1px solid #E8D890; border-left: 4px solid var(--amber); color: #5A4200; }
+.callout-safe   { background: #F0F8F4; border: 1px solid #B8D8C8; border-left: 4px solid var(--safe); color: #1C5430; }
+.callout-info   { background: #EEF4FF; border: 1px solid #B8CCE8; border-left: 4px solid var(--slate); color: #1A2A4A; }
+
+/* ── SELECT ── */
+.select-wrap { position: relative; }
+.select-wrap::after { content: '▾'; position: absolute; right: .8rem; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--dim2); pointer-events: none; }
+.form-select { width: 100%; background: var(--paper); border: 1px solid var(--rule2); border-radius: 7px; padding: .6rem .8rem; font-family: var(--sans); font-size: 13px; color: var(--ink); appearance: none; outline: none; transition: .15s; }
+.form-select:focus { border-color: var(--moss); box-shadow: 0 0 0 3px rgba(61,92,58,.1); }
+.form-label { display: block; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--dim2); letter-spacing: .1em; margin-bottom: .4rem; }
+
+/* ============================================================
+   S1 — SURVIVAL MATRIX
+   ============================================================ */
+.s1-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+
+/* rule of 3 */
+.rot3-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.rot3-head { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .75rem 1.1rem; display: flex; justify-content: space-between; align-items: center; }
+.rot3-title { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--dim2); letter-spacing: .1em; }
+.rot3-code  { font-family: var(--mono); font-size: 10px; color: var(--dim2); }
+.rot3-rows  { display: flex; flex-direction: column; }
+.rot3-row   { display: flex; align-items: center; gap: 1rem; padding: .7rem 1.1rem; border-bottom: 1px solid var(--rule); }
+.rot3-row:last-child { border-bottom: none; }
+.rot3-time  { font-family: var(--mono); font-size: 16px; font-weight: 700; flex: none; width: 80px; }
+.rot3-desc  { font-size: 12px; color: var(--dim); line-height: 1.5; flex: 1; }
+.rot3-dot   { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+
+/* survival matrix card */
+.surv-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+.surv-head  { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .75rem 1.1rem; display: flex; justify-content: space-between; }
+.surv-grid  { display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; padding: .85rem 1.1rem; margin-bottom: .25rem; }
+.surv-letter-btn {
+  background: var(--stone); border: 1px solid var(--rule2); border-radius: 7px;
+  padding: .65rem .5rem; text-align: center; cursor: pointer; transition: .18s; font-family: var(--mono);
+}
+.surv-letter-btn:hover { background: var(--stone2); border-color: var(--moss); }
+.surv-letter-btn.active { background: var(--moss); border-color: var(--moss); color: #fff; }
+.slb-letter { font-size: 20px; font-weight: 700; line-height: 1; }
+.slb-word   { font-size: 9px; color: var(--dim2); margin-top: .25rem; letter-spacing: .03em; line-height: 1.3; }
+.surv-letter-btn.active .slb-word { color: rgba(255,255,255,.7); }
+.surv-output { margin: 0 1.1rem 1.1rem; background: var(--stone); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; min-height: 140px; }
+.surv-out-head { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .55rem .9rem; display: flex; align-items: center; gap: .6rem; }
+.surv-out-letter { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--moss); }
+.surv-out-title  { font-family: var(--serif); font-weight: 700; font-size: 14px; }
+.surv-out-body   { padding: .85rem .9rem; font-size: 13px; line-height: 1.7; color: var(--ink); }
+.surv-placeholder { display: flex; align-items: center; justify-content: center; height: 140px; color: var(--dim2); font-family: var(--mono); font-size: 12px; }
+
+/* ============================================================
+   S2 — TRAUMA & HEMORRHAGE
+   ============================================================ */
+.s2-full { display: flex; flex-direction: column; gap: 1.25rem; }
+
+/* RABC step list */
+.rabc-steps { display: flex; flex-direction: column; gap: .5rem; }
+.rabc-item { display: flex; align-items: flex-start; gap: 1rem; background: var(--paper); border: 1px solid var(--rule); border-radius: 9px; padding: .85rem 1rem; border-left: 4px solid var(--rc-col, var(--rule2)); transition: .18s; }
+.rabc-item:hover { background: var(--stone); }
+.rabc-badge { font-family: var(--serif); font-size: 20px; font-weight: 900; color: var(--rc-col, var(--rule2)); flex: none; line-height: 1; padding-top: .05rem; width: 28px; }
+.rabc-content strong { display: block; font-size: 13px; margin-bottom: .3rem; }
+.rabc-content p { font-size: 12px; color: var(--dim); line-height: 1.6; }
+.rabc-content code { font-family: var(--mono); font-size: 11px; background: var(--stone2); border: 1px solid var(--rule2); border-radius: 3px; padding: .05rem .3rem; }
+
+/* hazard tabs */
+.hazard-tabs { display: flex; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.hz-tab { font-family: var(--mono); font-size: 11px; font-weight: 700; padding: .4rem 1rem; border-radius: 6px; border: 1.5px solid var(--rule2); background: var(--paper); color: var(--dim); cursor: pointer; transition: .15s; }
+.hz-tab:hover { background: var(--stone); }
+.hz-tab.active { background: var(--moss); border-color: var(--moss); color: #fff; }
+
+.hz-panel { display: none; }
+.hz-panel.show { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.hz-block { background: var(--paper); border: 1px solid var(--rule); border-radius: 9px; overflow: hidden; }
+.hz-block-head { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .6rem .9rem; display: flex; align-items: center; gap: .5rem; }
+.hz-block-icon { font-size: 16px; }
+.hz-block-title { font-family: var(--serif); font-weight: 700; font-size: 14px; }
+.hz-block-tag { font-family: var(--mono); font-size: 10px; font-weight: 700; padding: .1rem .4rem; border-radius: 3px; margin-left: auto; }
+.tag-crit   { background: #FFF0EE; border: 1px solid #E8B0A0; color: var(--fire); }
+.tag-warn   { background: #FFF8E0; border: 1px solid #E8D890; color: #7A5A00; }
+.tag-info   { background: #EEF4FF; border: 1px solid #B8CCE8; color: var(--slate); }
+.tag-safe   { background: #F0F8F4; border: 1px solid #B8D8C8; color: var(--safe); }
+.hz-block-body { padding: .85rem .9rem; }
+.hz-step { display: flex; align-items: flex-start; gap: .6rem; font-size: 12px; line-height: 1.6; margin-bottom: .6rem; padding-bottom: .6rem; border-bottom: 1px solid var(--rule); }
+.hz-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.hz-step-num { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--dim2); flex: none; margin-top: .1rem; background: var(--stone); border: 1px solid var(--rule); border-radius: 3px; padding: .05rem .4rem; }
+.hz-step-text strong { font-size: 12px; }
+.hz-step-text code { font-family: var(--mono); font-size: 11px; background: var(--stone2); border: 1px solid var(--rule2); border-radius: 3px; padding: .05rem .3rem; }
+
+/* ============================================================
+   S3 — RESUSCITATION & EVACUATION
+   ============================================================ */
+/* selector buttons */
+.selector-strip { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.sel-btn {
+  display: flex; align-items: center; gap: .5rem;
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  padding: .5rem 1rem; border-radius: 7px;
+  border: 1.5px solid var(--rule2); background: var(--paper); color: var(--dim);
+  cursor: pointer; transition: .18s; letter-spacing: .04em;
+}
+.sel-btn:hover { background: var(--stone); border-color: var(--dim2); }
+.sel-btn.active { background: var(--moss); border-color: var(--moss); color: #fff; }
+.sel-btn .sel-icon { font-size: 15px; }
+
+/* output frame */
+.sel-output { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; min-height: 220px; }
+.sel-out-head { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .85rem 1.25rem; display: flex; align-items: center; gap: .75rem; }
+.sel-out-icon  { font-size: 22px; }
+.sel-out-title { font-family: var(--serif); font-weight: 900; font-size: 17px; flex: 1; }
+.sel-out-code  { font-family: var(--mono); font-size: 10px; color: var(--dim2); }
+.sel-out-body  { padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: .75rem; }
+
+/* numbered steps in output */
+.out-step { display: flex; align-items: flex-start; gap: .85rem; }
+.out-step-num { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--moss); background: #E8F0E8; border: 1px solid #B8D0B8; border-radius: 4px; padding: .15rem .5rem; flex: none; margin-top: .1rem; }
+.out-step-text { font-size: 13px; line-height: 1.65; }
+.out-step-text strong { color: var(--ink); }
+.out-step-text code { font-family: var(--mono); font-size: 11px; background: var(--stone2); border: 1px solid var(--rule2); border-radius: 3px; padding: .05rem .3rem; }
+.out-alert { display: flex; align-items: flex-start; gap: .6rem; padding: .6rem .85rem; border-radius: 7px; font-size: 12px; font-weight: 600; margin-top: .25rem; }
+.out-alert.danger { background: #FFF0EE; border: 1px solid #E8B0A0; color: var(--fire); }
+.out-alert.warn   { background: #FFF8E0; border: 1px solid #E8D890; color: #7A5A00; }
+.out-alert.safe   { background: #F0F8F4; border: 1px solid #B8D8C8; color: var(--safe); }
+.out-alert.info   { background: #EEF4FF; border: 1px solid #B8CCE8; color: var(--slate); }
+
+/* skeleton grid */
+.skel-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: .75rem; }
+.skel-block { background: var(--paper); border: 1px solid var(--rule); border-radius: 9px; overflow: hidden; }
+.skel-head  { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .6rem .9rem; font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--dim2); letter-spacing: .08em; }
+.skel-body  { padding: .85rem .9rem; font-size: 12px; line-height: 1.7; color: var(--ink); }
+
+/* carry / stretcher two col */
+.evac-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.evac-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 9px; overflow: hidden; }
+.evac-head  { background: var(--stone2); border-bottom: 1px solid var(--rule); padding: .65rem .9rem; display: flex; align-items: center; gap: .5rem; }
+.evac-icon  { font-size: 16px; }
+.evac-title { font-family: var(--serif); font-weight: 700; font-size: 14px; }
+.evac-code  { font-family: var(--mono); font-size: 10px; color: var(--dim2); margin-left: auto; }
+.evac-body  { padding: .85rem .9rem; display: flex; flex-direction: column; gap: .5rem; }
+.evac-step  { display: flex; align-items: flex-start; gap: .6rem; font-size: 12px; line-height: 1.6; }
+.evac-step-n { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--moss); background: var(--stone); border: 1px solid var(--rule); border-radius: 3px; padding: .05rem .45rem; flex: none; margin-top: .1rem; }
+
+/* FOOTER */
+.page-footer { border-top: 1px solid var(--rule); padding: 2rem 0; margin-top: 4rem; display: flex; justify-content: space-between; align-items: center; }
+.footer-left  { font-family: var(--mono); font-size: 12px; color: var(--dim); line-height: 1.6; }
+.footer-left strong { color: var(--ink); }
+.footer-right { font-family: var(--mono); font-size: 11px; color: var(--dim2); text-align: right; line-height: 1.6; }
+
+@media (max-width: 768px) {
+  .s1-layout, .hz-panel.show, .skel-layout, .evac-layout { grid-template-columns: 1fr; }
+}
+html.in-iframe .nav   { display: none !important; }
+html.in-iframe .spine { display: none !important; }
+html.in-iframe .page-body { padding-top: 0 !important; padding-left: 1rem !important; }
+</style>
+<script>if(window.self!==window.top){document.documentElement.classList.add("in-iframe");}</script>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<nav class="nav">
+  <div class="nav-logo">SAR // TW</div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link nav-home">← 首頁</a>
+    <span class="nav-divider"></span>
+    <a href="#med-s1" class="nav-link active" data-layer="B">S1 評估與生存策略</a>
+    <a href="#med-s2" class="nav-link"        data-layer="B">S2 創傷出血處置</a>
+    <a href="#med-s3" class="nav-link"        data-layer="B">S3 甦醒與後送</a>
+    <span class="nav-divider"></span>
+    <a href="sar_training_batch2.html#b1" class="nav-link nav-cross" data-layer="B">B · 高山醫療</a>
+    <a href="sar_training_batch1.html#a1" class="nav-link nav-cross" data-layer="A">A · 搜救基礎</a>
+    <a href="sar_training_batch3.html#c2" class="nav-link nav-cross" data-layer="C">C · 技術執行</a>
+  </div>
+</nav>
+
+<div class="page-body">
+
+<!-- ============================================================
+     S1 — SURVIVAL ASSESSMENT & STRATEGY
+     ============================================================ -->
+<section id="med-s1">
+  <div class="sec-header">
+    <div class="sec-layer">B · 高山醫療 · S1 // SITUATION ASSESSMENT</div>
+    <h2 class="sec-title">生存環境評估<br>與 <em>SURVIVAL 求生矩陣</em></h2>
+    <p class="sec-sub">脫離立即危險後，評估你的處境步步依循原則。多數情況下，待在原地是比較好的選項。生死的關鍵往往在於「準備好面對這些惡化因素（Be Prepared To Face These Hostile Factors）」。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label" style="color:var(--moss)">MODULE 01 · 生存危險極限與行動矩陣</span>
+      <span class="tool-tag">點選 SURVIVAL 字母展開對應求生策略</span>
+    </div>
+    <div class="tool-inner">
+
+      <div class="callout callout-B" style="margin-bottom:1.25rem;">
+        <strong>核心指導原則：</strong>脫離立即危險後，評估你的處境步步依循原則。<strong>BFTFTHF（Be Prepared To Face These Hostile Factors）</strong>——事前準備好面對惡化因素，是讓你撐過 72 小時黃金期的唯一基礎。
+      </div>
+
+      <div class="s1-layout">
+
+        <!-- LEFT: RULE OF 3 -->
+        <div class="rot3-card">
+          <div class="rot3-head">
+            <span class="rot3-title">生存危險極限：三的法則</span>
+            <span class="rot3-code">RULE-OF-THREE</span>
+          </div>
+          <div class="rot3-rows">
+            <div class="rot3-row">
+              <div class="rot3-dot" style="background:var(--fire)"></div>
+              <div class="rot3-time" style="color:var(--fire)">3 秒</div>
+              <div class="rot3-desc">心理反應臨界時間<br><span style="font-family:var(--mono);font-size:10px;color:var(--dim2)">恐慌判斷在瞬間形成</span></div>
+            </div>
+            <div class="rot3-row">
+              <div class="rot3-dot" style="background:var(--fire)"></div>
+              <div class="rot3-time" style="color:var(--fire)">3 分鐘</div>
+              <div class="rot3-desc">無氧腦部不可逆損傷<br><span style="font-family:var(--mono);font-size:10px;color:var(--dim2)">氣道 · CPR 介入的黃金窗口</span></div>
+            </div>
+            <div class="rot3-row">
+              <div class="rot3-dot" style="background:var(--ember)"></div>
+              <div class="rot3-time" style="color:var(--ember)">3 小時</div>
+              <div class="rot3-desc">極端天氣暴露生存極限<br><span style="font-family:var(--mono);font-size:10px;color:var(--dim2)">失溫 · 中暑無掩體之生存上限</span></div>
+            </div>
+            <div class="rot3-row">
+              <div class="rot3-dot" style="background:var(--amber)"></div>
+              <div class="rot3-time" style="color:var(--amber)">3 天</div>
+              <div class="rot3-desc">不喝水能撐過的極限<br><span style="font-family:var(--mono);font-size:10px;color:var(--dim2)">高溫 · 高強度活動時縮短至 1 天</span></div>
+            </div>
+            <div class="rot3-row">
+              <div class="rot3-dot" style="background:var(--moss)"></div>
+              <div class="rot3-time" style="color:var(--moss)">3 週</div>
+              <div class="rot3-desc">不吃東西能支撐的極限<br><span style="font-family:var(--mono);font-size:10px;color:var(--dim2)">食物優先級最低——水與遮蔽更關鍵</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: SURVIVAL MATRIX -->
+        <div class="surv-card">
+          <div class="surv-head">
+            <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:var(--dim2);letter-spacing:.1em;">SURVIVAL 求生行為矩陣</span>
+            <span style="font-family:var(--mono);font-size:10px;color:var(--dim2);">SURVIVAL-MATRIX</span>
+          </div>
+
+          <div class="surv-grid" id="surv-grid">
+            <div class="surv-letter-btn" onclick="selectSurv(this,'S')">
+              <div class="slb-letter">S</div>
+              <div class="slb-word">評估處境</div>
+            </div>
+            <div class="surv-letter-btn" onclick="selectSurv(this,'U')">
+              <div class="slb-letter">U</div>
+              <div class="slb-word">運用智慧</div>
+            </div>
+            <div class="surv-letter-btn" onclick="selectSurv(this,'R')">
+              <div class="slb-letter">R</div>
+              <div class="slb-word">記住位置</div>
+            </div>
+            <div class="surv-letter-btn" onclick="selectSurv(this,'V1')">
+              <div class="slb-letter">V</div>
+              <div class="slb-word">擊敗恐懼</div>
+            </div>
+            <div class="surv-letter-btn" onclick="selectSurv(this,'I')">
+              <div class="slb-letter">I</div>
+              <div class="slb-word">隨機應變</div>
+            </div>
+            <div class="surv-letter-btn" onclick="selectSurv(this,'V2')">
+              <div class="slb-letter">V</div>
+              <div class="slb-word">重視生命</div>
+            </div>
+            <div class="surv-letter-btn" onclick="selectSurv(this,'A')">
+              <div class="slb-letter">A</div>
+              <div class="slb-word">入境隨俗</div>
+            </div>
+            <div class="surv-letter-btn" onclick="selectSurv(this,'L')">
+              <div class="slb-letter">L</div>
+              <div class="slb-word">學習技能</div>
+            </div>
+          </div>
+
+          <div class="surv-output" id="surv-output">
+            <div class="surv-placeholder">點選上方字母以展開對應求生行為指南 →</div>
+          </div>
+        </div>
+
+      </div><!-- /s1-layout -->
+    </div><!-- /tool-inner -->
+  </div><!-- /tool-frame -->
+</section>
+
+<!-- ============================================================
+     S2 — TRAUMA, WOUNDS & HEMORRHAGE
+     ============================================================ -->
+<section id="med-s2">
+  <div class="sec-header">
+    <div class="sec-layer">B · 高山醫療 · S2 // WOUNDS, BITES & HEMORRHAGE</div>
+    <h2 class="sec-title">野外創傷分類<br><em>咬傷與大出血處置</em></h2>
+    <p class="sec-sub">野外創傷的危機處置必須依照固定順序執行，任何步驟顛倒都可能造成不可逆的後果。「先確保自身安全，再施救」是所有搜救行動的前提原則。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label" style="color:var(--moss)">MODULE 02 · 傷後優先評估 RABC 步驟</span>
+      <span class="tool-tag">依序不可顛倒</span>
+    </div>
+    <div class="tool-inner">
+
+      <div class="callout callout-danger" style="margin-bottom:1.25rem;">
+        🚨 <strong>搜救安全警告：</strong>務必隨時保護自己！若自身受傷則無法救助任何人。若環境不安全，切勿接近傷患，應先通報尋求救援管道。「評估現場安全」永遠是第零步。
+      </div>
+
+      <div class="rabc-steps">
+        <div class="rabc-item" style="--rc-col: var(--fire)">
+          <div class="rabc-badge">R</div>
+          <div class="rabc-content">
+            <strong>反應（Response）——第一評估</strong>
+            <p>開口發問或輕敲傷患雙肩，在兩耳邊大聲呼喚。若無回應、僅有呻吟或無法遵從指令，即表示大腦受損或意識喪失，<code>必須立刻進入 A 步驟</code>。能夠說話代表 A（氣道）和 B（呼吸）暫時無立即危險。</p>
+          </div>
+        </div>
+        <div class="rabc-item" style="--rc-col: var(--ember)">
+          <div class="rabc-badge">A</div>
+          <div class="rabc-content">
+            <strong>氣管（Airway）——維持暢通</strong>
+            <p>若傷患可以說話，氣道暢通。若無反應，<strong>一手按壓前額、另一手提起下巴</strong>（仰頭提下巴法），使舌根抬起、氣道拉直。檢查口腔內是否有異物或嘔吐物並立即清除。疑似脊椎損傷者改用「<code>推下頷法</code>」，不可仰頭。</p>
+          </div>
+        </div>
+        <div class="rabc-item" style="--rc-col: var(--amber)">
+          <div class="rabc-badge">B</div>
+          <div class="rabc-content">
+            <strong>呼吸（Breathing）——觀察評估</strong>
+            <p>觀察並感受傷患呼吸，<code>評估時間不可超過 10 秒</code>。正常呼吸：採復甦姿勢並持續監測。無正常呼吸（停止、瀕死式喘息）：立刻啟動 CPR。呼吸困難或快速淺短：警示可能有張力性氣胸或嚴重胸部損傷。</p>
+          </div>
+        </div>
+        <div class="rabc-item" style="--rc-col: var(--moss)">
+          <div class="rabc-badge">C</div>
+          <div class="rabc-content">
+            <strong>循環（Circulation）——全身出血檢查</strong>
+            <p>快速從頭到腳檢查全身是否有大量出血。生命威脅依序：動脈大出血 › 靜脈大出血 › 其他出血。發現立即止血。同時評估皮膚顏色與溫度：蒼白冰冷代表休克進行中，須抬高下肢（無骨折時）並保溫。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Hazard Tabs -->
+      <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--dim2);letter-spacing:.1em;margin-bottom:.75rem;">MODULE 02-B · 創傷分類與特殊危害處置</div>
+
+      <div class="hazard-tabs">
+        <button class="hz-tab active" onclick="switchHz(this,'wound')">🩹 創傷分類</button>
+        <button class="hz-tab"        onclick="switchHz(this,'bleed')">🩸 大出血控制</button>
+        <button class="hz-tab"        onclick="switchHz(this,'bite')">🦟 蟲咬螫傷</button>
+        <button class="hz-tab"        onclick="switchHz(this,'marine')">🌊 海洋生物</button>
+      </div>
+
+      <!-- WOUND -->
+      <div class="hz-panel show" id="hz-wound">
+        <div class="hz-block">
+          <div class="hz-block-head">
+            <span class="hz-block-icon">🩹</span>
+            <span class="hz-block-title">四種基本創傷類型</span>
+            <span class="hz-block-tag tag-info">WOUND TYPES</span>
+          </div>
+          <div class="hz-block-body">
+            <div class="hz-step">
+              <span class="hz-step-num">瘀傷</span>
+              <div class="hz-step-text">皮下血管破裂造成瘀血，皮膚完整。冰敷 48 小時內可減少腫脹。注意：若瘀傷面積大且出現高度腫脹，警示可能有深層骨折或內出血。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">擦傷</span>
+              <div class="hz-step-text">表皮被刮除，點狀滲血。以大量清水沖洗去除異物，乾燥後覆蓋無菌敷料。若傷口有沙礫嵌入，需徹底清潔防止感染。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">撕裂傷</span>
+              <div class="hz-step-text">肌肉扯裂、邊緣不整齊。需施壓止血，若傷口較深（&gt; 1cm 且可見皮下組織）應清洗後蝴蝶夾固定，下山後需縫合。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">穿刺傷</span>
+              <div class="hz-step-text"><strong>傷口小但深，風險最高。</strong>易引入厭氧菌（破傷風）且外觀輕微。清洗傷口後輕輕加壓；深度穿刺不可試圖擠壓排膿，需儘早醫療評估。確認破傷風疫苗接種狀況。</div>
+            </div>
+          </div>
+        </div>
+        <div class="hz-block">
+          <div class="hz-block-head">
+            <span class="hz-block-icon">⚠️</span>
+            <span class="hz-block-title">異物嵌入傷口處置</span>
+            <span class="hz-block-tag tag-crit">CRITICAL</span>
+          </div>
+          <div class="hz-block-body">
+            <div class="callout callout-danger" style="margin-bottom:.85rem;">
+              🚨 <strong>千萬不要拔出</strong>扎在傷口內的大型異物！拔出可能立即造成無法控制的動脈大出血。
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">01</span>
+              <div class="hz-step-text"><strong>固定異物：</strong>在異物兩側用敷料或衣物墊高，形成高於異物的支撐，防止異物在搬運中移動。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">02</span>
+              <div class="hz-step-text"><strong>環繞包紮：</strong>以繃帶在支撐物外側環繞固定，<code>不可在異物上直接加壓</code>。維持傷患靜止不動。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">03</span>
+              <div class="hz-step-text"><strong>緊急後送：</strong>異物嵌入傷口為優先後送指標，特別是胸腹部位。記錄異物的形狀、位置、深度以利醫療團隊評估。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLEED -->
+      <div class="hz-panel" id="hz-bleed">
+        <div class="hz-block">
+          <div class="hz-block-head">
+            <span class="hz-block-icon">🩸</span>
+            <span class="hz-block-title">肢體大量出血控制</span>
+            <span class="hz-block-tag tag-crit">HEMORRHAGE</span>
+          </div>
+          <div class="hz-block-body">
+            <div class="hz-step">
+              <span class="hz-step-num">01</span>
+              <div class="hz-step-text"><strong>直接加壓止血：</strong>立刻以手掌（或疊折敷料）施加<code>持續且強力的直接壓迫</code>，維持至少 10 分鐘不中斷。中途勿掀開查看——掀開會破壞血凝塊。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">02</span>
+              <div class="hz-step-text"><strong>抬高肢體：</strong>若肢體無骨折，將出血部位抬高至高於心臟的位置，利用重力減少流向傷口的血量。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">03</span>
+              <div class="hz-step-text"><strong>施加止血帶（TOURNIQUET）：</strong>若直接加壓 10 分鐘後出血仍持續、或傷口出血量讓加壓難以維持，在<code>傷口近端（靠近心臟端）5–7cm 處</code>施加止血帶，拉緊直到出血停止。<strong>記錄施加時間（TK TIME）。</strong></div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">04</span>
+              <div class="hz-step-text"><strong>填壓止血（Wound Packing）：</strong>深腔出血（腋下 / 鼠蹊部無法上止血帶）：以止血紗布從傷口最深處開始填塞，加壓至少 3 分鐘。</div>
+            </div>
+          </div>
+        </div>
+        <div class="hz-block">
+          <div class="hz-block-head">
+            <span class="hz-block-icon">⚡</span>
+            <span class="hz-block-title">昆蟲螫喉部緊急處置</span>
+            <span class="hz-block-tag tag-crit">AIRWAY THREAT</span>
+          </div>
+          <div class="hz-block-body">
+            <div class="callout callout-danger" style="margin-bottom:.85rem;">
+              🚨 若嘴巴或喉嚨內部被螫傷，可能在 15–30 分鐘內因組織腫脹堵塞氣管。氣道閉塞是野外最快速的致死原因之一。
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">立即</span>
+              <div class="hz-step-text"><strong>冷卻氣道：</strong>讓傷患含吸冰塊（若有）或大量飲用冰水，利用低溫抑制組織腫脹速度，爭取後送時間。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">監測</span>
+              <div class="hz-step-text"><strong>持續評估：</strong>每 5 分鐘評估一次說話清晰度與呼吸聲。出現<code>喘鳴聲（Stridor）/ 聲音沙啞惡化 / 無法開口</code>，代表氣道即將閉塞，立即緊急後送。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">後送</span>
+              <div class="hz-step-text"><strong>優先後送指標：</strong>咽喉螫傷無論有無腫脹症狀，均為<code>最高優先級後送</code>。腫脹一旦開始，速度往往超出預期。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BITE -->
+      <div class="hz-panel" id="hz-bite">
+        <div class="hz-block">
+          <div class="hz-block-head">
+            <span class="hz-block-icon">🕷️</span>
+            <span class="hz-block-title">蜱蟲（Tick）處置</span>
+            <span class="hz-block-tag tag-warn">TICK</span>
+          </div>
+          <div class="hz-block-body">
+            <div class="hz-step">
+              <span class="hz-step-num">01</span>
+              <div class="hz-step-text"><strong>正確移除：</strong>用細尖鑷子夾住<code>最靠近皮膚的口器端</code>，垂直向上穩定拔出，不要扭轉或擠壓蟲體——擠壓會加速毒素注入。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">02</span>
+              <div class="hz-step-text"><strong>禁忌操作：</strong>禁止使用火源燒、凡士林悶、酒精塗抹強迫蜱蟲退出——這些方法反而使蜱蟲吐出更多腸道內容物，增加感染風險。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">03</span>
+              <div class="hz-step-text"><strong>後續監測：</strong>記錄叮咬日期與位置。若 3–30 天內出現<code>環形紅疹 / 發燒 / 關節痛</code>，可能為萊姆病（Lyme Disease），需就醫抗生素治療。</div>
+            </div>
+          </div>
+        </div>
+        <div class="hz-block">
+          <div class="hz-block-head">
+            <span class="hz-block-icon">🐛</span>
+            <span class="hz-block-title">水蛭（Leech）處置</span>
+            <span class="hz-block-tag tag-info">LEECH</span>
+          </div>
+          <div class="hz-block-body">
+            <div class="hz-step">
+              <span class="hz-step-num">01</span>
+              <div class="hz-step-text"><strong>自然脫落法：</strong>塗抹鹽水、高濃度酒精或以火源靠近（不接觸皮膚），使水蛭自行鬆脫。不可生硬拉扯——強拉會使水蛭口器斷留傷口，增加感染。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">02</span>
+              <div class="hz-step-text"><strong>脫落後處理：</strong>水蛭分泌<code>抗凝血劑（Hirudin）</code>，傷口可能持續滲血 30–60 分鐘。以乾淨紗布輕壓即可，無需過度驚慌。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">03</span>
+              <div class="hz-step-text"><strong>感染監測：</strong>48 小時內若傷口出現紅腫熱痛擴散，考慮繼發性細菌感染，需抗生素治療。台灣山區水蛭不具主要致命毒素，失血量通常極少。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MARINE -->
+      <div class="hz-panel" id="hz-marine">
+        <div class="hz-block">
+          <div class="hz-block-head">
+            <span class="hz-block-icon">🪼</span>
+            <span class="hz-block-title">水母螫傷（Jellyfish）</span>
+            <span class="hz-block-tag tag-warn">MARINE STING</span>
+          </div>
+          <div class="hz-block-body">
+            <div class="hz-step">
+              <span class="hz-step-num">01</span>
+              <div class="hz-step-text"><strong>立刻沖洗：</strong>以<code>海水或生理食鹽水</code>沖洗患部（<strong>嚴禁使用淡水</strong>——淡水滲透壓差異會使刺絲胞繼續釋放毒素）。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">02</span>
+              <div class="hz-step-text"><strong>移除觸手：</strong>使用鑷子或覆蓋的手（不可徒手）移除皮膚上的觸手殘留。可使用信用卡或硬片輕刮去除刺絲胞。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">03</span>
+              <div class="hz-step-text"><strong>後續處置：</strong>以冰袋冷敷緩解疼痛。若出現<code>全身過敏反應（呼吸困難 / 全身蕁麻疹 / 血壓降低）</code>：立即後送並若有 Epinephrine（腎上腺素）應優先注射。</div>
+            </div>
+          </div>
+        </div>
+        <div class="hz-block">
+          <div class="hz-block-head">
+            <span class="hz-block-icon">🦔</span>
+            <span class="hz-block-title">海膽刺傷（Sea Urchin）</span>
+            <span class="hz-block-tag tag-safe">PUNCTURE</span>
+          </div>
+          <div class="hz-block-body">
+            <div class="hz-step">
+              <span class="hz-step-num">01</span>
+              <div class="hz-step-text"><strong>熱水浸泡：</strong>將受傷部位浸入<code>30–40°C 熱水（可忍受的最高溫）</code>中浸泡 30–90 分鐘，熱水可分解海膽毒素蛋白質，顯著減輕疼痛。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">02</span>
+              <div class="hz-step-text"><strong>刺棘處理：</strong>棘刺若未取出會逐漸被組織包覆吸收（多數無害），或可嘗試以細尖鑷子取出可見部分。<code>禁止強行擠壓</code>——易使棘刺碎裂更深入。</div>
+            </div>
+            <div class="hz-step">
+              <span class="hz-step-num">03</span>
+              <div class="hz-step-text"><strong>感染預防：</strong>海洋環境細菌（特別是創傷弧菌 Vibrio）感染風險高，若傷口開始出現紅腫且免疫功能較弱者，應積極就醫使用預防性抗生素。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tool-inner -->
+  </div><!-- /tool-frame -->
+</section>
+
+<!-- ============================================================
+     S3 — RESUSCITATION, EXPOSURE & EVACUATION
+     ============================================================ -->
+<section id="med-s3">
+  <div class="sec-header">
+    <div class="sec-layer">B · 高山醫療 · S3 // RESUSCITATION & EVACUATION</div>
+    <h2 class="sec-title">生命甦醒與環境暴露<br><em>傷患轉移技術</em></h2>
+    <p class="sec-sub">失去意識、失溫、高山症等環境暴露急症，以及安全搬運與克難擔架建構。正確的評估與操作程序能在黃金時間內最大化傷患存活率。</p>
+  </div>
+
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label" style="color:var(--moss)">MODULE 03 · 甦醒決策與環境暴露動態查詢</span>
+      <span class="tool-tag">點選類別切換查詢內容</span>
+    </div>
+    <div class="tool-inner">
+
+      <div class="selector-strip">
+        <button class="sel-btn active" onclick="switchSel(this,'assess')">
+          <span class="sel-icon">🔍</span>意識檢查
+        </button>
+        <button class="sel-btn" onclick="switchSel(this,'recovery')">
+          <span class="sel-icon">🛌</span>復甦姿勢
+        </button>
+        <button class="sel-btn" onclick="switchSel(this,'cpr')">
+          <span class="sel-icon">💓</span>成人 CPR
+        </button>
+        <button class="sel-btn" onclick="switchSel(this,'hypo')">
+          <span class="sel-icon">🌧️</span>失溫處置
+        </button>
+        <button class="sel-btn" onclick="switchSel(this,'ams')">
+          <span class="sel-icon">🏔️</span>高山症評估
+        </button>
+      </div>
+
+      <div class="sel-output" id="sel-output">
+        <!-- filled by JS -->
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Skeleton & Immobilization -->
+      <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--dim2);letter-spacing:.1em;margin-bottom:.85rem;">MODULE 03-B · 骨骼肌肉與脊椎損傷限制</div>
+
+      <div class="skel-layout">
+        <div class="skel-block">
+          <div class="skel-head">四肢骨折固定 · LIMB FRACTURE IMMOBILIZATION</div>
+          <div class="skel-body">
+            <p>固定必須在<strong>移動傷患前</strong>完成。關鍵原則：固定時必須將受傷部位的<strong>上一個關節與下一個關節一併限制活動</strong>——只固定骨折處本身是不夠的。</p>
+            <br>
+            <p>🦾 <strong>手臂骨折：</strong>可利用三角巾、外衣翻折或後背包肩帶懸吊提供支撐，以身體軀幹為輔助固定。</p>
+            <br>
+            <p>🦵 <strong>下肢骨折：</strong>尋找長度適合的樹枝或登山杖，以繃帶固定於患肢兩側；或將兩腿綁在一起（健側為副木）。</p>
+            <br>
+            <p style="font-family:var(--mono);font-size:11px;color:var(--fire);">⚠️ 若骨折端已穿出皮膚（開放性骨折）：僅以無菌敷料覆蓋傷口，<strong>不可嘗試將骨骼推回</strong>。</p>
+          </div>
+        </div>
+        <div class="skel-block">
+          <div class="skel-head">脊椎損傷限制 · SPINAL PRECAUTIONS</div>
+          <div class="skel-body">
+            <p><strong>高度懷疑脊椎損傷</strong>的情況：高處墜落（&gt; 1 倍身高）、頭頸部直接撞擊、意識改變合併墜落事故、四肢麻木或無力。</p>
+            <br>
+            <p>🤲 <strong>徒手中立固定：</strong>搜救員蹲跪於傷患頭部後方，雙手掌心從兩側牢固固定傷患頭頸部，<code>使頭頸與背部保持在一條直線</code>。嚴禁旋轉、屈曲或過度仰頭動作。</p>
+            <br>
+            <p>🪵 <strong>移動限制：</strong>若必須移動，至少需 3 人執行整體翻身（Log Roll），由固定頭頸者統一口令：<code>「預備——翻」</code>，三人同步動作。</p>
+            <br>
+            <p style="font-family:var(--mono);font-size:11px;color:var(--amber);">⚠️ 若傷患維持清醒且能自主移動手腳，脊椎損傷風險相對較低，但仍需謹慎評估。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- Evacuation -->
+      <div style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--dim2);letter-spacing:.1em;margin-bottom:.85rem;">MODULE 03-C · 無器材搬運與克難擔架</div>
+
+      <div class="evac-layout">
+        <div class="evac-card">
+          <div class="evac-head">
+            <span class="evac-icon">🚒</span>
+            <span class="evac-title">單人：消防員式搬運</span>
+            <span class="evac-code">FIREFIGHTER CARRY</span>
+          </div>
+          <div class="evac-body">
+            <div class="callout callout-warn" style="margin-bottom:.75rem;">適用於<strong>意識清醒或輕度失去意識且無脊椎損傷</strong>的傷患。</div>
+            <div class="evac-step">
+              <span class="evac-step-n">01</span>
+              <div>讓傷患由地面坐起，搜救員蹲在傷患面前，將傷患的<strong>軀幹橫跨於搜救員肩部</strong>。</div>
+            </div>
+            <div class="evac-step">
+              <span class="evac-step-n">02</span>
+              <div>搜救員單臂<strong>環抱傷患大腿</strong>並用手抓牢傷患同側手腕，騰出另一手維持平衡。</div>
+            </div>
+            <div class="evac-step">
+              <span class="evac-step-n">03</span>
+              <div>以腿部肌力站起（<code>不可彎腰用背部發力</code>），保持傷患軀幹平衡後再移動。</div>
+            </div>
+          </div>
+        </div>
+        <div class="evac-card">
+          <div class="evac-head">
+            <span class="evac-icon">🤝</span>
+            <span class="evac-title">雙人：四手座椅式</span>
+            <span class="evac-code">TWO-PERSON SEAT CARRY</span>
+          </div>
+          <div class="evac-body">
+            <div class="callout callout-safe" style="margin-bottom:.75rem;">適用於<strong>意識清醒、可自行扶持</strong>的傷患。提供更穩定的支撐。</div>
+            <div class="evac-step">
+              <span class="evac-step-n">01</span>
+              <div>兩名搜救員<strong>面對面站立</strong>，互相伸出各自的右手腕，並用左手抓住對方右手腕，形成穩固的「<code>方形四手座椅</code>」。</div>
+            </div>
+            <div class="evac-step">
+              <span class="evac-step-n">02</span>
+              <div>讓傷患坐上四手平台，雙手環抱兩名搜救員頸部以維持穩定。</div>
+            </div>
+            <div class="evac-step">
+              <span class="evac-step-n">03</span>
+              <div>同步起身，以步調一致的小步伐前進。搜救員保持肘部伸直，用臀腿肌力支撐而非僅靠手腕。</div>
+            </div>
+          </div>
+        </div>
+        <div class="evac-card" style="grid-column: 1 / -1;">
+          <div class="evac-head">
+            <span class="evac-icon">🪵</span>
+            <span class="evac-title">克難簡易擔架建構</span>
+            <span class="evac-code">IMPROVISED STRETCHER</span>
+          </div>
+          <div class="evac-body">
+            <div class="callout callout-warn" style="margin-bottom:.85rem;">
+              ⚠️ <strong>安全提示：</strong>除非原地環境存在直接生命威脅，否則切勿輕易移動骨折或嚴重內出血傷患。移動前完成固定是最高原則。
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem;">
+              <div class="evac-step" style="flex-direction:column;align-items:stretch;">
+                <span class="evac-step-n" style="width:fit-content;margin-bottom:.4rem;">步驟 01</span>
+                <div>尋找兩根長度<strong>大於傷患身高（2 公尺以上）</strong>且粗實強韌的樹枝或登山杖。確認無腐朽裂縫。</div>
+              </div>
+              <div class="evac-step" style="flex-direction:column;align-items:stretch;">
+                <span class="evac-step-n" style="width:fit-content;margin-bottom:.4rem;">步驟 02</span>
+                <div>將大衣拉鍊完全扣上，長樹枝自<code>袖口穿入穿出</code>，利用衣物主體形成高強度承重床面。可疊加 2–3 件外衣增加強度。</div>
+              </div>
+              <div class="evac-step" style="flex-direction:column;align-items:stretch;">
+                <span class="evac-step-n" style="width:fit-content;margin-bottom:.4rem;">步驟 03</span>
+                <div>四名隊員於<strong>四角對稱蹲下</strong>，同時以腿部肌力筆直抬起，嚴禁單邊傾斜。移動前測試擔架承重並確認傷患固定。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tool-inner -->
+  </div><!-- /tool-frame -->
+
+  <footer class="page-footer">
+    <div class="footer-left">
+      <strong>SAR // TW · 台灣山域搜救訓練平台</strong><br>
+      B · 高山醫療與野外搜救綜合模組 · S1 評估策略 · S2 創傷出血 · S3 甦醒後送
+    </div>
+    <div class="footer-right">
+      高山醫療層 · LAYER B<br>
+      B1 環境認知 · B2 搜救決策 · B3 失蹤者行為
+    </div>
+  </footer>
+
+</section>
+</div><!-- /page-body -->
+
+<script>
+/* ============================================================
+   S1 — SURVIVAL MATRIX
+   ============================================================ */
+const SURV_DATA = {
+  S: {
+    title: '評估處境（Size up the situation）',
+    body: '包含評估周遭環境、身心狀況以及裝備狀態。了解目前身處的地形地貌、天候條件（炎熱、寒冷、颳風、下雨），客觀檢視體力儲備與恐懼感強度，目標是做出「<strong>非情緒化的冷靜決定</strong>」。情緒化判斷是野外最大的殺手之一。'
+  },
+  U: {
+    title: '運用所有智慧（Undue haste makes waste）',
+    body: '面對當下的危險，「欲速則不達」。匆忙行動往往帶來災難——跌倒、迷路、消耗過多體力。應深呼吸消除恐慌，有計劃、有步驟地使用手邊所有工具與自然資源。每個行動前先問：「這樣做會讓我的處境更好嗎？」'
+  },
+  R: {
+    title: '記住你的位置（Remember where you are）',
+    body: '在所有隊員腦海中，對自己的位置要有大體的相對概念。尋找周遭地標（山頭輪廓、溪流走向、稜線特徵），持續在心理地圖上定位自己。<strong>不要盲目亂走</strong>——每次移動都會擴大失聯範圍，讓搜救更困難。'
+  },
+  V1: {
+    title: '擊敗恐懼（Vanquish fear and panic）',
+    body: '恐懼和慌張是求生最大的敵人。恐懼會吞噬理智與判斷力，讓人做出衝動決定。<strong>藉由專注於眼前的具體任務</strong>（如生火、架設掩體、整理裝備）可以逐步奪回心理主導權。恐懼感到來是正常的——重點是不讓它主導你的決策。'
+  },
+  I: {
+    title: '隨機應變（Improvise）',
+    body: '野外的裝備和手邊的資源永遠是不夠的。需要思考現有的每樣器材是否有其他替代用途。例如：外衣製作臨時吊帶、背包織帶作為繩索、鋁箔保暖毯架設集水系統。<strong>先清點現有資源，再思考替代方案</strong>，而非哀嘆缺少什麼。'
+  },
+  V2: {
+    title: '重視生命（Value life）',
+    body: '不要放棄。對生存的強烈渴望與意志力，已被科學研究證實能直接提升人體的生理耐受極限。持續思考家人、未竟之事、回家的決心。<strong>「我必須活著回去」</strong>這個念頭，在極端情況下是最有效的求生藥物。'
+  },
+  A: {
+    title: '入境隨俗（Act like the locals）',
+    body: '觀察當地的野生動物、環境特徵與自然節律。動物移動的軌跡揭示水源位置；候鳥飛行方向提示地理方位；螞蟻習慣在乾燥高地築巢、迴避潮濕低地。<strong>自然界是最好的求生教材</strong>——學會解讀這些信號，能讓你在陌生環境中獲得關鍵優勢。'
+  },
+  L: {
+    title: '學習基本技能（Learn basic skills）',
+    body: '求生本領必須在出發前就徹底內化，不能到了現場才學。熟練<strong>生火技術、急救包使用、水質淨化、地圖判讀</strong>，能讓你在面臨未知狀況時將風險降到最低。訓練中犯的每一個錯誤，都是減少真實情境下的死亡機率。'
+  }
+};
+
+function selectSurv(el, key) {
+  document.querySelectorAll('.surv-letter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+
+  const d = SURV_DATA[key];
+  document.getElementById('surv-output').innerHTML = `
+    <div class="surv-out-head">
+      <span class="surv-out-letter">${key.replace('1','').replace('2','')}</span>
+      <span class="surv-out-title">${d.title}</span>
+    </div>
+    <div class="surv-out-body">${d.body}</div>
+  `;
+}
+
+/* ============================================================
+   S2 — HAZARD TABS
+   ============================================================ */
+function switchHz(btn, panelId) {
+  document.querySelectorAll('.hz-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.hz-panel').forEach(p => p.classList.remove('show'));
+  btn.classList.add('active');
+  document.getElementById('hz-' + panelId).classList.add('show');
+}
+
+/* ============================================================
+   S3 — SELECTOR CONTENT
+   ============================================================ */
+const SEL_DATA = {
+  assess: {
+    icon: '🔍', title: '失去意識現場評估', code: 'SCENE ASSESSMENT',
+    color: 'var(--moss)',
+    steps: [
+      { n:'01', text: '<strong>檢查反應：</strong>輕搖雙肩並在兩耳邊大聲呼喚。若無正常回應（無回應 / 僅呻吟 / 無法遵從指令），即定義為失去意識，立即進行下一步。' },
+      { n:'02', text: '<strong>維持氣管暢通：</strong>一手按壓前額、另一手提起下巴，使舌根抬起、氣道拉直（仰頭提下巴法）。若疑似脊椎損傷，改用<code>推下頷法</code>，嚴禁仰頭。' },
+      { n:'03', text: '<strong>評估呼吸：</strong><code>評估時間不可超過 10 秒</code>。觀察胸廓起伏、感受呼吸氣流、聆聽呼吸聲。若有正常呼吸：採取復甦姿勢持續監測。若無正常呼吸：立刻實施 CPR。' },
+    ],
+    alert: { type:'info', text:'評估時間控制是關鍵——10 秒是評估呼吸的硬性上限。超過時限立刻視為「無呼吸」並啟動 CPR。' }
+  },
+  recovery: {
+    icon: '🛌', title: '復甦姿勢（Recovery Position）', code: 'LATERAL POSITION',
+    color: 'var(--slate)',
+    steps: [
+      { n:'01', text: '<strong>肢體擺放：</strong>將傷患靠近搜救員側的手臂向上平擺（90°）；遠端手臂跨過胸前，手背貼在近端臉頰下方，作為頭部支撐。' },
+      { n:'02', text: '<strong>翻轉軀幹：</strong>將傷患遠端大腿屈膝提起，腳掌平放地面作為支點，以手膝為施力點緩慢將傷患身體朝搜救員側側翻。' },
+      { n:'03', text: '<strong>氣道微調：</strong>調整使上方大腿呈 90° 彎曲支撐身體；<code>下巴微微抬高</code>，確認口鼻朝下向地面方向，氣道暢通且分泌物可自然排出。' },
+    ],
+    alert: { type:'safe', text:'每 30 分鐘檢查一次傷患呼吸狀態，並評估是否需要轉換受壓側（長時間側臥同一側可能造成組織壓傷）。' }
+  },
+  cpr: {
+    icon: '💓', title: '成人 CPR 標準操作程序', code: 'CPR PROTOCOL · 30:2',
+    color: 'var(--fire)',
+    steps: [
+      { n:'01', text: '<strong>胸部按壓位置：</strong>將一手掌根置於傷患<code>兩乳頭連線中央（胸骨下半段）</code>，另一手疊上扣緊。雙臂打直、肩膀正對按壓點，體重垂直施壓。' },
+      { n:'02', text: '<strong>按壓深度與頻率：</strong>每次按壓深度<code>5–6 公分</code>，頻率<code>100–120 次/分鐘</code>（約為「Stayin\' Alive」節奏）。每次按壓後確保胸廓完全回彈，不可持續施壓。' },
+      { n:'03', text: '<strong>吹氣步驟：</strong>30 次按壓後給予 2 次人工呼吸。仰頭提下巴，捏住鼻孔，以 1 秒平穩吹入可見胸廓起伏的氣量。兩次吹氣完成後立即恢復按壓，<code>中斷時間不可超過 10 秒</code>。' },
+      { n:'04', text: '<strong>換手輪替：</strong>每 2 分鐘（約 5 個 30:2 循環）更換施救者以維持按壓品質。搜救員疲勞是院外 CPR 最常見的按壓品質下降原因。' },
+    ],
+    alert: { type:'danger', text:'若現場有 AED（自動體外電擊器），立刻取用並依機器語音操作——AED 比 CPR 更能顯著提升存活率。' }
+  },
+  hypo: {
+    icon: '🌧️', title: '失溫症（Hypothermia）野外即時處置', code: 'CORE TEMP < 35°C',
+    color: 'var(--slate)',
+    steps: [
+      { n:'01', text: '<strong>阻絕暴露：</strong>立刻將傷患移至避風、乾燥的避難處（岩壁背風面 / 密林 / 臨時外帳），阻止體熱持續散失。搬運時動作輕柔——重度失溫者心臟極度敏感，劇烈震動可能誘發心室顫動。' },
+      { n:'02', text: '<strong>移除濕衣：</strong>脫下傷患全身濕冷衣物（剪開若有必要），換上乾燥保暖的隔絕層。若無替換衣物，以睡袋 / 保溫毯包裹，與地面之間加墊絕熱層（背包 / 樹葉）。' },
+      { n:'03', text: '<strong>核心加溫：</strong>熱源應優先置於<code>頸部 / 腋下 / 鼠蹊部</code>（大血管位置）。若傷患清醒，可給予高熱量溫熱飲品（溫糖水）。<strong>切勿給予酒精</strong>——酒精使末梢血管擴張加速核心降溫。' },
+    ],
+    alert: { type:'warn', text:'⚠️「顯得死了的失溫患者不是真的死了」——重度失溫者脈搏細弱難以測得，切勿在現場宣判死亡，持續 CPR 直至送達醫院。' }
+  },
+  ams: {
+    icon: '🏔️', title: '高山症（AMS）評估與應變', code: 'ACUTE MOUNTAIN SICKNESS',
+    color: 'var(--ember)',
+    steps: [
+      { n:'01', text: '<strong>辨識症狀：</strong>高度 &gt; 2500m 後出現以下症狀需警戒：<code>持續頭痛（最常見）/ 噁心嘔吐 / 食慾不振 / 頭暈 / 嚴重疲倦 / 睡眠障礙</code>。輕度 AMS 可在休息 12–24 小時後改善。' },
+      { n:'02', text: '<strong>危險信號（立即下撤）：</strong>出現以下任一症狀代表高山腦水腫（HACE）或肺水腫（HAPE）前兆：步態不穩 / 意識混亂 / 嚴重呼吸困難（靜止時）/ 出現連績咳嗽帶血絲痰。<code>下降高度是唯一終極處置</code>。' },
+      { n:'03', text: '<strong>原地照護（輕度 AMS）：</strong>停止上升、原地休息。給予充足水分（每日 4–5L，尿液維持清澈淡黃色）。症狀 24 小時內未改善或惡化，立即往低海拔撤退，不可繼續觀望。' },
+    ],
+    alert: { type:'danger', text:'🔴 高山症的唯一有效處置是「<strong>下降高度</strong>」。藥物（乙醯唑胺 / Dexamethasone）只能爭取時間，不能取代下撤。' }
+  }
+};
+
+function switchSel(btn, key) {
+  document.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const d = SEL_DATA[key];
+  const stepsHTML = d.steps.map(s => `
+    <div class="out-step">
+      <span class="out-step-num">${s.n}</span>
+      <div class="out-step-text">${s.text}</div>
+    </div>
+  `).join('');
+
+  const alertHTML = d.alert ? `
+    <div class="out-alert ${d.alert.type}">${d.alert.text}</div>
+  ` : '';
+
+  document.getElementById('sel-output').innerHTML = `
+    <div class="sel-out-head">
+      <span class="sel-out-icon">${d.icon}</span>
+      <span class="sel-out-title">${d.title}</span>
+      <span class="sel-out-code">${d.code}</span>
+    </div>
+    <div class="sel-out-body">
+      ${stepsHTML}
+      ${alertHTML}
+    </div>
+  `;
+}
+
+/* ── NAV ACTIVE ── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-link:not(.nav-home):not(.nav-cross)');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.nav-link[href="#' + e.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.25 });
+sections.forEach(s => obs.observe(s));
+
+/* ── INIT ── */
+window.onload = function() { switchSel(document.querySelector('.sel-btn'), 'assess'); };
+</script>
+</body>
+</html>
