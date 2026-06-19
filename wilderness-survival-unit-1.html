@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>野外自給資源完整單元 — SAR 登山安全平台</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+    :root {
+      --bg:          #0f1217;
+      --bg-surface:  #161b24;
+      --bg-card:     #1c2333;
+      --bg-card-alt: #1a2030;
+      --border:      #2a3448;
+      --border-hi:   #3a4a64;
+
+      --text:        #d4dce8;
+      --text-dim:    #7a8fa8;
+      --text-hi:     #f0f4f8;
+
+      --teal:        #2dd4bf;
+      --amber:       #f59e0b;
+      --red:         #ef4444;
+      --blue:        #60a5fa;
+      --green:       #4ade80;
+
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'Noto Sans TC', -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── NAV BAR ── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,18,23,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 52px;
+      overflow-x: auto;
+    }
+    .nav-brand {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      margin-right: 2rem;
+      flex-shrink: 0;
+    }
+    .nav-links { display: flex; gap: 0; }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 0 1rem;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      border-right: 1px solid var(--border);
+      white-space: nowrap;
+      transition: color 0.15s, background 0.15s;
+      letter-spacing: 0.05em;
+    }
+    .nav-links a:first-child { border-left: 1px solid var(--border); }
+    .nav-links a:hover { color: var(--teal); background: rgba(45,212,191,0.05); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 4rem 2rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-label {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--teal);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--text-hi);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .hero-desc {
+      color: var(--text-dim);
+      max-width: 680px;
+      font-size: 0.95rem;
+    }
+
+    /* ── CORE RULE BOX ── */
+    .core-rule {
+      margin: 2.5rem auto;
+      max-width: 1100px;
+      padding: 0 2rem;
+    }
+    .rule-banner {
+      background: linear-gradient(135deg, rgba(45,212,191,0.08) 0%, rgba(96,165,250,0.06) 100%);
+      border: 1px solid rgba(45,212,191,0.3);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .rule-icon {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--teal);
+      background: rgba(45,212,191,0.1);
+      border: 1px solid rgba(45,212,191,0.3);
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .rule-banner p {
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    /* ── DANGER ALERT ── */
+    .alert {
+      margin: 0 auto;
+      max-width: 1100px;
+      padding: 0 2rem;
+      margin-bottom: 0;
+    }
+    .alert-inner {
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .alert-red { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.3); }
+    .alert-amber { background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.3); }
+    .alert-title {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+    .alert-red .alert-title { color: var(--red); }
+    .alert-amber .alert-title { color: var(--amber); }
+    .alert-inner ul { margin-left: 1.25rem; font-size: 0.9rem; color: var(--text-dim); }
+    .alert-inner li { margin-bottom: 0.5rem; }
+    .alert-inner strong { color: var(--text); }
+
+    /* ── LAYOUT ── */
+    .content-wrap { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+    /* ── MODULE HEADER ── */
+    .module {
+      padding-top: 3.5rem;
+      padding-bottom: 1rem;
+    }
+    .module-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .module-num {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--teal);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+    }
+    .module-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-hi);
+    }
+    .module-sub {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 1.5rem;
+      margin-top: -1rem;
+    }
+
+    /* ── GRID ── */
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-hi);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card p, .card li {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+    .card ul { margin-left: 1.25rem; }
+    .card li { margin-bottom: 0.3rem; }
+    .card strong { color: var(--text); }
+
+    /* Left-border accent cards */
+    .card-teal { border-left: 3px solid var(--teal); }
+    .card-amber { border-left: 3px solid var(--amber); }
+    .card-red   { border-left: 3px solid var(--red); }
+
+    /* ── STEP TIMELINE ── */
+    .timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 18px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+    .step {
+      display: flex;
+      gap: 1rem;
+      position: relative;
+    }
+    .step-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-hi);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--teal);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .step-body {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.9rem 1.1rem;
+      flex: 1;
+      margin-bottom: 0.75rem;
+    }
+    .step-body strong {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--text-hi);
+      margin-bottom: 0.4rem;
+    }
+    .step-body p {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+    .step-body em { color: var(--amber); font-style: normal; }
+
+    /* ── TABLE ── */
+    .tbl-wrap { overflow-x: auto; margin-bottom: 1.25rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th {
+      background: rgba(255,255,255,0.04);
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border-hi);
+      text-align: left;
+      white-space: nowrap;
+    }
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-dim);
+      vertical-align: top;
+    }
+    td strong { color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+    .status-ok  { color: var(--green); font-weight: 600; }
+    .status-bad { color: var(--red); font-weight: 600; }
+
+    /* ── FLIP CARDS ── */
+    .flip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem; }
+    .flip-card { height: 130px; perspective: 1000px; cursor: pointer; }
+    .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.55s; transform-style: preserve-3d; }
+    .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-front, .flip-back {
+      position: absolute; width: 100%; height: 100%;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      padding: 1rem 1.25rem;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .flip-front { background: var(--bg-card); }
+    .flip-front span { font-size: 0.9rem; color: var(--text-hi); font-weight: 600; }
+    .flip-front small { font-family: var(--mono); font-size: 0.65rem; color: var(--teal); margin-top: 0.4rem; letter-spacing: 0.08em; }
+    .flip-back { background: var(--bg-card-alt); transform: rotateY(180deg); border-color: var(--border-hi); }
+    .flip-back p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; }
+    .flip-back strong { color: var(--text); }
+
+    /* ── DANGER HIGHLIGHT ── */
+    .danger-block {
+      background: rgba(239,68,68,0.06);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 4px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .danger-block .d-title {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--red);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.6rem;
+    }
+    .danger-block p { font-size: 0.88rem; color: var(--text-dim); }
+    .danger-block strong { color: var(--text); }
+
+    /* ── MINI BADGE ── */
+    .badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      border-radius: 2px;
+      padding: 0.1rem 0.45rem;
+      vertical-align: middle;
+      margin-right: 0.3rem;
+    }
+    .badge-teal { background: rgba(45,212,191,0.12); color: var(--teal); border: 1px solid rgba(45,212,191,0.25); }
+    .badge-amber { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+    .badge-red { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+
+    /* ── DIVIDER ── */
+    .section-div {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 5rem;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 600px) {
+      .nav { padding: 0 1rem; }
+      .hero, .content-wrap, .core-rule, .alert { padding-left: 1rem; padding-right: 1rem; }
+      .hero { padding-top: 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <div class="nav-brand">SAR // 登山安全平台</div>
+  <div class="nav-links">
+    <a href="#module-1">食物安全</a>
+    <a href="#module-2">烹煮器具</a>
+    <a href="#module-3">漁具製作</a>
+    <a href="#module-4">哺乳類資源</a>
+    <a href="#module-5">昆蟲採集</a>
+    <a href="#module-6">兩棲爬蟲</a>
+    <a href="#module-7">水生甲殼</a>
+    <a href="#module-8">禽類處理</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<header class="hero">
+  <div class="hero-label">野外求生技術單元 — 資源獲取與衛生處理</div>
+  <h1>非預期留置山域<br>自給資源完整指南</h1>
+  <p class="hero-desc">涵蓋食物可食性測試、低耗能資源獲取、野外烹飪安全，以及所有類別動物的衛生處理與疾病防範程序。</p>
+</header>
+
+<!-- ══ CORE RULE ══ -->
+<div class="core-rule">
+  <div class="rule-banner">
+    <span class="rule-icon">核心法則</span>
+    <p>從食物獲得的能量，必須超過獲取食物時所消耗的能量——否則任何採集行為都將是徒勞。</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  MODULE 1 — 能量平衡與可食用性測試             -->
+<!-- ══════════════════════════════════════════════ -->
+<main class="content-wrap">
+<div id="module-1" class="module">
+  <div class="module-header">
+    <span class="module-num">01 // FOOD SAFETY</span>
+    <h2>能量平衡與可食用性測試</h2>
+  </div>
+  <p class="module-sub">採集前先評估投入與回報比，再依序測試植物安全性。</p>
+
+  <div class="grid-2">
+    <div class="card card-teal">
+      <h3>🌿 植物資源</h3>
+      <p>相對容易大量獲取，但必須通過嚴格的可食用性測試。<strong>未知蕈類切勿嘗試</strong>，辨識錯誤的代價極高。</p>
+    </div>
+    <div class="card card-teal">
+      <h3>🐟 水生資源</h3>
+      <p>魚類含有豐富蛋白質，透過<strong>定置被動捕撈</strong>方式，能以最低體能消耗獲得高熱量補充。</p>
+    </div>
+  </div>
+
+  <div class="card card-amber">
+    <h3>⚗️ 通用植物可食用性測試</h3>
+    <p style="font-size:0.82rem; color:var(--text-dim); margin-bottom:1.25rem;">測試期間禁食其他食物。任何步驟出現燒灼、刺痛或紅腫，立即停止並以大量清水沖洗。</p>
+    <div class="timeline">
+      <div class="step">
+        <div class="step-dot">S1</div>
+        <div class="step-body">
+          <strong>皮膚測試 — 等待 15 分鐘</strong>
+          <p>將植物汁液擦拭於手肘內側，觀察有無發炎、發癢或紅腫。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">S2</div>
+        <div class="step-body">
+          <strong>唇部測試 — 等待 15 分鐘</strong>
+          <p>若無皮膚過敏，取少量植物貼在嘴唇外側，檢視有無刺痛感。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">S3</div>
+        <div class="step-body">
+          <strong>舌尖口腔測試 — 等待 15 分鐘</strong>
+          <p>嚼碎後含於舌尖，<em>切勿吞下</em>。若有強烈苦味、肥皂味或刺痛，立刻吐掉。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">S4</div>
+        <div class="step-body">
+          <strong>少量吞嚥測試 — 空腹觀察 8 小時</strong>
+          <p>吞下極少量，嚴格空腹觀察。若有胃痛、噁心，<em>催吐並大量飲水</em>。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">S5</div>
+        <div class="step-body">
+          <strong>小量確認 — 再觀察 8 小時</strong>
+          <p>煮食約半杯同款植物，完全無恙後，方可將該部位視為安全食材。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  MODULE 2 — 低資源野外烹飪                    -->
+<!-- ══════════════════════════════════════════════ -->
+<hr class="section-div">
+<div id="module-2" class="module">
+  <div class="module-header">
+    <span class="module-num">02 // COOKING</span>
+    <h2>現地低資源烹飪安全</h2>
+  </div>
+  <p class="module-sub">缺乏金屬鍋具時，利用自然媒材進行高溫熟食處理，消滅寄生蟲與有害細菌。</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>🏺 泥土陶烘法</h3>
+      <p>用無毒大型葉片（香蕉葉、月桃葉）完整包裹食材，外部均勻糊上約 <strong>2.5 cm 厚</strong> 的乾淨陶土，直接放入炭火灰燼中烘烤 <strong>30～60 分鐘</strong>。敲開泥殼時，鱗片與外皮會隨之脫落，可獲得乾淨熟透的食物。</p>
+    </div>
+    <div class="card card-amber">
+      <h3>🪨 石頭導熱烘烤</h3>
+      <p>堆疊表面平滑的大型石頭，升火徹底加熱後清除炭火，將食材鋪在滾燙岩石上烘烤。</p>
+      <p style="margin-top:0.75rem;"><span class="badge badge-amber">⚠ 安全警示</span> <strong>絕對避免</strong>使用溪床孔洞岩石——內部水分受熱膨脹將導致岩石劇烈爆裂。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  MODULE 3 — 漁具製作與魚類衛生處理             -->
+<!-- ══════════════════════════════════════════════ -->
+<hr class="section-div">
+<div id="module-3" class="module">
+  <div class="module-header">
+    <span class="module-num">03 // FISHING</span>
+    <h2>簡易漁具製作與漁獲衛生處理</h2>
+  </div>
+  <p class="module-sub">點擊卡片查看利用隨身物品製作被動捕撈工具的方法。</p>
+
+  <div class="flip-grid">
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <span>📌 別針 / 釘子改製魚鉤</span>
+          <small>點擊查看製作方式 →</small>
+        </div>
+        <div class="flip-back">
+          <p>用工具將安全別針或硬質釘子折彎，以石頭磨尖末端。雖無倒鉤，但配合<strong>繃緊線路</strong>或<strong>彈力枝條</strong>，可達被動定置捕撈效果。</p>
+        </div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <span>🪵 天然木頭 / 骨頭夾鉤</span>
+          <small>點擊查看製作方式 →</small>
+        </div>
+        <div class="flip-back">
+          <p>削尖約 <strong>2.5 cm</strong> 的硬質雙頭木針，將線綁在正中央並平行貼附。魚吞食後線抽緊，木針<strong>橫向卡入</strong>魚體內部（橫軸夾鉤法）。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="danger-block">
+    <div class="d-title">🚨 緊急醫療 — 魚鉤刺入人體處理</div>
+    <p>若魚鉤刺入且倒鉤已深入，<strong>千萬不可直接往後硬拉</strong>。正確做法：順著刺入方向將魚鉤向前推，讓倒鉤穿透外露，用剪鉗剪斷倒鉤後再順向退出，立即消毒包紮。</p>
+  </div>
+
+  <div class="card card-red">
+    <h3>⚠️ 寄生蟲防線 — 淡水魚絕對不可生食</h3>
+    <p>淡水魚內部常帶有<strong>顎口線蟲、中華肝吸蟲</strong>等致命寄生蟲，必須徹底加熱熟透方可食用。</p>
+  </div>
+
+  <div class="timeline">
+    <div class="step">
+      <div class="step-dot">F1</div>
+      <div class="step-body">
+        <strong>徹底放血與去黏液</strong>
+        <p>切斷魚鰓基部放血，以清水或乾淨細沙揉搓魚體，去除帶有細菌的表皮黏液。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-dot">F2</div>
+      <div class="step-body">
+        <strong>剖腹與摘除內臟</strong>
+        <p>從肛門沿腹部中線向前剪開。<em>絕對不可弄破魚膽</em>——膽汁外溢會使整批肉品遭受污染，若不慎破裂須立刻以大量清水沖洗。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-dot">F3</div>
+      <div class="step-body">
+        <strong>去皮與去骨加工</strong>
+        <p>無鱗魚（如鯰魚）於胸鰭後方劃切口，用布包住外皮向下撕除。較大魚體可沿脊椎骨兩側切出兩片無刺<strong>魚排 (Fillet)</strong>，利於快速高溫烤熟。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  MODULE 4 — 哺乳類資源                        -->
+<!-- ══════════════════════════════════════════════ -->
+<hr class="section-div">
+<div id="module-4" class="module">
+  <div class="module-header">
+    <span class="module-num">04 // MAMMALS</span>
+    <h2>哺乳類被動獲取與衛生處理</h2>
+  </div>
+
+  <div class="alert-inner alert-red" style="margin-bottom:1.5rem;">
+    <div class="alert-title">🚨 雙重安全警告</div>
+    <ul>
+      <li><strong>兔肉中毒症 (Rabbit Starvation)：</strong> 小型哺乳類肌肉幾乎不含脂肪，<strong>連續數天幾乎只依賴瘦肉蛋白</strong>時會引發急性蛋白質中毒（噁心、腹瀉、虛弱）。短期食用（1–3 天）不構成立即威脅——求生情境下仍應積極取食。<strong>真正的解方是搭配</strong>任何脂肪來源（昆蟲、堅果、魚）即可大幅降低風險，而非拒絕食用。</li>
+      <li><strong>傳染病防範：</strong> 野生動物體表可能帶有兔熱病等桿菌。<strong>手部有傷口時，絕對不可赤手進行剝皮與清理內臟。</strong></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🪤 被動留置線圈規格</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>材料配置</th>
+            <th>製作機制</th>
+            <th>適用對象</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>2 倍強度金屬線</strong></td>
+            <td>雙股線路纏繞扭緊</td>
+            <td>地表微小型哺乳類（松鼠類），設置於倒木與常行獸徑通道口</td>
+          </tr>
+          <tr>
+            <td><strong>4 倍強度金屬線</strong></td>
+            <td>四股線路緊密編織</td>
+            <td>體型稍大草食類（野兔尺寸），線圈直徑與離地高度須依目標體型微調</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔧 現地延伸防護工具</h3>
+    <div class="grid-3" style="margin-top:0.75rem;">
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1rem;">
+        <strong style="color:var(--text-hi);display:block;margin-bottom:0.4rem;">🥢 雙叉結構杆</strong>
+        <p style="font-size:0.82rem;color:var(--text-dim);">末端具自然分叉的硬質樹枝削尖叉頭，用於涉水或探查洞穴時的防禦與定位限制。</p>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1rem;">
+        <strong style="color:var(--text-hi);display:block;margin-bottom:0.4rem;">🎯 彈力延伸觀測具</strong>
+        <p style="font-size:0.82rem;color:var(--text-dim);">Y 字型樹枝搭配彈性膠條，低耗能獲取高處落果或擊落小型飛禽。</p>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1rem;">
+        <strong style="color:var(--text-hi);display:block;margin-bottom:0.4rem;">🪶 繩套延伸杆</strong>
+        <p style="font-size:0.82rem;color:var(--text-dim);">長枝條末端固定可自由抽緊的繩環，遠距離套取移動遲緩生物，降低直接接觸風險。</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="module-sub" style="margin-top:1rem;">小型哺乳類剝皮與處理流程</p>
+  <div class="timeline">
+    <div class="step">
+      <div class="step-dot">M1</div>
+      <div class="step-body">
+        <strong>開口與皮肉分離</strong>
+        <p>於腹部中央橫向割開一道切口，用手指伸入小心將皮膚與肌肉層分離，逐步向兩側擴展。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-dot">M2</div>
+      <div class="step-body">
+        <strong>手套式整體剝皮 (Glove Skinning)</strong>
+        <p>切斷前後肢關節，一手按住肌肉，另一手抓住腹部外皮，<em>像脫手套一樣</em>順向往後拉除整張外皮。確保毛髮完全不接觸內部肉質。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-dot">M3</div>
+      <div class="step-body">
+        <strong>摘除內臟與清洗</strong>
+        <p>刀尖朝上，從恥骨向胸腔縱向剪開腹壁，避免刺破腸道。拉出內臟後，若保留心肝食用，須確認<em>表面無異常白點或病變</em>，並以清水徹底沖洗腹腔。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert-inner alert-amber" style="margin-top:1.5rem;">
+    <div class="alert-title">⚠ 大型哺乳類處理要點</div>
+    <ul>
+      <li><strong>即刻放血：</strong> 頭部朝下置於斜坡，於頸動脈下刀深刺放血，顯著延緩肉質腐敗速度。</li>
+      <li><strong>防污染切線：</strong> 刀尖始終朝外、鈍端朝內。嚴格禁止刺破胃囊或腸道，消化物外溢將導致整塊肉品細菌污染報廢。</li>
+      <li><strong>部位肢解：</strong> 依後腿、前腿、背脊里肌分塊切卸後，懸掛於通風陰涼處，利用表面自然風乾形成的<strong>微乾燥外膜</strong>阻絕昆蟲產卵。</li>
+      <li><strong>皮毛乾燥：</strong> 刮除內側殘餘脂肪，用枝條製作方形框架將皮毛四周拉平撐開，置於通風處乾燥。</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  MODULE 5 — 昆蟲採集                          -->
+<!-- ══════════════════════════════════════════════ -->
+<hr class="section-div">
+<div id="module-5" class="module">
+  <div class="module-header">
+    <span class="module-num">05 // INSECTS</span>
+    <h2>低能耗昆蟲資源採集</h2>
+  </div>
+  <p class="module-sub">昆蟲含高密度蛋白質與微量元素，且採集時體能消耗極低。主動避開<strong>體表多毛</strong>或<strong>色彩鮮豔</strong>的個體——此類特徵通常暗示帶有防禦性毒素。</p>
+
+  <div class="grid-2">
+    <div class="card card-teal">
+      <h3>🪵 防水布朽木震動採集法</h3>
+      <p>在地面鋪設乾淨防水布，將潮濕朽木移至中央輕輕敲碎。大量藏匿於內部的幼蟲與蟻類受驚落於防水布上，可快速篩選採集，比徒手挖掘效率高出許多。</p>
+    </div>
+    <div class="card card-teal">
+      <h3>🌙 夜間垂直光照收集法</h3>
+      <p>在兩樹間垂直張開白色衣物，下方放置裝滿清水的淺容器。夜間以手電筒照射布幕，具趨光性的夜行昆蟲飛往布幕後跌落水盆，可高效收集且不易逸散。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  MODULE 6 — 兩棲爬蟲                          -->
+<!-- ══════════════════════════════════════════════ -->
+<hr class="section-div">
+<div id="module-6" class="module">
+  <div class="module-header">
+    <span class="module-num">06 // REPTILES</span>
+    <h2>兩棲爬蟲安全處置</h2>
+  </div>
+
+  <div class="alert-inner alert-red" style="margin-bottom:1.5rem;">
+    <div class="alert-title">🚨 無脊椎體內毒素排空</div>
+    <ul>
+      <li>蝸牛、蛞蝓與螺類體內常殘留植物毒素，食用前須<strong>留置飢餓 24 小時</strong>或以確認安全的植物餵食排空，且必須徹底煮熟。</li>
+      <li><strong>切勿食用海生蝸牛。</strong></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>🐍 蛇類安全處理三步驟</h3>
+    <div class="timeline" style="margin-top:0.75rem;">
+      <div class="step">
+        <div class="step-dot">R1</div>
+        <div class="step-body">
+          <strong>安全去頭</strong>
+          <p>切除頭部後，必須原地<em>靜置至少 15 分鐘</em>，防範死後神經反射引發的意外咬傷。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">R2</div>
+        <div class="step-body">
+          <strong>剖腹清理</strong>
+          <p>用刀尖由前向後小心劃開腹壁，完整摘除內部臟器與消化道。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-dot">R3</div>
+        <div class="step-body">
+          <strong>套袖剝皮</strong>
+          <p>於頸部後方切開皮層，一手拉住肉體，另一手由尾部向頭部方向將整張外皮成套撕下。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  MODULE 7 — 水生甲殼貝類                      -->
+<!-- ══════════════════════════════════════════════ -->
+<hr class="section-div">
+<div id="module-7" class="module">
+  <div class="module-header">
+    <span class="module-num">07 // AQUATIC</span>
+    <h2>溪谷甲殼類與貝類毒素防禦</h2>
+  </div>
+
+  <div class="alert-inner alert-red" style="margin-bottom:1.5rem;">
+    <div class="alert-title">🚨 有毒藻類（紅潮）威脅</div>
+    <ul>
+      <li>夏季或鄰近海口區域時，高度避免採集水生貝類。赤潮引發的藻類毒素可導致<strong>心悸、嘔吐、腹瀉、發燒</strong>等嚴重中毒症狀。</li>
+    </ul>
+  </div>
+
+  <div class="grid-2">
+    <div class="card card-amber">
+      <h3>🐚 淡水貝類烹煮規範</h3>
+      <p>開殼前以乾淨水源洗淨。持續加熱至外殼<strong>因高溫完全張開</strong>方可食用，煮後仍緊閉者必須丟棄。</p>
+    </div>
+    <div class="card card-amber">
+      <h3>🦐 甲殼類（蝦蟹）烹煮規範</h3>
+      <p>在淡水中持續煮沸<strong>不低於 15～20 分鐘</strong>。大型個體建議用竹竿串起進行長時間炭火慢烤，確保核心完全熟透。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  MODULE 8 — 禽類                              -->
+<!-- ══════════════════════════════════════════════ -->
+<hr class="section-div">
+<div id="module-8" class="module">
+  <div class="module-header">
+    <span class="module-num">08 // BIRDS</span>
+    <h2>禽類被動留置與衛生處理</h2>
+  </div>
+  <p class="module-sub">主動追捕禽類體能消耗過大，應利用其築巢、覓食與水源路徑進行被動置留。</p>
+
+  <div class="grid-3">
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.1rem;">
+      <strong style="color:var(--text-hi);display:block;margin-bottom:0.5rem;">📐 4 形重力陷阱</strong>
+      <p style="font-size:0.82rem;color:var(--text-dim);">三根刻有精準凹槽卡榫的木條互相支撐，上方壓置重石板。觸動機關時卡榫解開帶動重物下壓，結構簡單且不損壞目標物。</p>
+    </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.1rem;">
+      <strong style="color:var(--text-hi);display:block;margin-bottom:0.5rem;">🌿 樹枝連續圈套</strong>
+      <p style="font-size:0.82rem;color:var(--text-dim);">在禽類棲息的橫向樹幹上，以細金屬線製作一整排直徑約 <strong>2.5～5 cm</strong> 的連續微型圈套，禽類沿枝走動時雙腳自然落入被動卡鎖。</p>
+    </div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.1rem;">
+      <strong style="color:var(--text-hi);display:block;margin-bottom:0.5rem;">🌾 水岸樹籬陷阱</strong>
+      <p style="font-size:0.82rem;color:var(--text-dim);">於水鳥頻繁活動的淺水岸搭建低矮阻隔樹籬，中央留下數個通道並設置圈套，利用水鳥順向游動的習性進行被動置留。</p>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:0.5rem;">
+    <div class="card">
+      <h3>🪶 去毛加工方式選擇</h3>
+      <p><strong>直接去皮法：</strong> 速度最快，但會流失富含高熱量的皮下脂肪層。</p>
+      <p style="margin-top:0.5rem;"><strong>標準拔毛法：</strong> 先浸入熱水數分鐘使毛孔擴張，再順著羽毛的<em>反方向</em>拔除，保留完整皮層脂肪與營養價值。</p>
+    </div>
+    <div class="card">
+      <h3>🫁 內臟摘除要點</h3>
+      <p>由下腹部縱向小心切開，完整拉出內臟管線。<em>切勿刺破消化道與泄殖腔</em>，防止糞便細菌污染肉質。</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🩺 留存內臟健康篩檢指標（關鍵防線）</h3>
+    <div class="tbl-wrap" style="margin-top:0.75rem;">
+      <table>
+        <thead>
+          <tr>
+            <th>器官特徵</th>
+            <th>狀態</th>
+            <th>現地行動決策</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>色澤乾淨，呈均勻深紅色</strong></td>
+            <td class="status-ok">✓ 健康</td>
+            <td>安全資源。高溫徹底煮熟後可單獨食用或加入烹飪。</td>
+          </tr>
+          <tr>
+            <td><strong>顏色發黃、表面佈滿白色斑點、結節或肉芽腫</strong></td>
+            <td class="status-bad">✗ 嚴重病變</td>
+            <td><strong>絕對不可食用！</strong> 立即將整隻遠離營地深埋或銷毀，嚴防人畜共通傳染病。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  SAR 登山安全平台 &nbsp;//&nbsp; 野外自給資源完整單元 &nbsp;//&nbsp; 僅供緊急非預期留置情境參考
+</footer>
+
+<script>
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('.module');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.style.color = link.getAttribute('href') === `#${id}`
+            ? 'var(--teal)'
+            : 'var(--text-dim)';
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

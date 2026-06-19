@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R · W · 野外求生資源 &amp; 氣象判讀 // SAR // TW</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:    #F5F0E8;
+  --stone:    #EDE7D9;
+  --stone2:   #E3DDD0;
+  --rule:     #CFC9BC;
+  --rule2:    #BDB6A8;
+  --ink:      #1C1A17;
+  --dim:      #6B6560;
+  --dim2:     #9A948E;
+  --fire:     #C8401A;
+  --ember:    #9B5E1A;
+  --moss:     #3D5C3A;
+  --slate:    #2C4A6E;
+  --charcoal: #4A4540;
+  --ok:       #3D5C3A;
+  --warn:     #9B5E1A;
+  --danger:   #C8401A;
+  --accent-R: #8B4A1A;
+  --accent-W: #2C4A6E;
+
+  --mono:  'IBM Plex Mono', monospace;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+  --nav-h: 52px;
+  --spine: 4px;
+  --gutter: clamp(1.5rem, 5vw, 3.5rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* ── SPINE ── */
+.spine { position: fixed; left: 0; top: 0; bottom: 0; width: var(--spine); background: var(--fire); z-index: 200; }
+
+/* ── NAV ── */
+.top-nav {
+  position: fixed; top: 0; left: var(--spine); right: 0;
+  height: var(--nav-h);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center;
+  padding: 0 var(--gutter);
+  gap: 0;
+  z-index: 100;
+  overflow-x: auto;
+}
+.nav-logo {
+  font-family: var(--mono); font-weight: 700; font-size: 13px;
+  color: var(--fire); letter-spacing: .1em; text-decoration: none;
+  flex-shrink: 0; margin-right: 1.5rem;
+}
+.nav-links { display: flex; gap: 0; }
+.nav-links a {
+  font-family: var(--mono); font-size: 11px; color: var(--dim2);
+  text-decoration: none;
+  padding: 0 .9rem; height: var(--nav-h);
+  display: flex; align-items: center;
+  border-left: 1px solid var(--rule);
+  white-space: nowrap;
+  transition: color .15s, background .15s;
+  letter-spacing: .04em;
+}
+.nav-links a:hover { color: var(--fire); background: rgba(200,64,26,.04); }
+.nav-links a.active { color: var(--fire); background: rgba(200,64,26,.05); }
+.nav-sep {
+  width: 1px; background: var(--rule2); align-self: stretch; margin: 8px 4px;
+  flex-shrink: 0;
+}
+.nav-batch {
+  font-family: var(--mono); font-size: 10px; color: var(--dim2);
+  letter-spacing: .12em; margin-left: auto; flex-shrink: 0;
+  background: var(--stone); border: 1px solid var(--rule);
+  padding: 2px 8px; border-radius: 2px;
+}
+.nav-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--fire); box-shadow: 0 0 6px var(--fire);
+  animation: blink 2s infinite; flex-shrink: 0; margin-left: 1rem;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ── PAGE ── */
+.page {
+  padding-top: calc(var(--nav-h) + 3rem);
+  padding-bottom: 6rem;
+  padding-left: calc(var(--spine) + var(--gutter));
+  padding-right: var(--gutter);
+  max-width: calc(var(--spine) + 960px);
+}
+
+/* ── SECTION HEADER ── */
+.sec-header {
+  border-bottom: 2px solid var(--rule);
+  padding-bottom: 1.75rem;
+  margin-bottom: 2rem;
+  scroll-margin-top: calc(var(--nav-h) + 1.5rem);
+}
+.sec-eyebrow {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase; margin-bottom: .75rem;
+}
+.sec-title {
+  font-family: var(--mono); font-size: clamp(1.2rem, 3.5vw, 2rem);
+  font-weight: 700; letter-spacing: -.01em;
+  color: var(--ink); line-height: 1.15; margin-bottom: .4rem;
+}
+.sec-sub {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--dim2); letter-spacing: .12em;
+}
+
+/* ── INTRO BOX ── */
+.intro-box {
+  background: var(--stone); border: 1px solid var(--rule);
+  border-left: 3px solid var(--fire); border-radius: 4px;
+  padding: 1rem 1.25rem; font-size: 13px; color: var(--dim);
+  line-height: 1.7; margin-bottom: 2rem;
+}
+.intro-box strong { font-weight: 700; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .18em; color: var(--dim2); text-transform: uppercase;
+  border-bottom: 1px solid var(--rule); padding-bottom: .5rem;
+  margin-bottom: 1.25rem; margin-top: 2.5rem;
+  display: flex; align-items: center; gap: .6rem;
+}
+.section-label span {
+  font-size: 11px; background: var(--stone);
+  border: 1px solid var(--rule); padding: 1px 6px; border-radius: 2px;
+}
+
+/* ── DIVIDER ── */
+.batch-divider {
+  border: none; height: 1px; background: var(--rule2);
+  margin: 4rem 0;
+}
+
+/* ── GRID ── */
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
+@media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+
+/* ── CARD ── */
+.card {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 6px; padding: 1.25rem;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.card-head {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: .5rem;
+  padding-bottom: .85rem; border-bottom: 1px solid var(--rule);
+}
+.card-title { font-family: var(--serif); font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.card-code { font-family: var(--mono); font-size: 9px; color: var(--dim2); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; flex-shrink: 0; }
+
+/* ── FORM ── */
+.form-row { display: flex; flex-direction: column; gap: 5px; }
+label { font-family: var(--mono); font-size: 10px; color: var(--dim); letter-spacing: .05em; text-transform: uppercase; }
+select, input[type="number"] {
+  width: 100%; background: var(--stone); border: 1px solid var(--rule);
+  color: var(--ink); padding: 7px 28px 7px 10px; border-radius: 4px;
+  font-size: 13px; font-family: var(--mono);
+  -webkit-appearance: none; appearance: none; cursor: pointer; transition: border-color .15s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239A948E'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+}
+input[type="number"] { background-image: none; padding: 7px 10px; }
+select:focus, input[type="number"]:focus { border-color: var(--fire); outline: none; box-shadow: 0 0 0 2px rgba(200,64,26,.12); }
+
+/* ── INFO BLOCK ── */
+.info-block { background: var(--stone); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.info-row { padding: 10px 12px; border-bottom: 1px solid var(--rule); }
+.info-row:last-child { border-bottom: none; }
+.info-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; font-weight: 700; }
+.info-val { font-size: 12.5px; color: var(--ink); line-height: 1.65; }
+
+/* ── METRICS ── */
+.metrics { background: var(--stone); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.metric-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border-bottom: 1px solid var(--rule); }
+.metric-row:last-child { border-bottom: none; }
+.metric-label { font-family: var(--mono); font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: .06em; }
+.metric-val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ink); text-align: right; }
+
+/* ── VISUAL BOX ── */
+.visual-box, .thermal-box {
+  background: var(--stone); border: 1px dashed var(--rule2);
+  border-radius: 4px; min-height: 72px; padding: 14px 16px;
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; line-height: 1.6; white-space: pre-line;
+  transition: color .25s, border-color .25s, background .25s;
+}
+
+/* ── MATRIX OUT ── */
+.matrix-out {
+  background: var(--stone); border: 1px solid var(--rule);
+  border-radius: 4px; padding: 12px;
+  font-size: 12.5px; line-height: 1.8; color: var(--dim); min-height: 130px;
+}
+.matrix-out strong { font-weight: 700; }
+.matrix-out code { font-family: var(--mono); font-size: 11px; background: var(--stone2); border: 1px solid var(--rule2); padding: 1px 5px; border-radius: 3px; color: var(--fire); }
+
+/* ── ALERTS ── */
+.alert { font-size: 12px; padding: 10px 14px; border-radius: 4px; border-left: 3px solid; display: none; line-height: 1.65; }
+.alert-danger  { background: rgba(200,64,26,.07); border-color: var(--danger); color: #8B2A0E; }
+.alert-warning { background: rgba(155,94,26,.07); border-color: var(--warn);   color: #7A460D; }
+.alert-success { background: rgba(61,92,58,.07);  border-color: var(--ok);     color: #2A4228; }
+
+/* ── FILTER BUILDER (R2) ── */
+.filter-wrap { display: flex; gap: 1rem; align-items: flex-start; }
+.layer-btns { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.btn-mat { background: var(--stone); border: 1px solid var(--rule); color: var(--dim); font-family: var(--mono); font-size: 11px; padding: 7px 10px; border-radius: 4px; cursor: pointer; text-align: left; transition: .15s; }
+.btn-mat:hover { background: var(--stone2); border-color: var(--slate); color: var(--ink); }
+.bottle-col { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; width: 70px; }
+.bottle-label { font-family: var(--mono); font-size: 9px; color: var(--dim2); letter-spacing: .1em; text-transform: uppercase; }
+.bottle { width: 54px; min-height: 130px; border: 2px solid var(--rule); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; background: var(--stone); }
+.layer-chip { height: 26px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 9px; color: var(--paper); letter-spacing: .05em; }
+.btn-clear { background: none; border: 1px solid var(--rule); color: var(--dim2); font-family: var(--mono); font-size: 10px; padding: 4px 8px; border-radius: 3px; cursor: pointer; }
+.btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+
+/* ── WILDLIFE CARDS (R4) ── */
+.wildlife-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
+@media (max-width: 720px) { .wildlife-grid { grid-template-columns: 1fr; } }
+.wild-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 1.25rem; }
+.wild-badge { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; margin-bottom: .65rem; display: inline-block; }
+.wild-title { font-family: var(--serif); font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: .75rem; }
+.wild-body { font-size: 12.5px; color: var(--dim); line-height: 1.7; }
+.wild-body strong { color: var(--ink); }
+.wild-body code { font-family: var(--mono); font-size: 11px; background: var(--stone2); border: 1px solid var(--rule2); padding: 1px 5px; border-radius: 3px; color: var(--ember); }
+.danger-flag { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .08em; color: var(--danger); margin-top: .75rem; padding: .4rem .65rem; background: rgba(200,64,26,.07); border: 1px solid rgba(200,64,26,.2); border-radius: 3px; display: block; }
+
+/* ── STEP LIST (R4) ── */
+.step-list { display: flex; flex-direction: column; gap: 0; }
+.step-item { display: flex; gap: 1rem; padding: .85rem 0; border-bottom: 1px solid var(--rule); }
+.step-item:last-child { border-bottom: none; }
+.step-num { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--fire); background: var(--stone); border: 1px solid var(--rule); border-radius: 2px; padding: 2px 7px; height: fit-content; flex-shrink: 0; margin-top: 2px; }
+.step-text { font-size: 12.5px; color: var(--dim); line-height: 1.7; }
+.step-text strong { color: var(--ink); }
+
+/* ── TOGGLE BTN (W1) ── */
+.toggle-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-toggle { font-family: var(--mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; padding: 7px 14px; border-radius: 4px; border: 1px solid var(--rule); cursor: pointer; background: var(--stone); color: var(--dim); transition: .15s; }
+.btn-toggle.active { background: rgba(44,74,110,.1); border-color: var(--slate); color: var(--slate); font-weight: 700; }
+.btn-toggle:hover:not(.active) { border-color: var(--rule2); color: var(--ink); }
+.btn-calc { font-family: var(--mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; padding: 8px 16px; border-radius: 4px; border: 1px solid var(--ember); cursor: pointer; background: rgba(155,94,26,.08); color: var(--ember); font-weight: 700; transition: .15s; align-self: flex-start; }
+.btn-calc:hover { background: rgba(155,94,26,.15); }
+
+/* ── WIND PANEL (W1) ── */
+.wind-panel { background: var(--stone); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 14px; transition: border-color .25s; }
+.wind-direction { font-size: 13px; font-weight: 700; margin-bottom: 4px; transition: color .25s; }
+.wind-tip { font-size: 12px; color: var(--dim); line-height: 1.65; }
+
+/* ── CALC RESULT (W1) ── */
+.calc-result { background: var(--stone); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 14px; display: none; flex-direction: column; gap: 8px; }
+.calc-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.calc-label { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+.calc-val { font-family: var(--mono); font-size: 18px; font-weight: 700; }
+.calc-note { font-size: 12px; color: var(--dim); line-height: 1.65; border-top: 1px solid var(--rule); padding-top: 8px; margin-top: 2px; }
+
+/* ── CLOUD (W1) ── */
+.cloud-stack { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
+.cloud-item { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 1.25rem; display: flex; flex-direction: column; gap: .75rem; border-left-width: 3px; }
+.cloud-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+.cloud-badge { font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; font-weight: 700; }
+.cloud-timing { font-family: var(--mono); font-size: 10px; font-weight: 700; }
+.cloud-name { font-family: var(--serif); font-size: 14px; font-weight: 700; color: var(--ink); margin-top: 4px; }
+.cloud-desc { font-size: 12.5px; color: var(--dim); line-height: 1.65; }
+.cloud-action { font-size: 12px; padding: 10px 12px; border-radius: 4px; border-left: 3px solid; line-height: 1.65; }
+
+/* ── FLIP CARDS (W1) ── */
+.flip-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
+@media (max-width: 720px) { .flip-wrap { grid-template-columns: 1fr; } }
+.flip-card { height: 130px; perspective: 1000px; cursor: pointer; }
+.flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform .55s; transform-style: preserve-3d; }
+.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+.flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 4px; border: 1px solid var(--rule); padding: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.flip-card-front { background: var(--stone); gap: 8px; }
+.flip-card-front .icon { font-size: 26px; }
+.flip-card-front strong { font-size: 12.5px; color: var(--ink); }
+.flip-card-front .hint { font-family: var(--mono); font-size: 9px; color: var(--dim2); letter-spacing: .1em; text-transform: uppercase; }
+.flip-card-back { background: var(--stone2); border-color: var(--slate); transform: rotateY(180deg); text-align: left; align-items: flex-start; justify-content: flex-start; gap: 6px; padding: 14px; }
+.flip-card-back .back-label { font-family: var(--mono); font-size: 9px; color: var(--slate); text-transform: uppercase; letter-spacing: .1em; font-weight: 700; }
+.flip-card-back p { font-size: 12px; color: var(--dim); line-height: 1.65; }
+
+/* ── BEAUFORT TABLE (W1) ── */
+.bft-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; margin-bottom: 1.5rem; }
+.bft-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.bft-table th { background: var(--stone); color: var(--dim); font-family: var(--mono); font-size: 9px; letter-spacing: .1em; text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--rule); }
+.bft-table td { padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; line-height: 1.55; color: var(--dim); }
+.bft-table tr:last-child td { border-bottom: none; }
+.bft-table tr:nth-child(even) td { background: rgba(0,0,0,.02); }
+.bft-num { font-family: var(--mono); font-size: 16px; font-weight: 700; }
+.bft-name { font-weight: 700; font-size: 12.5px; color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<nav class="top-nav">
+  <a class="nav-logo" href="index.html">SAR // TW</a>
+  <div class="nav-links">
+    <a href="index.html">← 總覽</a>
+    <div class="nav-sep"></div>
+    <a href="#r1">R1 生火</a>
+    <a href="#r2">R2 水源</a>
+    <a href="#r3">R3 外帳選址</a>
+    <a href="#r4">R4 野外食材</a>
+    <div class="nav-sep"></div>
+    <a href="#w1">W1 氣象判讀</a>
+  </div>
+  <div class="nav-batch">R · W · BATCH-RW</div>
+  <div class="nav-dot"></div>
+</nav>
+
+<main class="page">
+
+<!-- ════════════════════════════════════════
+     R1 · 基礎生火要素與環境應變
+════════════════════════════════════════ -->
+<section id="r1">
+  <div class="sec-header">
+    <div class="sec-eyebrow" style="color:var(--accent-R)">R · 野外求生資源 · R1</div>
+    <div class="sec-title">R1 · 基礎生火要素與環境應變</div>
+    <div class="sec-sub">FOUNDATIONAL FIRE ESSENTIALS &amp; WOOD PREPARATION FOR STUDENTS</div>
+  </div>
+
+  <div class="intro-box" style="border-left-color:var(--accent-R)">
+    <strong style="color:var(--accent-R)">登山新手村觀念：</strong>
+    在野外遭遇潮濕低溫、需要緊急生火取暖時，「胡亂把柴堆在一起、直接拿火柴去燒粗木頭」是絕對點不起來的。生火的核心祕訣在於：<strong>依大小規格分類、預先備足材料、由小漸大循序漸進</strong>。
+  </div>
+
+  <div class="section-label" style="--sl-color:var(--accent-R)"><span style="color:var(--accent-R)">01</span> 燃料分類與濕度應變</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">單元一：三級燃料分類與準備清單</span>
+        <span class="card-code">R1-1 // WOOD-STAGES</span>
+      </div>
+      <div class="form-row">
+        <label for="fuel_stage">選擇燃料層級</label>
+        <select id="fuel_stage">
+          <option value="tinder">第一級：火種（Tinder // 頭髮到線繩粗細）</option>
+          <option value="kindling">第二級：引火柴（Kindling // 鉛筆到筷子粗細）</option>
+          <option value="main_fuel">第三級：主燃料（Fuel // 手指到手腕粗細）</option>
+        </select>
+      </div>
+      <div class="info-block">
+        <div class="info-row">
+          <div class="info-label" style="color:var(--accent-R)">白話規格與現地目標</div>
+          <div class="info-val" id="fuel_feature">—</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label" style="color:var(--accent-R)">應變安全準備量</div>
+          <div class="info-val" id="fuel_qty">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">單元二：潮濕環境生火應變評估</span>
+        <span class="card-code">R1-2 // MOISTURE-CONTROL</span>
+      </div>
+      <div class="form-row">
+        <label for="wood_condition">現地森林與木材含水狀態</label>
+        <select id="wood_condition">
+          <option value="dry">晴天乾燥（地表枯枝落葉皆可直接引燃）</option>
+          <option value="saturated">連日大雨全飽和（地表枯枝踩下去會出水）</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="collect_source">採集的初始材料型態</label>
+        <select id="collect_source">
+          <option value="ground">撿拾地表的散落濕木與倒木（Ground Wood）</option>
+          <option value="standing">尋找未傾倒的樹幹死立木核心（Standing Dead Wood）</option>
+        </select>
+      </div>
+      <div class="alert" id="moisture_alert"></div>
+    </div>
+  </div>
+
+  <div class="section-label"><span style="color:var(--accent-R)">02</span> 火堆形狀與台灣現地植物</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">單元三：環境與火堆形狀安全匹配</span>
+        <span class="card-code">R1-3 // PITCHING-SHAPES</span>
+      </div>
+      <div class="form-row">
+        <label for="fire_need">目前的野外核心保命目的</label>
+        <select id="fire_need">
+          <option value="cook">煮沸食水或引燃粗柴（熱能需要垂直向上）</option>
+          <option value="warmth">需要長效大面積保溫、烘乾濕掉的衣物</option>
+          <option value="storm">極端強風暴雨環境、地面極度潮濕</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="fire_shape">計畫搭建的火堆形狀</label>
+        <select id="fire_shape">
+          <option value="tipi">錐形火堆（Tipi Fire）</option>
+          <option value="log_cabin">井字型 / 長條型火堆</option>
+          <option value="dakota">達科他火洞（Dakota Fire Hole）</option>
+        </select>
+      </div>
+      <div class="visual-box" id="fire_visual" style="color:var(--dim2)">熱能流向計算中...</div>
+      <div class="alert" id="shape_alert"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">單元四：台灣現地天然生火建材</span>
+        <span class="card-code">R1-4 // TAIWAN-FIRE-VEG</span>
+      </div>
+      <div class="form-row">
+        <label for="tw_zone">目前所處的海拔高度環境</label>
+        <select id="tw_zone">
+          <option value="select">— 請選擇目前高度區間 —</option>
+          <option value="low">低海拔中級山區（闊葉林林道與竹林帶）</option>
+          <option value="mid">中海拔霧林帶（1200M–2500M 針闊葉混合林）</option>
+          <option value="high">高海拔百岳稜線區（2500M 以上高山箭竹帶）</option>
+        </select>
+      </div>
+      <div class="matrix-out" id="veg_output_r1">請點選目前所處的海拔高度，系統將提供該區域特有的安全引燃天然替代材料觀念。</div>
+    </div>
+  </div>
+</section>
+
+<hr class="batch-divider">
+
+<!-- ════════════════════════════════════════
+     R2 · 野外水源搜索與淨化決策矩陣
+════════════════════════════════════════ -->
+<section id="r2">
+  <div class="sec-header">
+    <div class="sec-eyebrow" style="color:var(--slate)">R · 野外求生資源 · R2</div>
+    <div class="sec-title">R2 · 野外水源搜索與淨化決策矩陣</div>
+    <div class="sec-sub">WILDERNESS WATER SOURCING &amp; PURIFICATION DECISION SYSTEM</div>
+  </div>
+
+  <div class="section-label"><span style="color:var(--slate)">01</span> 高山煮沸與克難過濾</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">高山煮沸與燃料經濟模擬</span>
+        <span class="card-code">R2-1 // THERMO</span>
+      </div>
+      <div class="form-row">
+        <label for="altitude">當地海拔高度 (M)</label>
+        <input type="number" id="altitude" value="0" min="0" max="4000" step="100">
+      </div>
+      <div class="form-row">
+        <label for="fuel_weight">賸餘瓦斯燃料淨重 (G)</label>
+        <input type="number" id="fuel_weight" value="230" min="0">
+      </div>
+      <div class="metrics">
+        <div class="metric-row">
+          <span class="metric-label">理論大氣壓沸點</span>
+          <span class="metric-val" id="boil_pt" style="color:var(--fire)">100.0 °C</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">巴氏滅菌安全臨界</span>
+          <span class="metric-val" style="color:var(--slate)">85.0 °C (維持 3 min)</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">建議熄火時機</span>
+          <span class="metric-val" id="action_tip">初沸騰即關火</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">預估節省燃料率</span>
+          <span class="metric-val" id="fuel_save" style="color:var(--moss)">0.0 %</span>
+        </div>
+      </div>
+      <div class="alert alert-warning" id="alt_alert" style="display:block">提示：高海拔氣壓低，盲目追求大滾 5 分鐘將造成嚴重的瓦斯熱能赤字。</div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">克難預濾梯度截留模擬</span>
+        <span class="card-code">R2-2 // FILTRATION</span>
+      </div>
+      <div style="font-size:11px;color:var(--dim);font-family:var(--mono);">點擊材料依序加入濾筒（由上至下配置）</div>
+      <div class="filter-wrap">
+        <div class="layer-btns">
+          <button class="btn-mat" onclick="addLayer('gravel','粗礫石','#9A8F7A')">＋ 粗礫石（大顆粒）</button>
+          <button class="btn-mat" onclick="addLayer('sand','細砂層','#BDB6A8')">＋ 細砂（懸浮物）</button>
+          <button class="btn-mat" onclick="addLayer('charcoal','木炭層','#4A4540')">＋ 活性木炭（吸附異味）</button>
+          <button class="btn-mat" onclick="addLayer('moss','活青苔','#3D5C3A')">＋ 青苔（不建議）</button>
+          <button class="btn-mat" onclick="addLayer('cloth','密織布料','#7A8FA8')">＋ 布料／棉花（把關層）</button>
+        </div>
+        <div class="bottle-col">
+          <div class="bottle-label">濾筒</div>
+          <div class="bottle" id="bottle_display"></div>
+          <button class="btn-clear" onclick="clearLayers()">✕ 清空</button>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric-row"><span class="metric-label">預計流速效率</span><span class="metric-val" id="filt_flow" style="color:var(--dim2)">—</span></div>
+        <div class="metric-row"><span class="metric-label">混濁度降低率 (NTU)</span><span class="metric-val" id="filt_ntu" style="color:var(--dim2)">—</span></div>
+        <div class="metric-row"><span class="metric-label">生物致病風險</span><span class="metric-val" id="filt_bio" style="color:var(--dim2)">—</span></div>
+      </div>
+      <div class="alert" id="filter_alert"></div>
+    </div>
+  </div>
+
+  <div class="section-label"><span style="color:var(--slate)">02</span> 能量陷阱與台灣水源決策</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">現地取水「能量陷阱」評估</span>
+        <span class="card-code">R2-3 // ENERGY-ROI</span>
+      </div>
+      <div class="form-row">
+        <label for="get_water_method">預計採用的現地求生取水法</label>
+        <select id="get_water_method">
+          <option value="rain">天幕／外帳集雨工法 (Poncho Rain Catch)</option>
+          <option value="dew">晨露收集法 (Dew Collection / 綁腿吸水)</option>
+          <option value="transpiration">植物袋蒸散法 (Transpiration Bag)</option>
+          <option value="solar_pit">地下太陽能蒸餾器 (Solar Pit Distill)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="climate_env">現場環境天候</label>
+        <select id="climate_env">
+          <option value="cool">陰涼 / 高濕度 / 清晨</option>
+          <option value="hot">烈日 / 乾燥 / 無遮蔽</option>
+        </select>
+      </div>
+      <div class="metrics">
+        <div class="metric-row"><span class="metric-label">預估產水速率</span><span class="metric-val" id="water_yield" style="color:var(--dim2)">—</span></div>
+        <div class="metric-row"><span class="metric-label">人體勞動排汗率</span><span class="metric-val" id="sweat_cost">—</span></div>
+        <div class="metric-row"><span class="metric-label">水分經濟淨回報 (ROI)</span><span class="metric-val" id="roi_status">—</span></div>
+      </div>
+      <div class="alert" id="roi_alert"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">台灣山域特殊水源決策樹</span>
+        <span class="card-code">R2-4 // TACTICAL-MATRIX</span>
+      </div>
+      <div class="form-row">
+        <label for="tw_water_source">目標特殊水源選型</label>
+        <select id="tw_water_source">
+          <option value="select">— 請選擇現場偵獲水源 —</option>
+          <option value="pool">高山黑水塘 / 看天池死水</option>
+          <option value="creek_mud">暴雨後高度混濁溪流（高 NTU）</option>
+          <option value="drip">中級山岩壁滲水 / 苔蘚滴水</option>
+          <option value="river">主流動態溪水 / 穩定泉水</option>
+        </select>
+      </div>
+      <div class="matrix-out" id="matrix_output">請選擇水源類型以利 ICP 前進指揮所或第一線隊員產出戰術反制步驟。</div>
+    </div>
+  </div>
+</section>
+
+<hr class="batch-divider">
+
+<!-- ════════════════════════════════════════
+     R3 · 外帳基礎與環境選址教學
+════════════════════════════════════════ -->
+<section id="r3">
+  <div class="sec-header">
+    <div class="sec-eyebrow" style="color:var(--moss)">R · 野外求生資源 · R3</div>
+    <div class="sec-title">R3 · 外帳基礎與環境選址教學</div>
+    <div class="sec-sub">EMERGENCY BIVOUAC &amp; SITE SELECTION FOR STUDENTS</div>
+  </div>
+
+  <div class="intro-box" style="border-left-color:var(--moss)">
+    <strong style="color:var(--moss)">登山新手村觀念：</strong>
+    在戶外遭遇天氣突變、需要就地避難時，外帳與環境選址是保護自己安全、維持體溫的第一道防線。本單元透過形狀幾何特性、選址檢核、熱傳導物理觀念與現地材料，建立最扎實的登山基礎。
+  </div>
+
+  <div class="section-label"><span style="color:var(--moss)">01</span> 外帳形狀與選址決策</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">單元一：外帳形狀與幾何特性</span>
+        <span class="card-code">R3-1 // GEOMETRY</span>
+      </div>
+      <div class="form-row">
+        <label for="tarp_shape">選擇外帳形狀</label>
+        <select id="tarp_shape">
+          <option value="square">正方形 / 長方形外帳</option>
+          <option value="hexagon">鑽石型 / 六角形外帳</option>
+          <option value="pyramid">金字塔型 / 封閉式外帳</option>
+        </select>
+      </div>
+      <div class="info-block">
+        <div class="info-row">
+          <div class="info-label" style="color:var(--moss)">幾何特性與遮蔽率</div>
+          <div class="info-val" id="geom_feature">—</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label" style="color:var(--moss)">核心觀念與操作彈性</div>
+          <div class="info-val" id="geom_concept">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">單元二：環境選址評估模擬</span>
+        <span class="card-code">R3-2 // SITE-SELECT</span>
+      </div>
+      <div class="form-row">
+        <label for="site_location">計畫搭建的微地形位置</label>
+        <select id="site_location">
+          <option value="ridge">山脈鞍部、風口或稜線</option>
+          <option value="creek_bed">乾涸溪床、乾溪溝谷底</option>
+          <option value="slope">山腹的背風面台地或排水緩坡</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="wind_dir_r3">外帳開口與現場陣風方向關係</label>
+        <select id="wind_dir_r3">
+          <option value="facing">外帳開放面（出入口）正對風向</option>
+          <option value="backing">外帳密閉迎風面（貼地面）正對風向</option>
+        </select>
+      </div>
+      <div class="metrics">
+        <div class="metric-row">
+          <span class="metric-label">上方與周邊安全檢核</span>
+          <span class="metric-val" id="site_check" style="color:var(--ink)">—</span>
+        </div>
+      </div>
+      <div class="alert" id="site_alert"></div>
+    </div>
+  </div>
+
+  <div class="section-label"><span style="color:var(--moss)">02</span> 地表熱傳導與現地植物材料</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">單元三：地表熱傳導屏障模擬</span>
+        <span class="card-code">R3-3 // CONDUCTION</span>
+      </div>
+      <div class="form-row">
+        <label for="ground_type">現地接觸的地表介質</label>
+        <select id="ground_type">
+          <option value="wet_soil">吸飽水的濕泥土（飽和含水層）</option>
+          <option value="cold_rock">冰冷的裸露岩石 / 碎石溪床</option>
+          <option value="dry_earth">乾燥的常規泥土地</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="insulation_type">地被隔熱實務對策</label>
+        <select id="insulation_type">
+          <option value="none">直接躺臥在地上（無任何隔離層）</option>
+          <option value="bed_leaves">鋪設 20 cm 以上乾燥枯葉落葉床</option>
+          <option value="bed_frame">利用樹幹骨架建立 15 cm 高架空床</option>
+        </select>
+      </div>
+      <div class="thermal-box" id="thermal_visual">熱流狀態計算中...</div>
+      <div class="alert" id="thermal_alert"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">單元四：台灣山域現地植物建材速查</span>
+        <span class="card-code">R3-4 // TAIWAN-VEG</span>
+      </div>
+      <div class="form-row">
+        <label for="altitude_zone">目前任務執行的山域海拔分佈</label>
+        <select id="altitude_zone">
+          <option value="select">— 請選擇目前高度區間 —</option>
+          <option value="low_zone">低海拔溪谷山區（&lt; 1200M · 桂竹與孟宗竹林）</option>
+          <option value="mid_zone">中海拔混和林霧林帶（1200M–2500M · 倒木與二葉松針）</option>
+          <option value="high_zone">高海拔百岳稜線坡面（&gt; 2500M · 高山箭竹與芒草）</option>
+        </select>
+      </div>
+      <div class="matrix-out" id="veg_output_r3">請點選目前所處的海拔高度，系統將提供該區域特有的自然材料應用應變思維。</div>
+    </div>
+  </div>
+</section>
+
+<hr class="batch-divider">
+
+<!-- ════════════════════════════════════════
+     R4 · 野外動植物食材與衛生處理
+════════════════════════════════════════ -->
+<section id="r4">
+  <div class="sec-header">
+    <div class="sec-eyebrow" style="color:var(--ember)">R · 野外求生資源 · R4</div>
+    <div class="sec-title">R4 · 野外動植物食材與衛生處理</div>
+    <div class="sec-sub">WILDERNESS FOOD ACQUISITION &amp; HYGIENE HANDLING GUIDE</div>
+  </div>
+
+  <div class="intro-box" style="border-left-color:var(--ember)">
+    <strong style="color:var(--ember)">核心法則：</strong>
+    在非預期留置山域的情境下，<strong>食物短缺絕不是 72 小時內的直接致死原因</strong>。任何為了獲取食物而進行的高耗能勞動，都必須以「消耗的熱量絕對必須低於食物所能提供的淨能量」作為唯一判斷依據。任何不確定的食材，在執行<strong>普適可食性測試（Universal Edibility Test）</strong>之前，一律視為有毒物質。
+  </div>
+
+  <div class="section-label"><span style="color:var(--ember)">01</span> 魚類與水中生物獲取</div>
+  <div class="wildlife-grid">
+    <div class="wild-card">
+      <span class="wild-badge" style="background:rgba(44,74,110,.1);color:var(--slate)">低耗能 · 被動</span>
+      <div class="wild-title">原始釣具製作</div>
+      <div class="wild-body">
+        <strong>魚鉤替代品：</strong>以硬骨刺、鋁罐片或木製雙頭錐代替。使用植物纖維（桂竹內皮、芒草葉脈）撚搓成細線，長度 3–5 m 即可。<br><br>
+        <strong>魚類衛生處理：</strong>捕獲後立刻在腮後方橫切放血，清除內臟，確保煮熟至肉質完全不透明、無粉紅色為止。<br><br>
+        <code>台灣山溪魚種</code>：苦花（高山溪）、石斑、溪哥仔。肉質細緻，熱量高。
+      </div>
+    </div>
+    <div class="wild-card">
+      <span class="wild-badge" style="background:rgba(155,94,26,.1);color:var(--ember)">中耗能 · 積極</span>
+      <div class="wild-title">昆蟲低耗能採集</div>
+      <div class="wild-body">
+        <strong>台灣可食昆蟲：</strong>蟋蟀、螞蚱、竹節蟲（去除翅膀與腳）。每 100g 昆蟲含蛋白質 60–80g，是山域最高效的蛋白質來源。<br><br>
+        <strong>採集策略：</strong>翻找潮濕倒木下、石塊縫隙。清晨及黃昏活動量最高。<br><br>
+        <strong>安全處理：</strong>高溫煎烤至完全酥脆。<code>嚴禁</code>食用任何色彩鮮豔的昆蟲（警戒色）。
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label"><span style="color:var(--ember)">02</span> 哺乳類被動獲取</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">小型哺乳類圈套設置原則</span>
+        <span class="card-code">R4-3 // SNARE-PASSIVE</span>
+      </div>
+      <div class="step-list">
+        <div class="step-item"><span class="step-num">01</span><div class="step-text"><strong>選點：</strong>尋找動物通道（徑跡、毛髮、排泄物），在固定路徑的瓶頸點設置。</div></div>
+        <div class="step-item"><span class="step-num">02</span><div class="step-text"><strong>設套：</strong>使用金屬線（最佳）或桂竹纖維製作索套，直徑約 7–10 cm，圈套距地面 10 cm 懸空。</div></div>
+        <div class="step-item"><span class="step-num">03</span><div class="step-text"><strong>消除氣味：</strong>以手觸摸植物葉片再觸碰圈套，或在煙中薰製去除人體氣味。</div></div>
+        <div class="step-item"><span class="step-num">04</span><div class="step-text"><strong>間隔巡視：</strong>每 4–6 小時巡視一次，避免獵物長時間在圈套中導致肉質敗壞。</div></div>
+      </div>
+      <span class="danger-flag">⚠ 台灣保育法規：山豬、山羌、台灣獼猴均為保育動物，緊急求生情境除外，嚴禁獵捕。</span>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">小型哺乳類剝皮與處理程序</span>
+        <span class="card-code">R4-4 // SKINNING-PROC</span>
+      </div>
+      <div class="step-list">
+        <div class="step-item"><span class="step-num">01</span><div class="step-text"><strong>放血：</strong>立即切開頸部大血管，放血後肉質較佳且保存時間延長。</div></div>
+        <div class="step-item"><span class="step-num">02</span><div class="step-text"><strong>剝皮：</strong>在四肢關節處環切，縱向切開腹部皮膚（僅切皮層，勿刺穿腹腔）。</div></div>
+        <div class="step-item"><span class="step-num">03</span><div class="step-text"><strong>去除內臟：</strong>結紮並切除食道與直腸末端，完整取出消化道，<strong>保留肝、腎（作為高熱量食物）</strong>。</div></div>
+        <div class="step-item"><span class="step-num">04</span><div class="step-text"><strong>烹煮：</strong>架火烤至肉汁清澈透明無粉紅色。若有容器，建議水煮確保滅菌徹底。</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label"><span style="color:var(--ember)">03</span> 兩棲爬蟲與禽類</div>
+  <div class="wildlife-grid">
+    <div class="wild-card">
+      <span class="wild-badge" style="background:rgba(61,92,58,.1);color:var(--moss)">低風險 · 常見</span>
+      <div class="wild-title">兩棲類（青蛙、蟾蜍）</div>
+      <div class="wild-body">
+        <strong>可食物種：</strong>台灣山區常見的梭德氏赤蛙、澤蛙（白底腹部）可食。<br><br>
+        <strong>處理：</strong>去除皮膚（含分泌腺，部分有毒素）、頭部及內臟，僅保留後腿與背部肌肉，高溫煮熟。<br><br>
+        <code>嚴格禁止</code>食用任何蟾蜍，其皮膚分泌物含強心苷毒素，可致命。
+      </div>
+      <span class="danger-flag">⚠ 辨識重點：蟾蜍有明顯疣狀凸起；青蛙皮膚光滑。</span>
+    </div>
+    <div class="wild-card">
+      <span class="wild-badge" style="background:rgba(200,64,26,.1);color:var(--danger)">高風險 · 慎重</span>
+      <div class="wild-title">蛇類處置三步驟</div>
+      <div class="wild-body">
+        <strong>步驟一（距離安全）：</strong>保持 2 倍體長以上距離，以長竹竿壓制頸部。<code>絕對不可徒手抓捕</code>，包含外觀「疑似」死亡的蛇。<br><br>
+        <strong>步驟二（迅速斷頭）：</strong>利用石頭或鋒利刀具，在頸後 5 cm 處一刀切斷。<strong>切斷後頭部仍有咬合反射，建議靜置至少 30 分鐘後方可處理，或直接深埋遠離。</strong><span style="display:block;margin-top:.4rem;font-size:12px;color:#9A948E;">⚠ 個別案例記錄顯示反射可持續超過 30 分鐘，深埋是最保險的處置。</span><br>
+        <strong>步驟三（剝皮去毒囊）：</strong>環切頸部皮膚，整體剝除，確認去除靠近頭部的毒腺後，肌肉安全可食。
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="batch-divider">
+
+<!-- ════════════════════════════════════════
+     W1 · 環境微觀觀測與氣象判讀
+════════════════════════════════════════ -->
+<section id="w1">
+  <div class="sec-header">
+    <div class="sec-eyebrow" style="color:var(--accent-W)">W · 環境氣象判讀 · W1</div>
+    <div class="sec-title">W1 · 環境微觀觀測與氣象判讀</div>
+    <div class="sec-sub">MICROCLIMATE OBSERVATION &amp; FIELD WEATHER ASSESSMENT</div>
+  </div>
+
+  <div class="section-label"><span style="color:var(--accent-W)">01</span> 山域微氣象與區域效應</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">局部風向效應與營地選址</span>
+        <span class="card-code">W1-1 // WIND-CYCLE</span>
+      </div>
+      <div class="toggle-group">
+        <button class="btn-toggle active" id="btn-day" onclick="switchWindMode('day')">☀️ 白天（谷風）</button>
+        <button class="btn-toggle" id="btn-night" onclick="switchWindMode('night')">🌙 夜晚（山風）</button>
+      </div>
+      <div class="wind-panel" id="wind-panel" style="border-color:var(--slate)">
+        <div class="wind-direction" id="wind-dir" style="color:var(--slate)">☀️ 白天效應：山坡受熱較快，氣流沿谷底往山上吹送（谷風）。</div>
+        <div class="wind-tip" id="wind-tip">行進提示：白天順谷風向上，在鞍部、風口或稜線匯合處體感風速會明顯增強，應注意保暖調節。</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">地形降溫與焚風效應估算</span>
+        <span class="card-code">W1-2 // ADIABATIC</span>
+      </div>
+      <div style="font-size:12px;color:var(--dim);line-height:1.65;background:var(--stone);border:1px solid var(--rule);border-radius:4px;padding:10px 12px;">
+        <strong style="color:var(--ink)">科學原理：</strong>
+        迎風面水氣上升凝結時以濕絕熱率（每 100m 降 0.5°C）冷卻；越過山頂下沉至背風面時，水分已釋放，改以乾絕熱率（每 100m 升 1.0°C）快速回溫，形成乾熱焚風。
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+        <div class="form-row">
+          <label for="start-alt">迎風面起點高度 (M)</label>
+          <input type="number" id="start-alt" value="100">
+        </div>
+        <div class="form-row">
+          <label for="start-temp">迎風面起點溫度 (°C)</label>
+          <input type="number" id="start-temp" value="28">
+        </div>
+        <div class="form-row">
+          <label for="peak-alt">最高嶺線高度 (M)</label>
+          <input type="number" id="peak-alt" value="2100">
+        </div>
+      </div>
+      <button class="btn-calc" onclick="calculateAdiabatic()">▶ 執行現地氣溫估算</button>
+      <div class="calc-result" id="calc-result">
+        <div class="calc-row">
+          <span class="calc-label">⛰ 嶺線最高點預估溫度</span>
+          <span class="calc-val" id="peak-temp" style="color:var(--danger)">—</span>
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">🍂 背風面（同起點高）預估溫度</span>
+          <span class="calc-val" id="lee-temp" style="color:var(--ember)">—</span>
+        </div>
+        <div class="calc-note" id="calc-note"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label"><span style="color:var(--accent-W)">02</span> 動態雲層與天氣風險圖鑑</div>
+  <div class="cloud-stack">
+    <div class="cloud-item" style="border-left-color:var(--dim2)">
+      <div class="cloud-head">
+        <div>
+          <div class="cloud-badge" style="background:var(--stone);color:var(--dim2)">高雲 · 約 6000m 以上</div>
+          <div class="cloud-name">卷雲（Cirrus）/ 卷層雲</div>
+        </div>
+        <div class="cloud-timing" style="color:var(--moss)">⏱ 遠期預警 · 24–48 小時前</div>
+      </div>
+      <div class="cloud-desc"><strong style="color:var(--ink)">外觀特徵：</strong>絲絹狀、羽毛狀白色細絲。若細絲末端開始向前彎曲演變為勾狀，或天空出現日暈（卷層雲現象），應即刻記錄。</div>
+      <div class="cloud-action" style="background:rgba(44,74,110,.07);border-color:var(--slate);color:var(--slate)">
+        <strong>行動安全指南：</strong>通常代表高空西風帶引導的低氣壓或鋒面前緣正在逼近。此時地面可能仍維持晴朗，但應把握時間窗口清點防雨裝備、檢查外帳，並評估後續長程隊伍的時間調配。
+      </div>
+    </div>
+    <div class="cloud-item" style="border-left-color:var(--ember)">
+      <div class="cloud-head">
+        <div>
+          <div class="cloud-badge" style="background:rgba(155,94,26,.1);color:var(--ember)">中雲 · 2000m – 6000m</div>
+          <div class="cloud-name">高積雲（Altocumulus）/ 亂層雲</div>
+        </div>
+        <div class="cloud-timing" style="color:var(--ember)">⏱ 中期備戰 · 12–24 小時前</div>
+      </div>
+      <div class="cloud-desc"><strong style="color:var(--ink)">外觀特徵：</strong>雲體呈圓片狀或塊狀聚集成群，俗稱「魚鱗天」或「波浪雲」。</div>
+      <div class="cloud-action" style="background:rgba(155,94,26,.07);border-color:var(--ember);color:var(--ember)">
+        <strong>行動安全指南：</strong>民諺「魚鱗天，不雨也風顛」。當觀測到高積雲增厚、範圍擴大且高度持續降低，代表中層大氣轉趨不穩定。行程應避免強行通過空曠稜線，提早鎖定沿途可供避風雨的宿營點。
+      </div>
+    </div>
+    <div class="cloud-item" style="border-left-color:var(--danger)">
+      <div class="cloud-head">
+        <div>
+          <div class="cloud-badge" style="background:rgba(200,64,26,.08);color:var(--danger)">低雲 · 2000m 以下 · 垂直發展雲</div>
+          <div class="cloud-name">積雨雲（Cumulonimbus）</div>
+        </div>
+        <div class="cloud-timing" style="color:var(--danger)">🚨 即時風險預警 · 現下至數小時內</div>
+      </div>
+      <div class="cloud-desc"><strong style="color:var(--ink)">外觀特徵：</strong>雲體龐大如高聳黑沉烏雲山，頂部常呈砧狀，垂直向上發展劇烈。</div>
+      <div class="cloud-action" style="background:rgba(200,64,26,.07);border-color:var(--danger);color:var(--danger)">
+        <strong>行動安全指南：</strong>極易引發強降雨、冰雹、雷擊與瞬間強陣風。<strong>隊伍應立刻撤離孤立山頂、空曠稜線、大樹下與金屬設施旁</strong>；若路線位於狹窄溪谷，必須迅速尋找高灘地撤離，防範溪水在極短時間內暴漲。
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label"><span style="color:var(--accent-W)">03</span> 生態特徵與蒲氏風力安全對照</div>
+  <div class="flip-wrap">
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <div class="icon">🌲</div>
+          <strong>松果鱗片緊閉</strong>
+          <div class="hint">點擊查看物理原理</div>
+        </div>
+        <div class="flip-card-back">
+          <div class="back-label">物理原理</div>
+          <p>空氣中相對濕度顯著上升時，松果鱗片會吸收水分而閉合以保護內部種子。代表現地環境降雨機率極高，應儘速做好防雨應變。</p>
+        </div>
+      </div>
+    </div>
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <div class="icon">🌅</div>
+          <strong>清晨朝霞深紅</strong>
+          <div class="hint">點擊查看物理原理</div>
+        </div>
+        <div class="flip-card-back">
+          <div class="back-label">物理原理</div>
+          <p>陽光穿透西方大氣中的高密度水氣與微粒時產生散射。隨著中緯度天氣系統由西向東移，晨霞深紅通常預示下午或夜間天氣即將轉壞。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bft-card">
+    <table class="bft-table">
+      <thead>
+        <tr>
+          <th>蒲氏級數</th>
+          <th>風名</th>
+          <th>陸地直觀現況</th>
+          <th>登山行進安全指南</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="bft-num" style="color:var(--moss)">3</span></td>
+          <td><span class="bft-name">微風</span></td>
+          <td>樹葉及小樹枝搖動，小旗幟展開</td>
+          <td style="color:var(--moss)"><strong>良好安全：</strong>體感溫度合適，適合大眾山域行進與紮營。</td>
+        </tr>
+        <tr>
+          <td><span class="bft-num" style="color:var(--dim2)">4–5</span></td>
+          <td><span class="bft-name">和風至清風</span></td>
+          <td>能吹起地面灰塵與碎紙，小樹開始搖擺</td>
+          <td><strong style="color:var(--ink)">常態留意：</strong>營地選址需確實拉好風繩，注意避免輕量裝備、地墊遭風吹落山谷。</td>
+        </tr>
+        <tr>
+          <td><span class="bft-num" style="color:var(--ember)">6–7</span></td>
+          <td><span class="bft-name">疾風至強風</span></td>
+          <td>大樹枝搖動，迎風行走有阻力，電線呼呼作響</td>
+          <td style="color:var(--ember)"><strong>提高警覺：</strong>稜線與風口處風寒效應顯著，身體核心溫度易快速流失。行進應加穿防風硬殼衣，評估暫緩前進並就近尋找避風處。</td>
+        </tr>
+        <tr>
+          <td><span class="bft-num" style="color:var(--danger)">8+</span></td>
+          <td><span class="bft-name">大風與烈風</span></td>
+          <td>小樹枝折斷，人迎風行進感覺阻力極大</td>
+          <td style="color:var(--danger)"><strong>高度風險：</strong>應停止前進與強行攀登。嚴防密林內倒木砸傷、稜線重心不穩吹落。應退回低海拔、掩體、山屋或撤出該林相區域。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<script>
+// ══════════════════ R1 SCRIPTS ══════════════════
+const stageSel = document.getElementById('fuel_stage');
+function updateFuelStage() {
+  const val = stageSel.value;
+  const data = {
+    tinder:    { feat: '<strong>頭髮細到線繩粗細</strong>。例如：乾燥的細芒草、死掉的松針、枯苔蘚。出發前推薦在家自製<strong>「凡士林棉球」</strong>放在防水袋中帶上山。', qty: '<strong>至少準備「雙手捧滿一大碗」的量</strong>。新手最常因為火種準備太少，一擊發火花就燒光，來不及傳遞給下一級。' },
+    kindling:  { feat: '<strong>鉛筆到筷子粗細</strong>，主要功能是負責「擴大火苗」。生火前利用刀子或手折，將乾燥樹枝削成細絲，或製作<strong>火媒棒（Feather Sticks）</strong>。', qty: '<strong>至少準備兩大綑（雙臂抱滿）</strong>。必須等火種完全引燃引火柴、火勢穩定後，才能往上加粗木頭。' },
+    main_fuel: { feat: '<strong>手指、大拇指，到手腕粗細的粗木頭</strong>，提供持久穩定的熱源。切記：嚴禁一開始就把手腕粗的木頭砸在火種上，會直接隔絕氧氣讓火堆窒息熄滅。', qty: '依預計過夜或烘乾需求決定，應採集遠離地面、未直接接觸濕泥土的倒木樹幹。' }
+  };
+  const d = data[val];
+  document.getElementById('fuel_feature').innerHTML = d.feat;
+  document.getElementById('fuel_qty').innerHTML = d.qty;
+}
+stageSel.addEventListener('change', updateFuelStage);
+
+const condSel = document.getElementById('wood_condition');
+const srcSel  = document.getElementById('collect_source');
+function updateMoistureControl() {
+  const cond = condSel.value, src = srcSel.value;
+  let aClass = '', aTxt = '';
+  if (cond === 'dry') {
+    aClass = 'alert alert-success'; aTxt = '常態安全環境：天氣乾燥時，現地材料含水率低，地表落葉與小枯枝通常可以直接引燃。但升火前請務必清理周邊落葉，建立防火圈。';
+  } else {
+    if (src === 'ground') { aClass = 'alert alert-danger'; aTxt = '安全決策警訊：大錯特錯！地表散落的木頭已被暴雨泡透，內部含水率極高。千萬不要浪費體力撿地上的濕柴！'; }
+    else { aClass = 'alert alert-warning'; aTxt = '正確應變思維：飽和潮濕環境下，唯一乾燥的燃料藏在「死立木（枯死但未倒下的樹幹）」核心。安全步驟：用鋸子切下死立木幹 → 用刀子配合木棍敲擊刀背（Batoning 劈柴術）破開外層全濕區域 → 取出最中心乾燥的木芯。'; }
+  }
+  const alertEl = document.getElementById('moisture_alert');
+  alertEl.className = aClass; alertEl.innerText = aTxt; alertEl.style.display = 'block';
+}
+condSel.addEventListener('change', updateMoistureControl);
+srcSel.addEventListener('change', updateMoistureControl);
+
+const needSel = document.getElementById('fire_need');
+const shapeSel = document.getElementById('fire_shape');
+function updateFireShapes() {
+  const need = needSel.value, shape = shapeSel.value;
+  const shapeMap = {
+    tipi:      { color: 'var(--fire)',  txt: '🔥 錐形火堆：強烈熱對流，熱能垂直向上衝。' },
+    log_cabin: { color: 'var(--ember)', txt: '🪵 井字 / 長條火堆：橫向熱輻射，熱能向單側或四周均勻擴散。' },
+    dakota:    { color: 'var(--moss)',  txt: '🕳 達科他火洞：地下雙向煙囪效應，抗風表現完美。' }
+  };
+  const matchMap = { cook: 'tipi', warmth: 'log_cabin', storm: 'dakota' };
+  const isMatch = matchMap[need] === shape;
+  const s = shapeMap[shape];
+  const boxEl = document.getElementById('fire_visual');
+  boxEl.innerText = s.txt; boxEl.style.color = s.color; boxEl.style.borderColor = s.color;
+  let aClass = '', aTxt = '';
+  if (isMatch) {
+    aClass = 'alert alert-success';
+    aTxt = shape === 'tipi' ? '正確安全決策：完美匹配！錐形結構的物理特性就是熱對流向上衝，能以最快速度集中熱量，適合燒開水或在初始階段將上方的引火柴強行逼乾並引燃。' : shape === 'log_cabin' ? '正確安全決策：完美匹配！平行長條或井字型火堆能提供極佳的橫向熱輻射，適合在火堆後方搭一面「原木反射牆」，將熱能反射回身體，是烘乾衣物與過夜防失溫的王牌結構。' : '正確安全決策：高級避難思維！在強風暴雨中，達科他火洞在地下挖兩個連通洞口，風力會轉為進氣道鼓風，且雨水不易直接淋滅火核心，存活率最高。';
+  } else {
+    aClass = shape === 'dakota' && need !== 'storm' ? 'alert alert-warning' : 'alert alert-danger';
+    aTxt = shape === 'tipi' ? '安全決策偏差：錐形火熱能全往天上跑，橫向輻射熱極差，躺在地上的傷患或想烤乾衣物的隊員完全無法獲得溫暖。' : shape === 'log_cabin' ? '應變決策修正：此結構熱能向上效率較低，生火初期若直接搭成井字型，熱量不集中，容易因上方木頭太重把微弱的初始火苗壓熄。' : '提示觀念：達科他火洞隱蔽且非常省柴，但需要重體力挖掘土地。如果地面乾燥且人員疲憊，毋須盲目挖掘。';
+  }
+  const alertEl = document.getElementById('shape_alert');
+  alertEl.className = aClass; alertEl.innerText = aTxt; alertEl.style.display = 'block';
+}
+needSel.addEventListener('change', updateFireShapes);
+shapeSel.addEventListener('change', updateFireShapes);
+
+document.getElementById('tw_zone').addEventListener('change', function() {
+  const out = document.getElementById('veg_output_r1');
+  const map = {
+    low:  `<strong style="color:var(--moss)">【天然燃料：低海拔桂竹與竹膜】</strong><br><br>・<strong>現地目標</strong>：台灣低海拔林道極其豐富的乾燥枯桂竹。<br>・<strong>建材特性</strong>：桂竹內部通常乾爽，外皮含有天然竹油，極易燃燒。<br>・<strong>應變應用</strong>：用開山刀將枯竹剖開，刮取內壁纖維狀的<code>竹膜</code>，是極佳的現地第一級火種。`,
+    mid:  `<strong style="color:var(--ember)">【天然燃料：中海拔二葉松脂與松明】</strong><br><br>・<strong>現地目標</strong>：二葉松林、枯乾松針、松樹受創處結塊的黃色松脂、松樹死枝核心（松明）。<br>・<strong>建材特性</strong>：富含極高濃度的天然松香樹脂，油脂極高，高度抗水且燃燒高熱。<br>・<strong>應變應用</strong>：採集乾松針當作第一級火種；砍下枯死松樹枝的節點（俗稱<code>松明 / 油脂木</code>）用刀刮成粉末或薄片。`,
+    high: `<strong style="color:var(--fire)">【天然燃料：高海拔枯死箭竹與芒草根】</strong><br><br>・<strong>現地目標</strong>：高山百岳稜線、箭竹叢基部、箭竹死枝、高山芒草根部。<br>・<strong>建材特性</strong>：缺乏粗原木，枝幹細小但密集。<br>・<strong>應變應用</strong>：深入箭竹叢內部（靠近地面處），拔取細小、枯死且尚未腐爛的乾燥箭竹細枝作為引火柴。若地面全濕，可挖掘高山芒草叢基部的枯乾草根，用手揉碎揉蓬鬆，充當克難火種。注意：<code>高山含氧量低</code>，火堆燃燒效率打折，應確保進氣空間充足。`
+  };
+  out.innerHTML = map[this.value] || '請點選目前所處的海拔高度，系統將提供該區域特有的安全引燃天然替代材料觀念。';
+  out.style.color = this.value !== 'select' ? 'var(--ink)' : 'var(--dim)';
+});
+
+// ══════════════════ R2 SCRIPTS ══════════════════
+const altInput  = document.getElementById('altitude');
+const fuelInput = document.getElementById('fuel_weight');
+function calcBoilingPoint() {
+  const alt = parseFloat(altInput.value) || 0;
+  let bp = 100 - (alt / 300);
+  bp = Math.max(bp, 85);
+  document.getElementById('boil_pt').innerText = bp.toFixed(1) + ' °C';
+  const saveRate = (alt / 4000) * 35;
+  document.getElementById('fuel_save').innerText = saveRate.toFixed(1) + ' %';
+  let tip = '初沸騰即關火';
+  if (alt >= 3000) tip = '維持微沸 1 分鐘即可安全飲用';
+  else if (alt >= 1500) tip = '毋須維持大滾，初沸即熄火';
+  document.getElementById('action_tip').innerText = tip;
+}
+altInput.addEventListener('input', calcBoilingPoint);
+fuelInput.addEventListener('input', calcBoilingPoint);
+
+let currentLayers = [];
+function addLayer(type, name, color) {
+  if (currentLayers.length >= 5) return;
+  currentLayers.push(type);
+  const chip = document.createElement('div');
+  chip.className = 'layer-chip'; chip.style.backgroundColor = color; chip.innerText = name;
+  document.getElementById('bottle_display').appendChild(chip);
+  evaluateFilter();
+}
+function clearLayers() {
+  currentLayers = []; document.getElementById('bottle_display').innerHTML = ''; evaluateFilter();
+}
+function evaluateFilter() {
+  const flowEl = document.getElementById('filt_flow');
+  const ntuEl  = document.getElementById('filt_ntu');
+  const bioEl  = document.getElementById('filt_bio');
+  const alertEl = document.getElementById('filter_alert');
+  if (currentLayers.length === 0) {
+    [flowEl, ntuEl, bioEl].forEach(el => { el.style.color = 'var(--dim2)'; el.innerText = '—'; });
+    alertEl.style.display = 'none'; return;
+  }
+  const hasMoss = currentLayers.includes('moss');
+  const fullSet = ['gravel','sand','charcoal','cloth'].every(l => currentLayers.includes(l));
+  if (hasMoss) {
+    flowEl.style.color = 'var(--danger)'; flowEl.innerText = '極慢（堵塞）';
+    ntuEl.style.color  = 'var(--danger)'; ntuEl.innerText  = '降低 10%（青苔引入腐物）';
+    bioEl.style.color  = 'var(--danger)'; bioEl.innerText  = '極高（CRITICAL）';
+    alertEl.className = 'alert alert-danger';
+    alertEl.innerText = '戰術警訊：引入活青苔會將微生物與腐植質帶入濾筒，引發二次污染！';
+    alertEl.style.display = 'block';
+  } else if (fullSet) {
+    flowEl.style.color = 'var(--moss)'; flowEl.innerText = '良好（梯度均衡）';
+    ntuEl.style.color  = 'var(--moss)'; ntuEl.innerText  = '降低 90%（水質澄清）';
+    bioEl.style.color  = 'var(--warn)'; bioEl.innerText  = '高危（不可直接飲用）';
+    alertEl.className = 'alert alert-warning';
+    alertEl.innerText = '戰術提示：水質混濁度已大幅改善，但此系統無滅菌功能，仍必須強制煮沸或化學消毒！';
+    alertEl.style.display = 'block';
+  } else {
+    flowEl.style.color = 'var(--ember)'; flowEl.innerText = '不穩定 / 偏快';
+    ntuEl.style.color  = 'var(--ember)'; ntuEl.innerText  = '降低 35%（孔隙梯度未建立）';
+    bioEl.style.color  = 'var(--danger)'; bioEl.innerText = '極高';
+    alertEl.className = 'alert alert-danger';
+    alertEl.innerText = '警告：層序不完整。標準 Bushcraft 物理預濾必須遵循「粗礫石 → 細砂 → 木炭 → 密織布料」之梯度攔截。';
+    alertEl.style.display = 'block';
+  }
+}
+
+const methodSel  = document.getElementById('get_water_method');
+const climateSel = document.getElementById('climate_env');
+function calcEnergyROI() {
+  const method = methodSel.value, climate = climateSel.value;
+  const map = {
+    solar_pit:     { yield: '約 20–50 mL / 24 小時', cost: climate === 'hot' ? '高強度重體力（排汗約 600–800 mL）' : '中強度體力（排汗約 300 mL）', roi: '負報酬（Energy Deficit）', roiColor: 'var(--danger)', cls: 'alert alert-danger', msg: '致命陷阱：在烈日下揮汗挖掘太陽能蒸餾坑，人體水分流失遠大於設施產出！搜救實務上嚴禁此項勞動。' },
+    rain:          { yield: '取決於雨量（可達 2000+ mL/hr）', cost: '極低強度（架設外帳 5 分鐘）', roi: '極高正回報（Highly Positive）', roiColor: 'var(--moss)', cls: 'alert alert-success', msg: '優選戰術：利用現有天幕、雨衣（Poncho）建立集水面，以最低熱量代價獲取最大水產量。' },
+    dew:           { yield: '約 100–300 mL / 每小時清晨', cost: '低強度（綁布吸水散步）', roi: '正報酬（Surplus）', roiColor: 'var(--slate)', cls: 'alert alert-success', msg: '實用戰術：清晨利用吸水布料綁在小腿上走過乾淨草叢，再將水分擠出，流汗代價極低。' },
+    transpiration: { yield: '約 50–100 mL / 每日每袋', cost: '極低強度（套袋後被動等待）', roi: '正報酬（被動收益）', roiColor: 'var(--slate)', cls: 'alert alert-warning', msg: '提示：利用塑膠袋套住無毒大葉片收集蒸散水。需注意不可挑選有毒植物（如姑婆芋），以防毒素溶入水中。' }
+  };
+  const d = map[method]; if (!d) return;
+  document.getElementById('water_yield').innerText = d.yield;
+  document.getElementById('sweat_cost').innerText = d.cost;
+  const roiEl = document.getElementById('roi_status');
+  roiEl.innerText = d.roi; roiEl.setAttribute('style', `color:${d.roiColor};font-weight:700`);
+  const alertEl = document.getElementById('roi_alert');
+  alertEl.className = d.cls; alertEl.innerText = d.msg; alertEl.style.display = 'block';
+}
+methodSel.addEventListener('change', calcEnergyROI);
+climateSel.addEventListener('change', calcEnergyROI);
+
+document.getElementById('tw_water_source').addEventListener('change', function() {
+  const out = document.getElementById('matrix_output');
+  const map = {
+    pool:      `<strong style="color:var(--ember)">【戰術管制作為】高山黑水塘</strong><br><br>1. <strong>水質評估</strong>：高山黑水塘（死水）含水鹿排泄物、單寧酸與賈第鞭毛蟲風險極高。<br>2. <strong>處理鏈工法</strong>：先使用 <code>活性木炭層</code> 去除動物尿騷味與單寧酸色素 → 通過商品濾水器（0.1 微米中空纖維膜）→ <strong>強制投入二氧化氯淨水錠或高溫煮沸</strong>，完成三道防禦。`,
+    creek_mud: `<strong style="color:var(--slate)">【戰術管制作為】暴雨後高濁度溪流</strong><br><br>1. <strong>現地工法（吉普賽井）</strong>：嚴禁直接將泥水灌入昂貴的商品濾水器（會瞬間鎖死堵塞）。<br>2. <strong>執行步驟</strong>：在距離主河道 50 cm 處的沙灘挖掘深坑（即 <code>Gipsy Well</code>），利用溪床沙礫層自然滲透過濾 → 取得初步澄清水源後再進行精細過濾與消毒。`,
+    drip:      `<strong style="color:var(--moss)">【戰術管制作為】岩壁滲水 / 苔蘚滴水</strong><br><br>1. <strong>水質評估</strong>：岩壁滴水受到天然地層過濾，混濁度（NTU）極低，水質通常最為澄清。<br>2. <strong>執行步驟</strong>：利用導水小木條或竹片斜插進岩縫，建立被動滴水引流鏈 → 接引至鋼杯。生物致病率低，但仍建議初沸騰後飲用。`,
+    river:     `<strong style="color:var(--charcoal)">【戰術管制作為】主流活水 / 穩定泉水</strong><br><br>1. <strong>常規處理</strong>：流動活水源或潔淨泉水，風險相對可控。<br>2. <strong>防禦線</strong>：直接使用中空纖維膜濾水器過濾，或高溫煮沸至巴氏滅菌溫度（高海拔依海拔調節），即可直接作為戰術飲用水。`,
+    select:    '請選擇水源類型以利 ICP 前進指揮所或第一線隊員產出戰術反制步驟。'
+  };
+  out.innerHTML = map[this.value] || map.select;
+  out.style.color = this.value !== 'select' ? 'var(--ink)' : 'var(--dim)';
+});
+
+// ══════════════════ R3 SCRIPTS ══════════════════
+const tarpSel = document.getElementById('tarp_shape');
+function updateGeometry() {
+  const data = {
+    square:  { feat: '掛點分布均勻對稱，邊緣多為直角，覆蓋面積完整。', concept: '擁有極致的<strong>「搭建彈性」</strong>。因為形狀方正，可透過折疊與改變拉繩角度，隨時變形為雙面斜屋頂、單面披棚或半封閉式口袋，最能應對多變的地形。' },
+    hexagon: { feat: '流線剪裁，四角或六角向外延伸，主要依賴一條對角主脊線。', concept: '講求<strong>「搭建速度快」</strong>（所需拉繩與地釘較少），且排水性好、導風效果佳。缺點是側邊下擺的防雨覆蓋面積會比四方形稍微減少。' },
+    pyramid: { feat: '立體錐形剪裁，通常需要中央一根立柱撐起，四周邊緣完全平貼地面。', concept: '擁有優異的 <strong>360° 全方位強風與防暴雨能力</strong>，密閉空間安全感高，不容易因風向改變而受風。但空間利用率稍低，對地面平整度要求高。' }
+  };
+  const d = data[tarpSel.value];
+  document.getElementById('geom_feature').innerHTML = d.feat;
+  document.getElementById('geom_concept').innerHTML = d.concept;
+}
+tarpSel.addEventListener('change', updateGeometry);
+
+const siteSel  = document.getElementById('site_location');
+const windSelR3 = document.getElementById('wind_dir_r3');
+function updateSiteSelection() {
+  const loc = siteSel.value, wind = windSelR3.value;
+  let checkTxt = '', aClass = '', aTxt = '';
+  if (loc === 'ridge') {
+    checkTxt = '稜線與風口風勢最強，外帳極易被強風吹毀，且容易遭受雷擊威脅。';
+    aClass = 'alert alert-danger'; aTxt = '安全決策警訊：此處不適合就地避難！強風帶走大量體溫（風寒效應），請立刻向山腹移轉尋找背風面。';
+  } else if (loc === 'creek_bed') {
+    checkTxt = '乾溪溝谷底在暴雨時，溪水暴漲速度極快（閃洪風險）；且谷底是冷空氣匯集的「冷空氣池」，寒氣極重。';
+    aClass = 'alert alert-danger'; aTxt = '安全決策警訊：嚴禁在水路、溪床與溪溝底紮營！同時應注意上方是否有枯立木（Widowmakers）或鬆動落石坡。';
+  } else {
+    checkTxt = '山腹背風斜坡能阻擋強風，且平坦台地具備良好的排水彈性，上方樹冠健康，枯枝掉落風險低。';
+    aClass = wind === 'facing' ? 'alert alert-warning' : 'alert alert-success';
+    aTxt = wind === 'facing' ? '應變思維偏差：地點選對了，但外帳出入口正對風向！強風會像降落傘一樣灌入外帳內部，產生巨大拉扯力，容易摧毀天幕系統並讓寒風灌入內部。' : '正確安全決策：地點與定向完美配合！外帳的密閉背牆迎向風的來向，開放面完全背風，內部將會形成一個非常穩定的溫暖微氣候。';
+  }
+  const checkEl = document.getElementById('site_check');
+  checkEl.innerText = checkTxt;
+  checkEl.style.color = loc === 'slope' && wind === 'backing' ? 'var(--ok)' : loc === 'slope' ? 'var(--warn)' : 'var(--danger)';
+  const alertEl = document.getElementById('site_alert');
+  alertEl.className = aClass; alertEl.innerText = aTxt; alertEl.style.display = 'block';
+}
+siteSel.addEventListener('change', updateSiteSelection);
+windSelR3.addEventListener('change', updateSiteSelection);
+
+const groundSel = document.getElementById('ground_type');
+const insuSel   = document.getElementById('insulation_type');
+function simulateConduction() {
+  const map = {
+    none:       { color: 'var(--danger)', txt: '❌ 熱流極速外洩！\n人體體溫正被冰冷大地像蓄電池一樣迅速抽走。', aClass: 'alert alert-danger', aTxt: '物理觀念（熱傳導 Conduction）：當身體直接接觸冰冷地表時，熱量會快速流向大地。尤其是吸飽水的濕泥土，水分導熱率極高，無異於將身體泡在冷水中，是引發失溫的最致命陷阱。' },
+    bed_leaves: { color: 'var(--warn)',   txt: '⚠️ 隔熱層建立成功。\n枯葉層成功鎖住微小空氣口袋，減緩熱傳導。', aClass: 'alert alert-warning', aTxt: '基礎實務對策：在躺臥區堆疊至少 20 cm 厚度的乾燥枯葉、松針或乾樹皮。利用落葉之間無數個「靜止的空氣口袋」作為天然隔熱體，能大幅阻絕傳導散熱。' },
+    bed_frame:  { color: 'var(--ok)',     txt: '🛡️ 傳導散熱完全阻絕！\n身體完全架離地面，利用大面積空氣空間隔絕。', aClass: 'alert alert-success', aTxt: '優選應變思維：利用現地樹幹結構將人體完全架高 15 cm 離開地表！這是斬斷接觸面熱傳導最徹底的方法，能有效保存核心熱量，提高過夜存活率。' }
+  };
+  const d = map[insuSel.value];
+  const boxEl = document.getElementById('thermal_visual');
+  boxEl.innerText = d.txt; boxEl.style.color = d.color; boxEl.style.borderColor = d.color;
+  boxEl.style.background = d.color === 'var(--danger)' ? 'rgba(200,64,26,.06)' : d.color === 'var(--warn)' ? 'rgba(155,94,26,.06)' : 'rgba(61,92,58,.06)';
+  const alertEl = document.getElementById('thermal_alert');
+  alertEl.className = d.aClass; alertEl.innerText = d.aTxt; alertEl.style.display = 'block';
+}
+groundSel.addEventListener('change', simulateConduction);
+insuSel.addEventListener('change', simulateConduction);
+
+document.getElementById('altitude_zone').addEventListener('change', function() {
+  const out = document.getElementById('veg_output_r3');
+  const map = {
+    low_zone:  `<strong style="color:var(--moss)">【現地應用：低海拔竹林材料】</strong><br><br>・<strong>主要植物</strong>：台灣溪谷與林道常見的桂竹、孟宗竹。<br>・<strong>材料特性</strong>：結構剛性強、中空質輕、容易劈開。<br>・<strong>應變應用</strong>：當手邊缺乏營柱時，竹子是極佳的克難外帳支柱。如果裝備極度缺乏，可將竹子對半剖開並打通關節，像傳統屋瓦一樣以 <code>一正一反（仰覆互扣）</code> 的方式鋪設，能做出不漏水的克難排水屋頂。`,
+    mid_zone:  `<strong style="color:var(--slate)">【現地應用：中海拔森林隔熱層】</strong><br><br>・<strong>主要植物</strong>：二葉松針、天然倒木、巨型枯乾蕨類、大面積落葉。<br>・<strong>材料特性</strong>：松針油脂含量高（天然抗水）、乾燥落葉堆疊蓬鬆（空氣感佳）。<br>・<strong>應變應用</strong>：二葉松針與乾燥針葉林落葉是建立 <code>20 cm 地被隔熱層</code> 最頂級的材料。大片樹皮或枯乾蕨類葉片適合覆蓋在外帳外圍輔助擋風。`,
+    high_zone: `<strong style="color:var(--fire)">【現地應用：高海拔百岳草牆工法】</strong><br><br>・<strong>主要植物</strong>：高山箭竹、高山芒草。<br>・<strong>材料特性</strong>：質地柔韌、高密集度、耐彎曲。<br>・<strong>應變應用</strong>：高山稜線極度缺乏粗大原木。將大量箭竹 <code>綑紮成束</code> 充當抗風支撐柱；割下大量芒草密織編在外帳迎風面作為擋風草牆，阻絕低溫強風灌入內部。`
+  };
+  out.innerHTML = map[this.value] || '請點選目前所處的海拔高度，系統將提供該區域特有的自然材料應用應變思維。';
+  out.style.color = this.value !== 'select' ? 'var(--ink)' : 'var(--dim)';
+});
+
+// ══════════════════ W1 SCRIPTS ══════════════════
+function switchWindMode(mode) {
+  const dayBtn   = document.getElementById('btn-day');
+  const nightBtn = document.getElementById('btn-night');
+  const panel    = document.getElementById('wind-panel');
+  const dir      = document.getElementById('wind-dir');
+  const tip      = document.getElementById('wind-tip');
+  if (mode === 'day') {
+    dayBtn.className = 'btn-toggle active'; nightBtn.className = 'btn-toggle';
+    panel.style.borderColor = 'var(--slate)'; dir.style.color = 'var(--slate)';
+    dir.innerText = '☀️ 白天效應：山坡受熱較快，氣流沿谷底往山上吹送（谷風）。';
+    tip.innerText  = '行進提示：白天順谷風向上，在鞍部、風口或稜線匯合處體感風速會明顯增強，應注意保暖調節。';
+  } else {
+    nightBtn.className = 'btn-toggle active'; dayBtn.className = 'btn-toggle';
+    panel.style.borderColor = 'var(--ember)'; dir.style.color = 'var(--ember)';
+    dir.innerText = '🌙 夜晚效應：山頂與稜線冷卻極快，冷空氣密度大，順著斜坡向谷底匯集沉降（山風 / 下坡風）。';
+    tip.innerText  = '安全提示：夜間宿營選址時，應盡量避開深谷底部或鞍部低窪處等「冷空氣滯留聚集點」，以降低低溫環境引發失溫的風險。';
+  }
+}
+
+function calculateAdiabatic() {
+  const startAlt  = parseFloat(document.getElementById('start-alt').value)  || 0;
+  const startTemp = parseFloat(document.getElementById('start-temp').value) || 0;
+  const peakAlt   = parseFloat(document.getElementById('peak-alt').value)   || 0;
+  if (peakAlt <= startAlt) { document.getElementById('calc-result').style.display = 'none'; return; }
+  const h = peakAlt - startAlt;
+  const peakTemp = startTemp - (h / 100 * 0.5);
+  const leeTemp  = peakTemp  + (h / 100 * 1.0);
+  document.getElementById('peak-temp').innerText = peakTemp.toFixed(1) + ' °C';
+  document.getElementById('lee-temp').innerText  = leeTemp.toFixed(1)  + ' °C';
+  document.getElementById('calc-note').innerText = '行動建議：越嶺後背風面空氣因氣流下沉而快速增溫且極度乾燥（焚風效應）。行經此區段時務必增加防護並適時補充水分，防範乾熱環境導致體力在不知不覺中過度消耗。';
+  document.getElementById('calc-result').style.display = 'flex';
+}
+
+// ══════════════════ INIT ══════════════════
+updateFuelStage();
+updateMoistureControl();
+updateFireShapes();
+calcBoilingPoint();
+calcEnergyROI();
+updateGeometry();
+updateSiteSelection();
+simulateConduction();
+
+// ── NAV ACTIVE HIGHLIGHT ON SCROLL ──
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { threshold: 0.2, rootMargin: '-52px 0px 0px 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
