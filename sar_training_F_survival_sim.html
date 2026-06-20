@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F1 · 極限環境情境模擬 — SAR TW</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:    #F5F0E8;
+  --stone:    #EDE7D9;
+  --stone2:   #E3DDD0;
+  --rule:     #CFC9BC;
+  --rule2:    #BDB6A8;
+  --ink:      #1C1A17;
+  --dim:      #6B6560;
+  --dim2:     #9A948E;
+  --fire:     #C8401A;
+  --accent-F: #5C6B2A;
+
+  --plwf-p:   #2C4A6E;
+  --plwf-l:   #9B5E1A;
+  --plwf-w:   #1A6B6B;
+  --plwf-f:   #7A3A6E;
+
+  --mono:  'IBM Plex Mono', monospace;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+  --nav-h: 52px;
+  --spine: 4px;
+  --gutter: clamp(1.5rem, 5vw, 3.5rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.spine {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--spine);
+  background: var(--fire);
+  z-index: 200;
+}
+
+.top-nav {
+  position: fixed; top: 0;
+  left: var(--spine); right: 0;
+  height: var(--nav-h);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center;
+  padding: 0 var(--gutter);
+  gap: 1.5rem;
+  z-index: 100;
+}
+.nav-logo { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--fire); letter-spacing: .1em; }
+.nav-home { font-family: var(--mono); font-size: 11px; color: var(--dim); text-decoration: none; letter-spacing: .04em; }
+.nav-home:hover { color: var(--ink); }
+.nav-sep { width: 1px; height: 20px; background: var(--rule); }
+.nav-links { display: flex; gap: 1rem; align-items: center; overflow-x: auto; }
+.nav-links a {
+  font-family: var(--mono); font-size: 11px; color: var(--dim2);
+  text-decoration: none; letter-spacing: .05em; white-space: nowrap;
+  padding-left: .75rem; border-left: 2px solid transparent;
+}
+.nav-links a.active { color: var(--ink); border-left-color: var(--accent-F); }
+
+.page {
+  padding-top: calc(var(--nav-h) + 3.5rem);
+  padding-bottom: 8rem;
+  padding-left: calc(var(--spine) + var(--gutter));
+  padding-right: var(--gutter);
+  max-width: calc(var(--spine) + 1040px);
+}
+
+.sec-header { margin-bottom: 2rem; }
+.sec-layer {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--accent-F); letter-spacing: .22em; text-transform: uppercase;
+  margin-bottom: .6rem;
+}
+.sec-title {
+  font-family: var(--mono); font-size: clamp(1.3rem, 3.5vw, 2rem);
+  font-weight: 700; color: var(--ink); line-height: 1.1; margin-bottom: .6rem;
+}
+.sec-title em { font-style: normal; color: var(--accent-F); }
+.sec-sub { font-size: 13px; color: var(--dim); max-width: 60ch; }
+
+.tool-frame {
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent-F);
+  border-radius: 4px;
+  background: var(--stone);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+.tool-bar {
+  background: var(--stone2);
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .55rem 1rem;
+}
+.tool-label { font-family: var(--mono); font-size: 10px; font-weight: 700; color: var(--accent-F); letter-spacing: .12em; text-transform: uppercase; }
+.tool-tag   { font-family: var(--mono); font-size: 10px; color: var(--dim2); letter-spacing: .04em; }
+.tool-inner { padding: 1.5rem; }
+
+.env-tabs {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: .5rem; margin-bottom: 1.5rem;
+}
+.env-tab {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  padding: .6rem .5rem; border-radius: 3px; text-align: center;
+  border: 1px solid var(--rule); background: var(--paper);
+  color: var(--dim); cursor: pointer; letter-spacing: .04em;
+  display: flex; flex-direction: column; align-items: center; gap: .3rem;
+  transition: all .15s;
+}
+.env-tab:hover { background: var(--stone2); color: var(--ink); }
+.env-tab.active { background: var(--accent-F); border-color: var(--accent-F); color: #fff; }
+.env-tab .tab-icon { font-size: 18px; }
+
+.sim-grid {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.env-panel {
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent-F);
+  border-radius: 4px;
+  background: var(--paper);
+  padding: 1.25rem;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.env-panel-title {
+  font-family: var(--mono); font-size: 14px; font-weight: 700;
+  color: var(--ink); display: flex; align-items: center; gap: .6rem;
+}
+.env-title-icon { font-size: 18px; }
+.env-badge {
+  display: inline-block;
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  padding: .15rem .45rem; border-radius: 2px; letter-spacing: .06em;
+  margin-top: .25rem; border: 1px solid;
+}
+.env-badge.mid   { background: color-mix(in srgb,#9B5E1A 12%,transparent); color:#9B5E1A; border-color:color-mix(in srgb,#9B5E1A 35%,transparent); }
+.env-badge.high  { background: color-mix(in srgb,#C8401A 12%,transparent); color:#C8401A; border-color:color-mix(in srgb,#C8401A 35%,transparent); }
+.env-badge.xhigh { background: color-mix(in srgb,#7A3A6E 12%,transparent); color:#7A3A6E; border-color:color-mix(in srgb,#7A3A6E 35%,transparent); }
+.env-badge.limit { background: color-mix(in srgb,#2C4A6E 12%,transparent); color:#2C4A6E; border-color:color-mix(in srgb,#2C4A6E 35%,transparent); }
+
+.env-desc { font-size: 12px; color: var(--dim); line-height: 1.7; }
+
+.env-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: .6rem;
+  background: var(--stone); border: 1px solid var(--rule);
+  border-radius: 3px; padding: .75rem;
+}
+.env-stat-label { font-family: var(--mono); font-size: 9px; color: var(--dim2); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .2rem; }
+.env-stat-val   { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--ink); }
+
+.env-warning {
+  border: 1px solid var(--rule2);
+  border-left: 3px solid var(--fire);
+  background: color-mix(in srgb,var(--fire) 6%,var(--paper));
+  border-radius: 3px; padding: .75rem;
+  font-size: 11px; color: var(--dim); line-height: 1.6;
+}
+.env-warning strong {
+  font-family: var(--mono); font-size: 10px; color: var(--fire);
+  display: block; margin-bottom: .3rem; letter-spacing: .06em;
+}
+.env-hint {
+  font-family: var(--mono); font-size: 10px; color: var(--dim2);
+  text-align: center; letter-spacing: .04em;
+  padding-top: .5rem; border-top: 1px solid var(--rule);
+}
+
+.right-col { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.plwf-heading {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--dim); letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: .75rem;
+}
+.plwf-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem;
+}
+
+.perspective-box { perspective: 900px; height: 110px; cursor: pointer; }
+.flip-card {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .45s cubic-bezier(.4,0,.2,1);
+}
+.flip-card.flipped { transform: rotateY(180deg); }
+.flip-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--card-color);
+  border-radius: 4px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: space-between;
+  padding: .65rem .5rem; text-align: center;
+}
+.flip-front { background: var(--paper); }
+.flip-front:hover { background: var(--stone); }
+.flip-back {
+  background: color-mix(in srgb,var(--card-color) 9%,var(--stone));
+  transform: rotateY(180deg);
+}
+.flip-letter { font-family: var(--mono); font-size: 1.2rem; font-weight: 700; color: var(--card-color); }
+.flip-name   { font-family: var(--mono); font-size: 9px; font-weight: 700; color: var(--ink); letter-spacing: .04em; line-height: 1.4; }
+.flip-text   { font-size: 10px; color: var(--dim); line-height: 1.55; }
+
+.quiz-panel {
+  border: 1px solid var(--rule);
+  border-radius: 4px; background: var(--paper); overflow: hidden;
+}
+.quiz-head {
+  background: var(--stone2); border-bottom: 1px solid var(--rule);
+  padding: .65rem 1rem;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--accent-F); letter-spacing: .12em; text-transform: uppercase;
+}
+.quiz-body { padding: 1rem; display: flex; flex-direction: column; gap: .75rem; }
+.quiz-scenario {
+  background: var(--stone); border: 1px solid var(--rule); border-radius: 3px;
+  padding: .85rem 1rem; font-size: 12px; color: var(--ink); line-height: 1.7;
+}
+.quiz-opts { display: flex; flex-direction: column; gap: .5rem; }
+.quiz-option {
+  width: 100%; text-align: left; padding: .75rem 1rem;
+  border: 1px solid var(--rule); border-radius: 3px;
+  background: var(--paper); font-size: 12px; color: var(--dim);
+  cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+  gap: .75rem; transition: all .15s; font-family: var(--sans);
+}
+.quiz-option:hover:not(:disabled) { background: var(--stone); color: var(--ink); border-color: var(--rule2); }
+.quiz-option.correct { background: color-mix(in srgb,var(--accent-F) 10%,var(--paper)); border-color: var(--accent-F); color: var(--ink); }
+.quiz-option.wrong   { background: color-mix(in srgb,#C8401A 8%,var(--paper)); border-color: #C8401A; color: var(--dim); }
+.quiz-option.faded   { opacity: .4; }
+.opt-icon { font-size: 13px; flex-shrink: 0; font-family: var(--mono); }
+
+.quiz-feedback {
+  display: none; border-radius: 3px;
+  padding: .85rem 1rem; font-size: 12px; line-height: 1.7;
+}
+.quiz-feedback.correct-fb {
+  background: color-mix(in srgb,var(--accent-F) 8%,var(--paper));
+  border: 1px solid color-mix(in srgb,var(--accent-F) 35%,transparent);
+  color: var(--ink);
+}
+.quiz-feedback.wrong-fb {
+  background: color-mix(in srgb,#9B5E1A 8%,var(--paper));
+  border: 1px solid color-mix(in srgb,#9B5E1A 35%,transparent);
+  color: var(--ink);
+}
+.quiz-feedback strong {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+  display: block; margin-bottom: .35rem;
+}
+
+.page-footer {
+  border-top: 1px solid var(--rule); padding: 2rem 0; margin-top: 5rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-left { font-family: var(--mono); font-size: 11px; color: var(--dim); line-height: 1.8; }
+.footer-left strong { color: var(--ink); }
+.footer-right { font-family: var(--mono); font-size: 10px; color: var(--dim2); text-align: right; }
+
+@media (max-width: 700px) {
+  .sim-grid    { grid-template-columns: 1fr; }
+  .env-tabs    { grid-template-columns: repeat(2, 1fr); }
+  .plwf-grid   { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="spine"></div>
+
+<nav class="top-nav">
+  <div class="nav-logo">SAR // TW</div>
+  <a class="nav-home" href="index.html">← 首頁</a>
+  <div class="nav-sep"></div>
+  <div class="nav-links">
+    <a href="#f1" class="active" data-layer="F">F1 · 極限環境模擬</a>
+  </div>
+</nav>
+
+<main class="page">
+
+  <section id="f1">
+    <div class="sec-header">
+      <div class="sec-layer">F1 · 野外情境模擬</div>
+      <h2 class="sec-title">極限環境生存 · <em>PLWF 四大原則情境模擬器</em></h2>
+      <p class="sec-sub">切換四種野外環境，透過翻牌記憶求生原則，再用情境測驗驗收判斷力。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">環境情境模擬器</div>
+        <div class="tool-tag">PLWF · Protection · Location · Water · Food</div>
+      </div>
+      <div class="tool-inner">
+
+        <div class="env-tabs">
+          <button class="env-tab active" onclick="switchEnv('temperate')" id="tab-temperate">
+            <span class="tab-icon">🌲</span>溫帶森林
+          </button>
+          <button class="env-tab" onclick="switchEnv('tropical')" id="tab-tropical">
+            <span class="tab-icon">🦟</span>熱帶雨林
+          </button>
+          <button class="env-tab" onclick="switchEnv('mountain')" id="tab-mountain">
+            <span class="tab-icon">⛰️</span>高海拔山區
+          </button>
+          <button class="env-tab" onclick="switchEnv('arctic')" id="tab-arctic">
+            <span class="tab-icon">❄️</span>極地寒帶
+          </button>
+        </div>
+
+        <div class="sim-grid">
+
+          <!-- LEFT: ENV PANEL -->
+          <div class="env-panel">
+            <div>
+              <div class="env-panel-title">
+                <span class="env-title-icon" id="env-icon">🌲</span>
+                <span id="env-title">溫帶森林環境</span>
+              </div>
+              <span class="env-badge mid" id="env-badge">危險度：中等</span>
+            </div>
+            <p class="env-desc" id="env-desc">通常氣候溫和，擁有豐富的水源與植被。然而，複雜的地形、多變的天氣（突發暴雨）以及密林容易導致迷失方向。在此環境求生，重點在於維持乾爽並防止夜間失溫。</p>
+            <div class="env-stats">
+              <div>
+                <div class="env-stat-label">主要威脅</div>
+                <div class="env-stat-val" id="env-threat">迷途、突發暴雨</div>
+              </div>
+              <div>
+                <div class="env-stat-label">典型溫度</div>
+                <div class="env-stat-val" id="env-temp">10°C – 25°C</div>
+              </div>
+            </div>
+            <div class="env-warning">
+              <strong>⚠ 核心警告</strong>
+              <span id="env-warning">不要盲目沿著溪谷向下走。如果溪谷地形轉為狹窄陡峭，容易遭遇落石、急流受困，應評估是否有安全的高繞路徑。</span>
+            </div>
+            <div class="env-hint">切換上方分頁載入不同環境手冊</div>
+          </div>
+
+          <!-- RIGHT: PLWF + QUIZ -->
+          <div class="right-col">
+
+            <div>
+              <div class="plwf-heading">Step 1 — 點擊翻牌，解鎖求生四大原則</div>
+              <div class="plwf-grid">
+
+                <div class="perspective-box" onclick="flipCard('card-p')">
+                  <div class="flip-card" id="card-p" style="--card-color: var(--plwf-p)">
+                    <div class="flip-face flip-front">
+                      <div class="flip-letter">P</div>
+                      <div class="flip-name">防護<br>Protection</div>
+                    </div>
+                    <div class="flip-face flip-back">
+                      <div class="flip-text" id="text-p">建立庇護所防止風雨、失溫與烈日傷害，維持體溫是存活首要條件。</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="perspective-box" onclick="flipCard('card-l')">
+                  <div class="flip-card" id="card-l" style="--card-color: var(--plwf-l)">
+                    <div class="flip-face flip-front">
+                      <div class="flip-letter">L</div>
+                      <div class="flip-name">地點<br>Location</div>
+                    </div>
+                    <div class="flip-face flip-back">
+                      <div class="flip-text" id="text-l">選擇紮營點需避開落石、山洪等危險，並在顯眼處設置搜救信號。</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="perspective-box" onclick="flipCard('card-w')">
+                  <div class="flip-card" id="card-w" style="--card-color: var(--plwf-w)">
+                    <div class="flip-face flip-front">
+                      <div class="flip-letter">W</div>
+                      <div class="flip-name">水分<br>Water</div>
+                    </div>
+                    <div class="flip-face flip-back">
+                      <div class="flip-text" id="text-w">人體無水只能活 3 天。必須優先尋找水源，並進行過濾或煮沸。</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="perspective-box" onclick="flipCard('card-f')">
+                  <div class="flip-card" id="card-f" style="--card-color: var(--plwf-f)">
+                    <div class="flip-face flip-front">
+                      <div class="flip-letter">F</div>
+                      <div class="flip-name">食物<br>Food</div>
+                    </div>
+                    <div class="flip-face flip-back">
+                      <div class="flip-text" id="text-f">雖然無食可撐 3 週，但食物能提供熱量、維持意志力與身體機能。</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="quiz-panel">
+              <div class="quiz-head">Step 2 — 面臨模擬情境挑戰</div>
+              <div class="quiz-body">
+                <div class="quiz-scenario" id="quiz-scenario">
+                  【情境：溫帶森林暴雨受困】你正在密林中遭遇突如其來的午後豪雨，全身衣服即將被淋濕，天色也漸漸暗了下來。根據求生優先順序，你的下一步應該是什麼？
+                </div>
+                <div class="quiz-opts">
+                  <button class="quiz-option" onclick="checkAnswer('A')" id="opt-A">
+                    <span id="opt-A-text">(A) 立刻拿出水袋，找大樹底下收集雨水作為後續水源</span>
+                    <span class="opt-icon" id="icon-A">○</span>
+                  </button>
+                  <button class="quiz-option" onclick="checkAnswer('B')" id="opt-B">
+                    <span id="opt-B-text">(B) 停止移動，利用現有天然屏障或外帳建立防護避難所，保持乾燥</span>
+                    <span class="opt-icon" id="icon-B">○</span>
+                  </button>
+                  <button class="quiz-option" onclick="checkAnswer('C')" id="opt-C">
+                    <span id="opt-C-text">(C) 趁天黑前架設陷阱或尋找野生莓果，補充體力</span>
+                    <span class="opt-icon" id="icon-C">○</span>
+                  </button>
+                </div>
+                <div class="quiz-feedback" id="quiz-feedback"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="page-footer">
+    <div class="footer-left">
+      <strong>SAR · TW</strong> · 台灣山域搜救訓練平台<br>
+      F · 野外情境模擬 · PLWF 生存優先序 · nightmoon720
+    </div>
+    <div class="footer-right">
+      1 MODULE<br>
+      F GROUP<br>
+      VERSION 2025
+    </div>
+  </div>
+
+</main>
+
+<script>
+const ENV = {
+  temperate: {
+    icon:'🌲', title:'溫帶森林環境',
+    badge:'危險度：中等', badgeClass:'mid',
+    desc:'通常氣候溫和，擁有豐富的水源與植被。然而，複雜的地形、多變的天氣（突發暴雨）以及密林容易導致迷失方向。在此環境求生，重點在於維持乾爽並防止夜間失溫。',
+    threat:'迷途、突發暴雨', temp:'10°C – 25°C',
+    warning:'不要盲目沿著溪谷向下走。如果溪谷地形轉為狹窄陡峭，容易遭遇落石、急流受困，應評估是否有安全的高繞路徑。',
+    pText:'防護：收集大量枯枝與闊葉，或利用外帳搭建雙面斜屋頂，阻絕降雨與地表濕氣。',
+    lText:'地點：避開凹地與河床（防止暴雨積水），選擇平坦、有天然擋風物的林間空地。',
+    wText:'水分：溫帶水源多，可用乾淨容器收集雨水，溪水則必須煮沸以防寄生蟲。',
+    fText:'食物：植物漿果豐富，但遵循「不熟不吃」原則；可翻開倒木尋找昆蟲幼蟲。',
+    scenario:'【情境：溫帶森林暴雨受困】你正在密林中遭遇突如其來的午後豪雨，全身衣服即將被淋濕，天色也漸漸暗了下來。根據求生優先順序，你的下一步應該是什麼？',
+    optA:'(A) 立刻拿出水袋，找大樹底下收集雨水作為後續水源',
+    optB:'(B) 停止移動，利用現有天然屏障或外帳建立防護避難所，保持乾燥',
+    optC:'(C) 趁天黑前架設陷阱或尋找野生莓果，補充體力',
+    correct:'B',
+    explanations:{
+      A:'此時雨水充足，水分不是迫切問題。反而是全身淋濕加上強風，會讓體溫極速流失，造成失溫致命。',
+      B:'正確。在溫帶暴雨中，「防護 (Protection)」與防濕是第一要務。立刻建立避難所保持身體乾燥，是避免失溫的關鍵抉擇。',
+      C:'人體幾天不吃東西也能存活。但在失溫環境下，幾個小時就會致命。此時去尋找食物會浪費寶貴的防護搭建時間。'
+    }
+  },
+  tropical: {
+    icon:'🦟', title:'熱帶雨林環境',
+    badge:'危險度：高', badgeClass:'high',
+    desc:'高度潮濕、悶熱，常有密集暴雨。環境中充斥著各種昆蟲、毒蛇與病原體。求生核心在於防止脫水、昆蟲叮咬引起的感染，以及尋找高地避開突發性洪水。',
+    threat:'脫水、感染、暴雨山洪', temp:'25°C – 38°C',
+    warning:'在熱帶雨林中，不要直接睡在地面上。地表高度潮濕且有大量毒蟲生物，必須搭建高架式（離地）的求生床。',
+    pText:'防護：搭建離地至少 30 公分的棚架床，頂部用大芭蕉葉層疊覆蓋以防水。',
+    lText:'地點：絕對不要紮營於河岸低窪處，雨林山洪爆發極快；應選擇通風良好的高處。',
+    wText:'水分：雖然潮濕，但地面水多遭污染。可切斷大型藤本植物吸取流出的乾淨汁液。',
+    fText:'食物：雨林物產豐富，但毒物也多。不認識的植物與繽紛菇類絕對不吃，以昆蟲或熟食鳥類為主。',
+    scenario:'【情境：熱帶雨林高溫迷途】你在悶熱的雨林中迷失方向，大汗淋漓且攜帶的水已經喝光，此時你感到極度口渴與暈眩。你應該怎麼做？',
+    optA:'(A) 停止盲目砍伐，尋找水源藤本植物切斷取水，並移至通風高處',
+    optB:'(B) 留在原地，立刻砍伐大型重木在泥地上搭建遮雨棚架',
+    optC:'(C) 為了補充流汗失去的體力，大量進食隨身攜帶的乾糧',
+    correct:'A',
+    explanations:{
+      A:'正確。熱帶環境最大的敵人之一是「脫水」與中暑（Water 優先）。利用雨林藤蔓取水或設置接雨裝置是當務之急，切勿飲用不明地表死水。',
+      B:'雖然防護重要，但在高溫悶熱下，你已經出現暈眩的脫水前兆，此時若盲目砍伐重木搭建複雜庇護所，會加速體力與水分流失。',
+      C:'高溫下人體水分流失極快，而消化固體食物需要消耗身體更多水分，這會加劇你的脫水症狀。'
+    }
+  },
+  mountain: {
+    icon:'⛰️', title:'高海拔山區環境',
+    badge:'危險度：極高', badgeClass:'xhigh',
+    desc:'地形極度陡峭、氣壓低。山區天氣變化萬千，落石、滑落危險度極高。白天日照強烈，夜間氣溫常驟降至零度以下，面臨高山症與快速失溫的雙重威脅。',
+    threat:'失溫、高山症、地形墜落', temp:'-5°C – 15°C',
+    warning:'高海拔山區的雪線以上極度危險。切勿在毫無雪地裝備的情況下嘗試強行橫越，低溫與強風會在短時間內耗盡你的生機。',
+    pText:'防護：利用岩壁裂縫、巨石後方避風。如果有睡袋或救生毯，應立刻包裹核心軀幹。',
+    lText:'地點：避開落石區、鞍部（風口）與枯木下方。選擇避風、堅固的岩石平台紮營。',
+    wText:'水分：高山水源多在溪谷底，若在上坡可尋找乾淨積雪融化，但切忌直接吃冰雪，會降低核心體溫。',
+    fText:'食物：高山植物稀少，高寒環境下身體熱量消耗極快，優先食用高熱量隨身口糧。',
+    scenario:'【情境：高山受困天色漸暗】受困於海拔 2800 公尺的山脊上，四周寒風刺骨，此時太陽即將下山，你身上受了輕傷且體力正在下滑。你該怎麼做？',
+    optA:'(A) 趁著天黑前的餘光，快速沿著未知的溪谷向下切以尋找水源',
+    optB:'(B) 停止下切，尋找巨石後方避風處，披上救生毯防風過夜',
+    optC:'(C) 在陡峭的山脊上四處奔跑，大聲呼救並尋找野生植物充飢',
+    correct:'B',
+    explanations:{
+      A:'夜間的山谷一片漆黑，在陡峭崎嶇的山區盲目向下摸黑尋找水源，極容易發生墜崖、滑落等致命二次山難。',
+      B:'正確。高山夜間低溫與強風是致命殺手。此時必須立刻停止移動，在天黑前利用地形背風處建立「防護與地點 (P&L)」，撐過低溫夜間。',
+      C:'高海拔山區夜間覓食極度困難且危險，盲目走動會加速熱量散失。此時保持不動並防風避寒才是上策。'
+    }
+  },
+  arctic: {
+    icon:'❄️', title:'極地寒帶環境',
+    badge:'危險度：極限', badgeClass:'limit',
+    desc:'長期處於零度以下的極端低溫，伴隨強烈的暴風雪。地表被冰雪覆蓋，缺乏地表植被與淡水流動。在此環境求生，防凍傷、防失溫是每分每秒都在面臨的考驗。',
+    threat:'極度低溫、嚴重凍傷、雪盲', temp:'-40°C – 0°C',
+    warning:'在極地絕對不能忽視「雪盲症」。沒有墨鏡時，必須利用布條剪出細縫遮蔽雙眼，否則雪地強烈紫外線反射會導致短暫失明。',
+    pText:'防護：防護是絕對核心！必須穿戴所有保暖衣物。若條件允許，堆砌雪磚搭建雪屋（Igloo）內部反而最保暖。',
+    lText:'地點：選擇完全避風的冰壁下方，或地勢凹陷但無雪崩風險的雪坡紮營。',
+    wText:'水分：四周皆是雪，但必須生火融雪才能飲用。直接吞食冰雪會使體溫驟降，加速失溫。',
+    fText:'食物：植物完全絕跡。只能透過破冰捕魚或追蹤動物足跡。高脂肪的動物肉類是極佳的熱量來源。',
+    scenario:'【情境：極地暴風雪來襲】你在極地平原遭遇猛烈的白矇天（Whiteout）與暴風雪，能見度不到 3 公尺，且手指已經開始感到麻木與劇痛（凍傷前兆）。你該怎麼辦？',
+    optA:'(A) 迎著暴風雪加速向前奔跑，試圖尋找原本的基地',
+    optB:'(B) 停在原地，拿出打火機嘗試直接燃燒四周的冰雪來喝水',
+    optC:'(C) 就地利用雪坡挖掘雪洞避難，將受凍的手指納入腋下取暖',
+    correct:'C',
+    explanations:{
+      A:'在能見度極低的白矇天中強行前進，不僅無法找到基地，反而會徹底迷失在荒原中，且迎風走動會加速手腳凍傷壞死。',
+      B:'融雪需要生火。在狂暴的暴風雪平原中，毫無遮蔽是完全無法點燃火源的，且此時最缺的是體溫與防護，而非水分。',
+      C:'正確。極地暴風雪中盲目移動等同自殺。必須就地挖掘雪洞或用背包建立防風屏障（Protection），將受凍的手指納入腋下取暖，就地避難。'
+    }
+  }
+};
+
+let currentEnv = 'temperate';
+let answered = false;
+
+function switchEnv(key) {
+  currentEnv = key;
+  answered = false;
+  const d = ENV[key];
+
+  document.querySelectorAll('.env-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + key).classList.add('active');
+
+  document.getElementById('env-icon').textContent = d.icon;
+  document.getElementById('env-title').textContent = d.title;
+  const badge = document.getElementById('env-badge');
+  badge.textContent = d.badge;
+  badge.className = 'env-badge ' + d.badgeClass;
+  document.getElementById('env-desc').textContent = d.desc;
+  document.getElementById('env-threat').textContent = d.threat;
+  document.getElementById('env-temp').textContent = d.temp;
+  document.getElementById('env-warning').textContent = d.warning;
+
+  document.getElementById('text-p').textContent = d.pText;
+  document.getElementById('text-l').textContent = d.lText;
+  document.getElementById('text-w').textContent = d.wText;
+  document.getElementById('text-f').textContent = d.fText;
+
+  ['card-p','card-l','card-w','card-f'].forEach(id => {
+    document.getElementById(id).classList.remove('flipped');
+  });
+
+  document.getElementById('quiz-scenario').textContent = d.scenario;
+  document.getElementById('opt-A-text').textContent = d.optA;
+  document.getElementById('opt-B-text').textContent = d.optB;
+  document.getElementById('opt-C-text').textContent = d.optC;
+  resetQuiz();
+}
+
+function flipCard(id) {
+  document.getElementById(id).classList.toggle('flipped');
+}
+
+function checkAnswer(sel) {
+  if (answered) return;
+  answered = true;
+  const d = ENV[currentEnv];
+  const ok = sel === d.correct;
+
+  ['A','B','C'].forEach(opt => {
+    const btn  = document.getElementById('opt-' + opt);
+    const icon = document.getElementById('icon-' + opt);
+    btn.onclick = null;
+    if (opt === sel) {
+      btn.classList.add(ok ? 'correct' : 'wrong');
+      icon.textContent = ok ? '✓' : '✕';
+    } else if (opt === d.correct && !ok) {
+      btn.classList.add('correct');
+      icon.textContent = '✓';
+    } else {
+      btn.classList.add('faded');
+    }
+  });
+
+  const fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'block';
+  fb.className = 'quiz-feedback ' + (ok ? 'correct-fb' : 'wrong-fb');
+  fb.innerHTML = '<strong>' + (ok ? '✓ 生存決擇正確' : '→ 戰術思考提示') + '</strong>' + d.explanations[sel];
+}
+
+function resetQuiz() {
+  ['A','B','C'].forEach(opt => {
+    const btn = document.getElementById('opt-' + opt);
+    btn.className = 'quiz-option';
+    btn.onclick = function(){ checkAnswer(opt); };
+    document.getElementById('icon-' + opt).textContent = '○';
+  });
+  const fb = document.getElementById('quiz-feedback');
+  fb.style.display = 'none';
+  fb.className = 'quiz-feedback';
+}
+</script>
+</body>
+</html>
