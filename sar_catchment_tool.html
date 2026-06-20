@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>集水區暴漲風險評估站 · SAR TW</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:   #F5F0E8;
+  --stone:   #EDE7D9;
+  --stone2:  #E3DDD0;
+  --rule:    #CFC9BC;
+  --rule2:   #BDB6A8;
+  --ink:     #1C1A17;
+  --dim:     #6B6560;
+  --dim2:    #9A948E;
+  --fire:    #C8401A;
+  --accent-S:#1A6B6B;
+  --accent-S-light: #e8f4f4;
+  --mono:    'IBM Plex Mono', monospace;
+  --serif:   'Noto Serif TC', serif;
+  --sans:    'Noto Sans TC', sans-serif;
+  --nav-h:   52px;
+  --spine:   4px;
+  --gutter:  clamp(1.2rem, 4vw, 3rem);
+  --warn-bg: #FFF8E8;
+  --warn-border: #D4892A;
+  --danger-bg: #FEF0EE;
+  --danger-border: #C8401A;
+  --go-bg:   #EEF6F1;
+  --go-border: #2E7D52;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  padding-top: var(--nav-h);
+}
+
+/* ── Spine ── */
+.spine {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: var(--spine);
+  background: var(--accent-S);
+  z-index: 100;
+}
+
+/* ── Nav ── */
+.top-nav {
+  position: fixed;
+  top: 0; left: var(--spine); right: 0;
+  height: var(--nav-h);
+  background: var(--stone);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0 var(--gutter);
+  z-index: 99;
+}
+
+.nav-logo {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--accent-S);
+  letter-spacing: .12em;
+  white-space: nowrap;
+}
+
+.nav-home {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-home:hover { color: var(--ink); }
+
+.nav-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--rule2);
+  flex-shrink: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: .1rem;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+  flex: 1;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  text-decoration: none;
+  padding: .3rem .7rem;
+  border-radius: 2px;
+  white-space: nowrap;
+  border-left: 2px solid transparent;
+  transition: all .15s;
+}
+.nav-links a:hover, .nav-links a.active {
+  background: var(--stone2);
+  color: var(--ink);
+  border-left-color: var(--accent-S);
+}
+
+.nav-badge {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Hero ── */
+.hero {
+  padding: 3.5rem var(--gutter) 2.5rem;
+  border-bottom: 1px solid var(--rule);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent-S);
+  letter-spacing: .14em;
+  margin-bottom: .8rem;
+}
+
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+.hero-title em {
+  font-style: normal;
+  color: var(--accent-S);
+}
+
+.hero-sub {
+  font-size: 14px;
+  color: var(--dim);
+  max-width: 600px;
+  line-height: 1.8;
+}
+
+.hero-meta {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+}
+.hero-stat-num {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-S);
+  line-height: 1;
+}
+.hero-stat-label {
+  font-size: 11px;
+  color: var(--dim2);
+  margin-top: .25rem;
+  font-family: var(--mono);
+}
+
+/* ── Main layout ── */
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem var(--gutter) 5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+/* ── Section header ── */
+.sec-header {
+  margin-bottom: 1.5rem;
+}
+.sec-layer {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .16em;
+  color: var(--accent-S);
+  margin-bottom: .5rem;
+}
+.sec-title {
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-weight: 900;
+  line-height: 1.3;
+}
+.sec-title em {
+  font-style: normal;
+  color: var(--accent-S);
+}
+.sec-sub {
+  font-size: 13px;
+  color: var(--dim);
+  margin-top: .4rem;
+  max-width: 560px;
+}
+
+/* ── Tool Frame ── */
+.tool-frame {
+  background: var(--stone);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.tool-bar {
+  background: var(--stone2);
+  border-bottom: 1px solid var(--rule);
+  padding: .6rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.tool-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: .06em;
+}
+.tool-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim2);
+}
+.tool-inner {
+  padding: 1.5rem;
+}
+
+/* ── Form elements ── */
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: .06em;
+}
+
+input[type="number"], select {
+  background: var(--paper);
+  border: 1px solid var(--rule2);
+  border-radius: 3px;
+  padding: .6rem .8rem;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--ink);
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color .15s;
+}
+input[type="number"]:focus, select:focus {
+  outline: none;
+  border-color: var(--accent-S);
+}
+
+.field-hint {
+  font-size: 11px;
+  color: var(--dim2);
+  font-family: var(--mono);
+}
+
+.field-unit {
+  font-size: 11px;
+  color: var(--dim2);
+  margin-top: .2rem;
+  font-family: var(--mono);
+}
+
+/* ── Slider ── */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--rule2);
+  border-radius: 2px;
+  outline: none;
+  margin: .4rem 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-S);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent-S);
+  cursor: pointer;
+  border: none;
+}
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+}
+.slider-val {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-S);
+  min-width: 3.5rem;
+  text-align: right;
+}
+
+/* ── Result Panel ── */
+.result-panel {
+  margin-top: 1.5rem;
+  border: 1px solid var(--rule2);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--paper);
+}
+.result-bar {
+  padding: .8rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.result-level {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+.result-time {
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.result-unit {
+  font-size: 11px;
+  color: var(--dim);
+  font-family: var(--mono);
+}
+.result-body {
+  padding: 1rem 1.2rem;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--dim);
+}
+.result-action {
+  margin-top: .6rem;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.level-green  { background: var(--go-bg);      border-color: var(--go-border); }
+.level-yellow { background: var(--warn-bg);     border-color: var(--warn-border); }
+.level-red    { background: var(--danger-bg);   border-color: var(--danger-border); }
+.level-green  .result-level  { color: #2E7D52; }
+.level-yellow .result-level  { color: #B47A1A; }
+.level-red    .result-level  { color: #C8401A; }
+.level-green  .result-time   { color: #2E7D52; }
+.level-yellow .result-time   { color: #B47A1A; }
+.level-red    .result-time   { color: #C8401A; }
+.level-green  .result-action { color: #2E7D52; }
+.level-yellow .result-action { color: #B47A1A; }
+.level-red    .result-action { color: #C8401A; }
+
+/* ── Timeline sim ── */
+.tl-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.tl-node {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 0;
+  opacity: .35;
+  transition: opacity .25s;
+}
+.tl-node.active { opacity: 1; }
+.tl-node.done   { opacity: .7; }
+
+.tl-dot-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: .2rem;
+}
+.tl-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--stone2);
+  border: 2px solid var(--rule2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--dim);
+  flex-shrink: 0;
+  transition: all .25s;
+}
+.tl-node.active .tl-dot {
+  background: var(--accent-S);
+  border-color: var(--accent-S);
+  color: #fff;
+}
+.tl-node.done .tl-dot {
+  background: var(--stone2);
+  border-color: var(--accent-S);
+  color: var(--accent-S);
+}
+.tl-line {
+  width: 2px;
+  flex: 1;
+  background: var(--rule);
+  margin: .3rem 0;
+  min-height: 1.5rem;
+}
+.tl-node:last-child .tl-line { display: none; }
+
+.tl-body {
+  padding: .2rem 0 2rem 1rem;
+}
+.tl-time {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent-S);
+  letter-spacing: .1em;
+  margin-bottom: .3rem;
+}
+.tl-info {
+  font-size: 13px;
+  color: var(--dim);
+  margin-bottom: .8rem;
+  line-height: 1.7;
+}
+.tl-choices {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+.tl-choice {
+  padding: .6rem 1rem;
+  background: var(--paper);
+  border: 1px solid var(--rule2);
+  border-radius: 3px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .15s;
+  text-align: left;
+  font-family: var(--sans);
+  color: var(--ink);
+}
+.tl-choice:hover { border-color: var(--accent-S); background: var(--accent-S-light); }
+.tl-choice.correct   { background: var(--go-bg);     border-color: var(--go-border);     color: #2E7D52; }
+.tl-choice.incorrect { background: var(--danger-bg); border-color: var(--danger-border); color: #C8401A; }
+
+.tl-explain {
+  margin-top: .6rem;
+  font-size: 12px;
+  line-height: 1.7;
+  padding: .6rem .8rem;
+  border-radius: 3px;
+  display: none;
+}
+.tl-explain.show { display: block; }
+.tl-explain.correct-ex   { background: var(--go-bg);     color: #2E7D52; }
+.tl-explain.incorrect-ex { background: var(--danger-bg); color: #C8401A; }
+
+.tl-next {
+  margin-top: .8rem;
+  padding: .5rem 1.2rem;
+  background: var(--accent-S);
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 12px;
+  cursor: pointer;
+  display: none;
+  font-weight: 600;
+}
+.tl-next.show { display: inline-block; }
+.tl-next:hover { opacity: .85; }
+
+/* ── Terrain cards ── */
+.terrain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.terrain-card {
+  background: var(--paper);
+  border: 1px solid var(--rule2);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.terrain-card:hover, .terrain-card.selected { border-color: var(--accent-S); }
+.terrain-card.selected .terrain-head { background: var(--accent-S); color: #fff; }
+
+.terrain-head {
+  padding: .8rem 1rem;
+  background: var(--stone2);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  transition: all .15s;
+}
+.terrain-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+.terrain-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+.terrain-body {
+  padding: 1rem;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--dim);
+}
+.terrain-spec {
+  margin-top: .6rem;
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+}
+.terrain-spec-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: .2rem;
+}
+.terrain-spec-key { color: var(--dim2); }
+.terrain-spec-val { color: var(--ink); font-weight: 600; }
+.terrain-spec-val.danger { color: #C8401A; }
+.terrain-spec-val.warn   { color: #B47A1A; }
+.terrain-spec-val.safe   { color: #2E7D52; }
+
+.terrain-detail {
+  display: none;
+  margin-top: 1.5rem;
+  padding: 1.2rem;
+  background: var(--accent-S-light);
+  border: 1px solid var(--accent-S);
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--ink);
+}
+.terrain-detail.show { display: block; }
+.terrain-detail strong { color: var(--accent-S); }
+
+/* ── Rain station ── */
+.station-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: .8rem;
+  margin-bottom: 1.2rem;
+}
+.station-card {
+  background: var(--paper);
+  border: 1px solid var(--rule2);
+  border-radius: 4px;
+  padding: 1rem;
+}
+.station-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim2);
+  margin-bottom: .4rem;
+}
+.station-val {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.station-unit {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim2);
+}
+.station-bar-wrap {
+  margin-top: .6rem;
+  height: 4px;
+  background: var(--rule);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.station-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .4s ease;
+}
+/* ── Alert ── */
+.alert {
+  border-radius: 4px;
+  padding: .9rem 1.1rem;
+  margin: 1rem 0;
+  font-size: 13px;
+  line-height: 1.7;
+  border-left: 3px solid;
+}
+.alert-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  margin-bottom: .3rem;
+}
+.alert-danger { background: var(--danger-bg); border-color: #C8401A; color: var(--ink); }
+.alert-danger .alert-title { color: #C8401A; }
+.alert-warn   { background: var(--warn-bg);   border-color: #D4892A; color: var(--ink); }
+.alert-warn   .alert-title { color: #B47A1A; }
+.alert-info   { background: var(--accent-S-light); border-color: var(--accent-S); }
+.alert-info   .alert-title { color: var(--accent-S); }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem 1.3rem;
+  border-radius: 3px;
+  border: none;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.btn:hover { opacity: .85; }
+.btn-primary { background: var(--accent-S); color: #fff; }
+.btn-outline { background: transparent; color: var(--accent-S); border: 1px solid var(--accent-S); }
+.btn-row {
+  display: flex;
+  gap: .8rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+/* ── Verdict ── */
+.verdict-wrap {
+  margin-top: 1.5rem;
+  border: 1px solid var(--rule2);
+  border-radius: 4px;
+  overflow: hidden;
+  display: none;
+}
+.verdict-wrap.show { display: block; }
+.verdict-head {
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.verdict-icon { font-size: 1.5rem; }
+.verdict-label {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 700;
+}
+.verdict-body {
+  padding: 1rem 1.2rem;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+/* ── Score bar ── */
+.score-bar-wrap {
+  margin: 1rem 0;
+}
+.score-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim2);
+  margin-bottom: .4rem;
+}
+.score-track {
+  height: 6px;
+  background: var(--rule);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.score-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .5s ease;
+}
+
+/* ── Footer ── */
+.page-footer {
+  border-top: 1px solid var(--rule);
+  padding: 1.5rem var(--gutter);
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-left {
+  font-size: 12px;
+  color: var(--dim2);
+  line-height: 1.8;
+}
+.footer-right {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim2);
+  text-align: right;
+  line-height: 1.8;
+  letter-spacing: .08em;
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: var(--rule);
+  margin: .5rem 0;
+}
+
+/* ── Tab ── */
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--rule2);
+  margin-bottom: 1.2rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  padding: .6rem 1.1rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--dim);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s;
+  margin-bottom: -1px;
+}
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active {
+  color: var(--accent-S);
+  border-bottom-color: var(--accent-S);
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Progress dots ── */
+.progress-row {
+  display: flex;
+  gap: .4rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.prog-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--rule2);
+  transition: background .2s;
+}
+.prog-dot.done   { background: var(--accent-S); }
+.prog-dot.active { background: var(--accent-S); box-shadow: 0 0 0 2px var(--accent-S-light); }
+
+@media (max-width: 600px) {
+  .hero-title { font-size: 1.6rem; }
+  .tl-dot-col { display: none; }
+  .tl-node { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<nav class="top-nav">
+  <div class="nav-logo">SAR // TW</div>
+  <a class="nav-home" href="index.html">← 首頁</a>
+  <div class="nav-sep"></div>
+  <div class="nav-links">
+    <a href="#terrain" class="active" data-section="terrain">S4-C · 地形速查</a>
+    <a href="#sim" data-section="sim">S4-D · 決策模擬</a>
+  </div>
+  <div class="nav-badge">S4 · 集水區工具</div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">S4 · 溯溪技術 · 集水區暴漲風險評估</div>
+  <h1 class="hero-title">集水區<br><em>暴漲風險評估站</em></h1>
+  <p class="hero-sub">整合地形參數計算、雨量監測輸入、地形類型速查與決策模擬。<br>供溯溪嚮導在現場即時評估暴漲風險，制定撤退決策。</p>
+  <div class="hero-meta">
+    <div class="hero-stat">
+      <div class="hero-stat-num">2</div>
+      <div class="hero-stat-label">整合工具</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">3</div>
+      <div class="hero-stat-label">地形類型</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- ══════════════════ S4-C 地形速查 ══════════════════ -->
+  <section id="terrain">
+    <div class="sec-header">
+      <div class="sec-layer">S4-C · 地形類型速查</div>
+      <h2 class="sec-title">集水區地形 · <em>行為特徵</em></h2>
+      <p class="sec-sub">點選你所在溪谷的地形類型，了解其暴漲行為特性與撤退優先級。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">地形類型選擇</div>
+        <div class="tool-tag">台灣溪谷三大類型</div>
+      </div>
+      <div class="tool-inner">
+        <div class="terrain-grid" id="terrain-grid">
+
+          <div class="terrain-card" onclick="selectTerrain('v', this)">
+            <div class="terrain-head">
+              <div class="terrain-icon">🏔</div>
+              <div class="terrain-name">V 型峽谷</div>
+            </div>
+            <div class="terrain-body">
+              <div>台灣高山溪谷最常見類型。兩側岩壁陡直，幾乎無緩衝空間，洪水幾秒內充滿整個河道。</div>
+              <div class="terrain-spec">
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">反應時間</span>
+                  <span class="terrain-spec-val danger">10–30 分鐘</span>
+                </div>
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">水位上升速率</span>
+                  <span class="terrain-spec-val danger">極快 (&gt;1m/min)</span>
+                </div>
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">撤退難度</span>
+                  <span class="terrain-spec-val danger">高（岩壁阻擋）</span>
+                </div>
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">台灣分布</span>
+                  <span class="terrain-spec-val">立霧溪、秀姑巒溪上游</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="terrain-card" onclick="selectTerrain('u', this)">
+            <div class="terrain-head">
+              <div class="terrain-icon">🏞</div>
+              <div class="terrain-name">U 型寬谷</div>
+            </div>
+            <div class="terrain-body">
+              <div>中低海拔常見，谷底相對平坦，兩側有一定坡度。暴漲時有短暫向兩側漫灘的緩衝。</div>
+              <div class="terrain-spec">
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">反應時間</span>
+                  <span class="terrain-spec-val warn">30–60 分鐘</span>
+                </div>
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">水位上升速率</span>
+                  <span class="terrain-spec-val warn">中等（0.3–1m/min）</span>
+                </div>
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">撤退難度</span>
+                  <span class="terrain-spec-val warn">中（需爬坡 15m+）</span>
+                </div>
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">台灣分布</span>
+                  <span class="terrain-spec-val">南勢溪、大漢溪中游</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="terrain-card" onclick="selectTerrain('fan', this)">
+            <div class="terrain-head">
+              <div class="terrain-icon">🌊</div>
+              <div class="terrain-name">扇形沖積扇</div>
+            </div>
+            <div class="terrain-body">
+              <div>溪谷出口段，坡度由陡轉緩，洪水到達後向左右大幅漫延。危險在於水流不可預測。</div>
+              <div class="terrain-spec">
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">反應時間</span>
+                  <span class="terrain-spec-val safe">45–90 分鐘</span>
+                </div>
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">水位上升速率</span>
+                  <span class="terrain-spec-val safe">慢（&lt;0.3m/min）</span>
+                </div>
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">撤退難度</span>
+                  <span class="terrain-spec-val warn">中（漫灘範圍廣）</span>
+                </div>
+                <div class="terrain-spec-row">
+                  <span class="terrain-spec-key">台灣分布</span>
+                  <span class="terrain-spec-val">蘭陽溪出海口、花蓮溪扇</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="terrain-detail" class="terrain-detail"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ S4-D 決策模擬 ══════════════════ -->
+  <section id="sim">
+    <div class="sec-header">
+      <div class="sec-layer">S4-D · 現場決策模擬</div>
+      <h2 class="sec-title">暴漲情境 · <em>四節點決策練習</em></h2>
+      <p class="sec-sub">模擬一次完整的溯溪活動，從出發前 48 小時到活動進行中，練習關鍵時刻的正確判斷。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">決策模擬器</div>
+        <div class="tool-tag">4 個關鍵節點 · 點選後立即回饋</div>
+      </div>
+      <div class="tool-inner">
+        <div class="progress-row" id="sim-progress"></div>
+        <div id="sim-score-bar" class="score-bar-wrap" style="display:none">
+          <div class="score-label-row">
+            <span>決策得分</span>
+            <span id="sim-score-text">0 / 4</span>
+          </div>
+          <div class="score-track">
+            <div class="score-fill" id="sim-score-fill" style="width:0%;background:var(--accent-S)"></div>
+          </div>
+        </div>
+        <div class="tl-wrap" id="tl-wrap"></div>
+        <div class="btn-row">
+          <button class="btn btn-outline" onclick="resetSim()" id="sim-reset" style="display:none">↺ 重新模擬</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" style="margin-top:1.5rem">
+      <div class="alert-title">⚠ 暴漲五大前兆（任一出現即立即撤退）</div>
+      ① 上游山頭積雨雲快速發展　② 溪水夾帶落葉枝木量增加　③ 水色變混濁（從清澈→黃褐）　④ 水位緩慢上升或異常水溫下降　⑤ 聽到上游連續低頻轟鳴聲
+      <div style="margin-top:.5rem;font-size:12px;color:var(--dim)">
+        ⚠ V 型峽谷小型集水區（&lt;2 km²）：前兆觸發到洪峰到達可能僅 <strong style="color:#C8401A">10–15 分鐘</strong>，不得觀察等待。
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<div class="page-footer">
+  <div class="footer-left">
+    <strong>SAR · TW</strong> · 台灣山域搜救訓練平台<br>
+    S4 · 集水區暴漲風險評估站 · nightmoon720
+  </div>
+  <div class="footer-right">
+    4 TOOLS<br>
+    S GROUP · BATCH 6<br>
+    VERSION 2025
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   S4-C · 地形速查
+══════════════════════════════════════════ */
+
+const TERRAIN_INFO = {
+  v: {
+    title: 'V 型峽谷 — 最高風險地形',
+    body: `<strong>識別方式：</strong>兩側岩壁幾乎垂直，站在河床仰望幾乎看不到天空。水流聲在狹窄峽壁間反射，感覺特別響亮。<br><br>
+    <strong>暴漲行為：</strong>上游降雨後，水流無法在谷底儲存，直接快速流向出口。峽壁阻止水向兩側漫延，所有能量都集中在正面——洪峰到達時水位可在 <strong>30 秒內上升超過 1 公尺</strong>。<br><br>
+    <strong>死亡陷阱情境：</strong>瀑布壺穴（繩降後到達的水潭區）是高風險位置。三面是岩壁，出口只有來路，一旦暴漲無路可撤。<br><br>
+    <strong>撤退原則：</strong>進入峽谷前必須確認撤退路線（可攀爬的岩壁位置），並在全程每 15 分鐘評估一次。<strong>無撤退路線 = 不得進入。</strong>`,
+  },
+  u: {
+    title: 'U 型寬谷 — 中等風險，有撤退空間',
+    body: `<strong>識別方式：</strong>谷底較平坦，兩側坡度介於 30–60°，常見河岸礫石灘。有明顯的「高水位線」（深色苔蘚或漂流木堆積帶）可作為水位參考。<br><br>
+    <strong>暴漲行為：</strong>洪水到達後先向兩側礫石灘漫延，再逐步上升。這個「預警階段」約 5–15 分鐘，是撤退的黃金窗口。<br><br>
+    <strong>水位標記石設置：</strong>選取河岸固定岩石，用色筆或膠帶在當前水位處標記，每 30 分鐘記錄一次。水位上升超過 5 cm/30min 即啟動撤退程序。<br><br>
+    <strong>撤退路線：</strong>目標高地為礫石灘結束後往上 <strong>至少 15 公尺</strong>，確保超過歷史最高洪水位。`,
+  },
+  fan: {
+    title: '扇形沖積扇 — 特殊危險：洪水方向不可預測',
+    body: `<strong>識別方式：</strong>通常位於溪谷出口段，地形由陡轉緩，多條分叉水道、大量沖積礫石、植被茂盛。常見於山腳露營地旁。<br><br>
+    <strong>暴漲行為：</strong>洪水到達後水位上升相對慢，但危險在於 <strong>洪水路徑難以預測</strong>——可能走任何一條分叉，也可能全區漫灌。過去的主流位置不代表洪水一定走同一條。<br><br>
+    <strong>特殊危險：</strong>沖積扇上的露營地雖看起來平坦安全，但歷史紀錄中多起山難發生在此，因洪水在夜間無聲無息漫過整個扇面。<br><br>
+    <strong>紮營原則：</strong>扇形地形上絕對不可紮營。選址必須在扇形範圍以外的側邊高地，且確認高於歷史最高水位 <strong>至少 10 公尺</strong>。`,
+  },
+};
+
+let selectedTerrain = null;
+
+function selectTerrain(type, el) {
+  document.querySelectorAll('.terrain-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTerrain = type;
+
+  const detail = document.getElementById('terrain-detail');
+  const info = TERRAIN_INFO[type];
+  detail.innerHTML = `<strong>${info.title}</strong><br><br>${info.body}`;
+  detail.classList.add('show');
+  detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ══════════════════════════════════════════
+   S4-D · 決策模擬
+══════════════════════════════════════════ */
+
+const TL_DATA = [
+  {
+    time: '出發前 48h',
+    dot: '48h',
+    info: '上游集水區雨量站顯示：過去 48 小時累積雨量 185 mm（接近豪雨標準 200mm）。氣象署雷達回波圖顯示有對流胞向集水區移動。',
+    choices: [
+      { text: '繼續規劃，活動照舊。185mm 還沒到豪雨，等看看。', correct: false, explain: '185mm 接近豪雨標準，且對流胞正移向集水區——這是兩個同時發生的危險信號。此時應啟動備案而非樂觀等待。' },
+      { text: '啟動備案，縮短行程並提前確認撤退路線，通知學員可能取消。', correct: true, explain: '正確。氣象條件亮黃燈時應立即啟動備案。此時取消雖保守，但縮短行程+加強監控是平衡安全與學習機會的最佳選擇。' },
+      { text: '直接取消活動，等下週再去。', correct: false, explain: '尚未到達強制取消門檻（豪雨警報已發布）。直接取消過於保守，縮短行程+監控是更合適的回應。' },
+    ]
+  },
+  {
+    time: '出發前 24h',
+    dot: '24h',
+    info: '新的 24h 累積雨量達到 230 mm（超過豪雨標準 200mm）。氣象署發布山區豪雨特報，目標溪谷所在縣市列入警示範圍。',
+    choices: [
+      { text: '正常出發，在溪谷中密切注意水位就好。', correct: false, explain: '已達豪雨等級且進入警示範圍。依嚮導職業倫理，此條件不得讓學員入溪——任何「密切注意」都無法抵消洪峰到達前的 10–30 分鐘窗口。' },
+      { text: '暫緩出發，等待 12 小時後重新評估，告知學員原因。', correct: true, explain: '正確。豪雨等級應「暫緩活動」。等待雨量站數據下降並確認雷達回波遠離後，才重新評估。告知學員理由是建立正確安全文化的機會。' },
+      { text: '改去另一條不在警示範圍的溪谷。', correct: false, explain: '豪雨特報通常覆蓋整個山區，換溪不等於安全。不同溪谷可能共享同一個大集水區，而且臨時換路線代表你對新溪谷的危險點一無所知——這比原本更危險。' },
+    ]
+  },
+  {
+    time: '出發當天早上',
+    dot: '出發',
+    info: '雨量已停止，過去 6 小時無新增雨量。雷達回波顯示對流胞已移遠，天氣轉晴。但集水區前 48 小時累積豪雨，土壤飽和度極高。',
+    choices: [
+      { text: '天氣晴了！正常出發，照原計劃完整行程。', correct: false, explain: '前 48 小時豪雨使土壤完全飽和。此時任何微量降雨（包括你到達集水區後的午後對流）都會幾乎全數轉為地表逕流，暴漲風險仍高。' },
+      { text: '縮短行程，提早出發確保 14:00 前離溪，設置水位標記石。', correct: true, explain: '正確。土壤飽和狀態下應縮短行程並提早離溪，避開午後對流高峰（14:00–17:00）。設置水位標記石是現場監控的基本動作。' },
+      { text: '繼續等待，明天再去比較安全。', correct: false, explain: '如果明天天氣持續良好，今天謹慎出發（縮短行程）是合理選擇。完全等到明天是過度保守，也浪費了學員的出行機會。關鍵是縮短行程與監控機制。' },
+    ]
+  },
+  {
+    time: '活動進行中',
+    dot: '⚡',
+    info: '活動進行中，天空仍晴。但你注意到水色在過去 5 分鐘由清澈轉為略帶混濁，上游山頭開始出現積雲快速發展。距離最近撤退高地約 3 分鐘。',
+    choices: [
+      { text: '繼續前進，這可能只是上游有人走路攪渾水，觀察 10 分鐘再決定。', correct: false, explain: '水色混濁是暴漲五大前兆中的「前兆③」，且積雲快速發展是「前兆①」的前期。兩個前兆同時出現，且你距高地只有 3 分鐘——任何等待都是在賭命。' },
+      { text: '立即宣告撤退，全員往水位線以上 15 公尺撤離，清點人數。', correct: true, explain: '正確。任一前兆觸發即撤退，無需等待確認。水色混濁代表上游已有地表逕流進入，V 型集水區洪峰可能 10–15 分鐘內到達。距離 3 分鐘的高地是你唯一的安全選項。' },
+      { text: '加速通過眼前的危險地形段，到達寬敞區域再撤退。', correct: false, explain: '「加速通過」讓隊伍在危險水域中暴露更長時間，且洪峰到達時間無法預測。「寬敞區域再撤退」的邏輯忽略了你沒有這個時間。立即往最近的高地是唯一正確選擇。' },
+    ]
+  },
+];
+
+let simStep = 0;
+let simScore = 0;
+let simAnswered = [];
+
+function renderSim() {
+  const wrap = document.getElementById('tl-wrap');
+  wrap.innerHTML = '';
+
+  const prog = document.getElementById('sim-progress');
+  prog.innerHTML = '';
+  TL_DATA.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'prog-dot' + (i < simStep ? ' done' : i === simStep ? ' active' : '');
+    prog.appendChild(dot);
+  });
+
+  TL_DATA.forEach((node, i) => {
+    const div = document.createElement('div');
+    const stateClass = i < simStep ? 'done' : i === simStep ? 'active' : '';
+    div.className = 'tl-node ' + stateClass;
+
+    const answered = simAnswered[i];
+
+    div.innerHTML = `
+      <div class="tl-dot-col">
+        <div class="tl-dot">${answered !== undefined ? (answered ? '✓' : '✗') : node.dot}</div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-body">
+        <div class="tl-time">${node.time}</div>
+        <div class="tl-info">${node.info}</div>
+        ${i <= simStep ? `
+        <div class="tl-choices" id="choices-${i}">
+          ${node.choices.map((c, j) => `
+            <button class="tl-choice${answered !== undefined ? (j === node.choices.findIndex(x => x.correct) ? ' correct' : (answered === false && j === getSelectedIndex(i) ? ' incorrect' : '')) : ''}"
+              onclick="${answered !== undefined ? '' : `pickChoice(${i}, ${j})`}"
+              ${answered !== undefined ? 'disabled' : ''}>
+              ${c.text}
+            </button>
+          `).join('')}
+        </div>
+        ${answered !== undefined ? `
+          <div class="tl-explain show ${answered ? 'correct-ex' : 'incorrect-ex'}">
+            ${answered ? '✓ 正確　' : '✗ 錯誤　'}${node.choices.find(c => c.correct).explain}
+          </div>
+          ${i === simStep - 1 || (i === TL_DATA.length - 1) ? '' : ''}
+        ` : ''}
+        ` : ''}
+      </div>
+    `;
+    wrap.appendChild(div);
+  });
+
+  // Show final score
+  if (simStep >= TL_DATA.length) {
+    document.getElementById('sim-score-bar').style.display = 'block';
+    document.getElementById('sim-score-text').textContent = `${simScore} / ${TL_DATA.length}`;
+    const pct = (simScore / TL_DATA.length) * 100;
+    document.getElementById('sim-score-fill').style.width = pct + '%';
+    document.getElementById('sim-score-fill').style.background =
+      simScore >= 3 ? '#2E7D52' : simScore >= 2 ? '#D4892A' : '#C8401A';
+    document.getElementById('sim-reset').style.display = 'inline-flex';
+  }
+}
+
+let selectedChoices = {};
+
+function getSelectedIndex(step) {
+  return selectedChoices[step] !== undefined ? selectedChoices[step] : -1;
+}
+
+function pickChoice(step, choiceIdx) {
+  if (simAnswered[step] !== undefined) return;
+  const correct = TL_DATA[step].choices[choiceIdx].correct;
+  selectedChoices[step] = choiceIdx;
+  simAnswered[step] = correct;
+  if (correct) simScore++;
+  simStep = step + 1;
+  renderSim();
+}
+
+function resetSim() {
+  simStep = 0;
+  simScore = 0;
+  simAnswered = [];
+  selectedChoices = {};
+  document.getElementById('sim-score-bar').style.display = 'none';
+  document.getElementById('sim-reset').style.display = 'none';
+  renderSim();
+}
+
+/* ══════════════════════════════════════════
+   Nav active state on scroll
+══════════════════════════════════════════ */
+
+const sections = ['terrain', 'sim'];
+const navLinks = document.querySelectorAll('.nav-links a');
+
+function updateNav() {
+  let current = sections[0];
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 120) current = id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('data-section') === current);
+  });
+}
+
+window.addEventListener('scroll', updateNav, { passive: true });
+
+/* ── Init ── */
+renderSim();
+</script>
+</body>
+</html>
