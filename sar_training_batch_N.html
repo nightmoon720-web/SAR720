@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAR · N 群組 · 糧食與能量補給</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper:   #F5F0E8;
+      --stone:   #EDE7D9;
+      --stone2:  #E3DDD0;
+      --rule:    #CFC9BC;
+      --rule2:   #BDB6A8;
+      --ink:     #1C1A17;
+      --dim:     #6B6560;
+      --dim2:    #9A948E;
+      --fire:    #C8401A;
+
+      --accent-A: #C8401A;
+      --accent-E: #9B5E1A;
+      --accent-B: #7A3A6E;
+      --accent-C: #2C4A6E;
+      --accent-D: #3D5C3A;
+      --accent-T: #5C3A7A;
+      --accent-S: #1A6B6B;
+      --accent-R: #8B4A1A;
+      --accent-W: #1A5C6B;
+      --accent-N: #5C6B2A;  /* N · 糧食與能量補給（橄欖綠） */
+
+      --mono:  'IBM Plex Mono', monospace;
+      --serif: 'Noto Serif TC', serif;
+      --sans:  'Noto Sans TC', sans-serif;
+
+      --nav-h: 52px;
+      --spine: 4px;
+      --gutter: clamp(1.5rem, 5vw, 3.5rem);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.7;
+      padding-top: var(--nav-h);
+    }
+
+    /* ── Spine ── */
+    .spine {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--spine);
+      height: 100vh;
+      background: var(--accent-N);
+      z-index: 200;
+    }
+
+    /* ── Nav ── */
+    .top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding-left: calc(var(--spine) + 16px);
+      padding-right: 20px;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--fire);
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    .nav-home {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--dim);
+      text-decoration: none;
+      margin-left: 16px;
+      white-space: nowrap;
+    }
+    .nav-home:hover { color: var(--ink); }
+    .nav-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--rule);
+      margin: 0 16px;
+      flex-shrink: 0;
+    }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      flex: 1;
+    }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--dim);
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 3px;
+      white-space: nowrap;
+      border-left: 2px solid transparent;
+    }
+    .nav-links a[data-layer="N"] { border-left-color: var(--accent-N); }
+    .nav-links a[data-layer="R"] { border-left-color: var(--accent-R); }
+    .nav-links a.active { color: var(--ink); background: var(--stone); }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a.nav-cross { opacity: 0.6; }
+
+    /* ── Page layout ── */
+    .page-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px var(--gutter) 80px;
+    }
+
+    /* ── Section ── */
+    section { margin-bottom: 72px; }
+
+    .sec-header { margin-bottom: 32px; }
+    .sec-layer {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent-N);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .sec-title {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 900;
+      line-height: 1.25;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    .sec-title em {
+      font-style: normal;
+      color: var(--accent-N);
+    }
+    .sec-sub {
+      font-size: 0.95rem;
+      color: var(--dim);
+      max-width: 600px;
+    }
+
+    /* ── Tool Frame ── */
+    .tool-frame {
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .tool-bar {
+      background: var(--stone2);
+      border-bottom: 1px solid var(--rule);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .tool-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: 0.05em;
+    }
+    .tool-tag {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--dim2);
+    }
+    .tool-inner {
+      background: var(--stone);
+      padding: 20px;
+    }
+
+    /* ── Alert ── */
+    .alert {
+      border-radius: 4px;
+      padding: 14px 16px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+      border-left: 3px solid;
+    }
+    .alert-title {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .alert-danger {
+      background: #fdf0ed;
+      border-left-color: var(--fire);
+      color: #5c1a0a;
+    }
+    .alert-danger .alert-title { color: var(--fire); }
+    .alert-warn {
+      background: #fdf6ed;
+      border-left-color: var(--accent-E);
+      color: #5c3a0a;
+    }
+    .alert-warn .alert-title { color: var(--accent-E); }
+    .alert-info {
+      background: #f0f4ec;
+      border-left-color: var(--accent-N);
+      color: #2e3a12;
+    }
+    .alert-info .alert-title { color: var(--accent-N); }
+
+    /* ── N1: 雙軌供能 ── */
+    .dual-track {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 560px) { .dual-track { grid-template-columns: 1fr; } }
+    .track-card {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 16px;
+    }
+    .track-card-head {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .track-card.aerobic .track-card-head { color: var(--accent-N); }
+    .track-card.anaerobic .track-card-head { color: var(--accent-E); }
+    .track-card p { font-size: 0.88rem; color: var(--dim); line-height: 1.6; }
+    .track-card strong { color: var(--ink); }
+    .track-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
+    .track-card.aerobic .track-badge { background: #edf2e0; color: var(--accent-N); }
+    .track-card.anaerobic .track-badge { background: #fdf3e6; color: var(--accent-E); }
+
+    /* ── N1: 五大元素 ── */
+    .nutri-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 560px) { .nutri-grid { grid-template-columns: 1fr; } }
+    .nutri-row {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 14px 16px;
+    }
+    .nutri-row.span2 { grid-column: span 2; }
+    @media (max-width: 560px) { .nutri-row.span2 { grid-column: span 1; } }
+    .nutri-head {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--accent-N);
+      margin-bottom: 4px;
+    }
+    .nutri-role {
+      font-size: 0.8rem;
+      color: var(--dim2);
+      font-family: var(--mono);
+      margin-bottom: 8px;
+    }
+    .nutri-body { font-size: 0.88rem; color: var(--dim); line-height: 1.6; }
+    .nutri-body strong { color: var(--ink); }
+    .nutri-lack {
+      margin-top: 8px;
+      padding: 6px 10px;
+      background: #fdf6ed;
+      border-radius: 3px;
+      font-size: 0.82rem;
+      color: #5c3a0a;
+    }
+    .nutri-lack-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--accent-E);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    /* ── N2: 環境選單 ── */
+    .env-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .env-tab {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 6px 14px;
+      border-radius: 3px;
+      border: 1px solid var(--rule);
+      background: var(--paper);
+      color: var(--dim);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .env-tab.active, .env-tab:hover {
+      background: var(--accent-N);
+      color: #fff;
+      border-color: var(--accent-N);
+    }
+    .env-panel { display: none; }
+    .env-panel.active { display: block; }
+    .env-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    @media (max-width: 560px) { .env-grid { grid-template-columns: 1fr; } }
+    .env-block {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 14px 16px;
+    }
+    .env-block-head {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--dim2);
+      margin-bottom: 8px;
+    }
+    .env-block ul {
+      list-style: none;
+      padding: 0;
+    }
+    .env-block ul li {
+      font-size: 0.87rem;
+      color: var(--dim);
+      padding: 4px 0;
+      border-bottom: 1px solid var(--rule);
+      line-height: 1.5;
+    }
+    .env-block ul li:last-child { border-bottom: none; }
+    .env-block ul li strong { color: var(--ink); }
+    .env-block.span2 { grid-column: span 2; }
+    @media (max-width: 560px) { .env-block.span2 { grid-column: span 1; } }
+
+    /* ── N3: 計算機 ── */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 560px) { .calc-grid { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--dim);
+      letter-spacing: 0.06em;
+    }
+    .form-group input,
+    .form-group select {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--accent-N); }
+    .calc-btn {
+      width: 100%;
+      padding: 11px;
+      background: var(--accent-N);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-bottom: 16px;
+    }
+    .calc-btn:hover { background: #4a5822; }
+
+    .result-box {
+      display: none;
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 16px;
+    }
+    .result-box.show { display: block; }
+    .result-main {
+      font-family: var(--mono);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-N);
+      margin-bottom: 4px;
+    }
+    .result-sub {
+      font-size: 0.82rem;
+      color: var(--dim);
+      margin-bottom: 12px;
+    }
+    .result-breakdown {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--rule);
+    }
+    .rb-item { font-size: 0.82rem; }
+    .rb-label { font-family: var(--mono); font-size: 0.68rem; color: var(--dim2); margin-bottom: 2px; }
+    .rb-val { font-family: var(--mono); font-weight: 700; color: var(--ink); }
+
+    /* ── N3: 查核表 ── */
+    .checklist { list-style: none; padding: 0; }
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .check-item:last-child { border-bottom: none; }
+    .check-item input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: var(--accent-N);
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .check-item label {
+      font-size: 0.88rem;
+      color: var(--dim);
+      line-height: 1.6;
+      cursor: pointer;
+    }
+    .check-item label strong { color: var(--ink); }
+    .check-item.checked label { color: var(--dim2); text-decoration: line-through; }
+
+    /* ── Footer ── */
+    .page-footer {
+      border-top: 1px solid var(--rule);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 48px;
+    }
+    .footer-left {
+      font-size: 0.82rem;
+      color: var(--dim2);
+      line-height: 1.7;
+    }
+    .footer-left strong { color: var(--dim); }
+    .footer-right {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--dim2);
+      text-align: right;
+      line-height: 1.7;
+    }
+
+    /* ── Section divider ── */
+    .sec-divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 64px 0;
+    }
+
+    em { color: var(--accent-N); font-style: normal; }
+  </style>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<nav class="top-nav">
+  <div class="nav-logo">SAR // TW</div>
+  <a class="nav-home" href="index.html">← 首頁</a>
+  <div class="nav-sep"></div>
+  <div class="nav-links">
+    <a href="#n1" class="active" data-layer="N">N1 能量生理基礎</a>
+    <a href="#n2" data-layer="N">N2 環境糧食對策</a>
+    <a href="#n3" data-layer="N">N3 糧食規劃工具</a>
+    <a href="sar_training_batch_RW.html#r1" class="nav-cross" data-layer="R">R · 野外求生資源</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- ══════════════════════════════════════════
+       N1 · 能量生理基礎
+  ══════════════════════════════════════════ -->
+  <section id="n1">
+    <div class="sec-header">
+      <div class="sec-layer">N1 · 糧食與能量補給</div>
+      <h2 class="sec-title">能量生理基礎 · <em>雙軌供能與五大營養素</em></h2>
+      <p class="sec-sub">理解身體如何在山域環境中轉換燃料，是規劃糧食的起點。供能失衡不只造成體能下降，也是判斷力劣化與事故的前因。</p>
+    </div>
+
+    <!-- 雙軌供能 -->
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">雙軌供能系統</div>
+        <div class="tool-tag">運動生理學基礎</div>
+      </div>
+      <div class="tool-inner">
+        <p style="font-size:0.88rem; color:var(--dim); margin-bottom:16px;">食物在體內轉化為 <strong style="color:var(--ink)">ATP（三磷酸腺苷）</strong>，是肌肉收縮與維持核心體溫的唯一能量貨幣。依活動強度，身體啟動不同路徑供能：</p>
+        <div class="dual-track">
+          <div class="track-card aerobic">
+            <span class="track-badge">有氧系統</span>
+            <div class="track-card-head">穩定供能 · 長效續航</div>
+            <p>心率平穩、呼吸均勻時啟動。同時燃燒<strong>脂肪與醣類</strong>，效率高、持久。適用情境：平緩步道、穩定配速縱走、低強度行進間。</p>
+            <p style="margin-top:8px;">脂肪需要醣類「點火」才能順利燃燒——若醣類儲備耗盡，有氧效率會顯著下降。</p>
+          </div>
+          <div class="track-card anaerobic">
+            <span class="track-badge">無氧系統</span>
+            <div class="track-card-head">快速供能 · 爆發短效</div>
+            <p>高強度、心率飆升時，細胞氧氣供應不足，直接消耗<strong>醣類</strong>快速產能。適用情境：陡坡衝坡、攀瀑、急流橫渡。</p>
+            <p style="margin-top:8px;">副產品為乳酸，大量累積導致肌肉痠重感；此系統的醣類儲備（肝醣）有限。</p>
+          </div>
+        </div>
+        <div class="alert alert-warn">
+          <div class="alert-title">肝醣耗盡（Bonk）</div>
+          當肝醣儲備耗盡，會出現全身無力、手抖、注意力渙散等症狀，判斷力同步下降。典型情境：連續爬升超過 3–4 小時未補充醣類。預防優於治療——行進間每 45–60 分鐘應主動補給。
+        </div>
+      </div>
+    </div>
+
+    <!-- 五大營養素 -->
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">五大營養素 · 山域影響圖鑑</div>
+        <div class="tool-tag">缺乏症狀 × 山域食物來源</div>
+      </div>
+      <div class="tool-inner">
+        <div class="nutri-grid">
+
+          <div class="nutri-row">
+            <div class="nutri-head">醣類（碳水化合物）</div>
+            <div class="nutri-role">4 kcal/g · 最快速的能量來源</div>
+            <div class="nutri-body">
+              轉換效率最高，是啟動脂肪燃燒的前提。登山行進的主要即時燃料，尤其在高強度地形下不可缺。
+              <br><br>
+              <strong>山域食物來源：</strong>乾燥飯、能量果膠、果乾、壓縮餅乾、麥片。
+            </div>
+            <div class="nutri-lack">
+              <div class="nutri-lack-label">缺乏症狀</div>
+              肝醣耗盡→全身無力、手抖、判斷力下降（Bonk）。
+            </div>
+          </div>
+
+          <div class="nutri-row">
+            <div class="nutri-head">脂肪</div>
+            <div class="nutri-role">9 kcal/g · 熱量密度最高</div>
+            <div class="nutri-body">
+              長效供能的主力，同時是維持核心體溫的關鍵防線。重量比最佳，適合作為多日縱走的熱量基底。
+              <br><br>
+              <strong>山域食物來源：</strong>堅果、堅果醬、起司、乾燥橄欖油、培根乾。
+            </div>
+            <div class="nutri-lack">
+              <div class="nutri-lack-label">缺乏症狀</div>
+              行程後期體力驟降、低溫環境下核心體溫維持困難。
+            </div>
+          </div>
+
+          <div class="nutri-row">
+            <div class="nutri-head">蛋白質</div>
+            <div class="nutri-role">4 kcal/g · 肌肉修復與重建</div>
+            <div class="nutri-body">
+              在長天數行程中負責肌肉修復與細胞重建，對維持支撐力、降低隔日疲勞感有直接影響。
+              <br><br>
+              <strong>山域食物來源：</strong>高蛋白粉、肉乾、脫水豆皮、起司、堅果。
+            </div>
+            <div class="nutri-lack">
+              <div class="nutri-lack-label">缺乏症狀</div>
+              多日縱走後期肌肉支撐力下降，踝膝關節穩定性劣化，增加扭傷風險。
+            </div>
+          </div>
+
+          <div class="nutri-row">
+            <div class="nutri-head">維生素</div>
+            <div class="nutri-role">微量 · 能量轉換的輔酶</div>
+            <div class="nutri-body">
+              B 群維生素是醣類與脂肪轉換為 ATP 過程的必要輔酶。缺乏時代謝效率下降，即使熱量足夠也會出現慢性疲勞。
+              <br><br>
+              <strong>山域食物來源：</strong>B 群發泡錠、綜合維生素片、堅果、肉乾。
+            </div>
+            <div class="nutri-lack">
+              <div class="nutri-lack-label">缺乏症狀</div>
+              熱量攝取充足卻持續疲勞、昏沉，能量轉換齒輪卡頓。
+            </div>
+          </div>
+
+          <div class="nutri-row span2">
+            <div class="nutri-head">礦物質（電解質）</div>
+            <div class="nutri-role">鈉 · 鉀 · 鎂 · 鈣 · 維持肌肉與水分平衡</div>
+            <div class="nutri-body">
+              透過排汗大量流失，負責維持細胞水分平衡與肌肉正常收縮。長時間行進、高溫、溪谷環境下流失速度明顯加快。
+              <br><br>
+              <strong>山域食物來源：</strong>鹽錠、電解質粉、梅粉、味噌醬包、鹹堅果。
+            </div>
+            <div class="nutri-lack">
+              <div class="nutri-lack-label">缺乏症狀</div>
+              肌肉抽筋（常見於小腿、腳掌）；嚴重時引發低血鈉症（大量飲水但未補鹽），出現噁心、意識混亂。
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════════
+       N2 · 環境糧食對策
+  ══════════════════════════════════════════ -->
+  <section id="n2">
+    <div class="sec-header">
+      <div class="sec-layer">N2 · 糧食與能量補給</div>
+      <h2 class="sec-title">環境糧食對策 · <em>地形與氣候的飲食應變</em></h2>
+      <p class="sec-sub">糧食規劃不只是熱量計算，更要對應實際環境的物理限制。不同的地形與氣候條件，直接影響食物的保存性、炊煮可行性與補給策略。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">環境 × 糧食對策速查</div>
+        <div class="tool-tag">選擇環境查看對應準備</div>
+      </div>
+      <div class="tool-inner">
+        <div class="env-tabs">
+          <button class="env-tab active" onclick="switchEnv('alpine')">高山低溫</button>
+          <button class="env-tab" onclick="switchEnv('midmtn')">中級山悶熱</button>
+          <button class="env-tab" onclick="switchEnv('gorge')">溪谷水寒</button>
+        </div>
+
+        <!-- 高山低溫 -->
+        <div class="env-panel active" id="env-alpine">
+          <div class="alert alert-info">
+            <div class="alert-title">高山低溫 · 大溫差環境</div>
+            氣溫偏低、空氣乾燥造成無感失水加劇；夜間低溫使高山瓦斯出力不穩定，含水量高的食物可能結凍變硬，炊煮時間延長。
+          </div>
+          <div class="env-grid">
+            <div class="env-block">
+              <div class="env-block-head">環境風險</div>
+              <ul>
+                <li>氣溫低於 0°C 時高山瓦斯（異丁烷混合）汽化效率下降，燃料消耗增加 20–40%</li>
+                <li>無感失水（乾燥冷空氣）可達平地的 1.5–2 倍，脫水症狀常被誤判為高山反應</li>
+                <li>含水份食物（麵包、新鮮蔬菜）凌晨可能結凍，喪失食用可能</li>
+                <li>核心體溫維持的靜息代謝額外耗能顯著</li>
+              </ul>
+            </div>
+            <div class="env-block">
+              <div class="env-block-head">糧食對策</div>
+              <ul>
+                <li><strong>提高脂肪比例</strong>——堅果醬、起司、脫水培根；每日脂肪熱量佔比建議提高至 35–40%</li>
+                <li>保溫瓶裝熱水過夜，確保晨間炊煮有穩定溫水；瓦斯罐睡前置入睡袋底部保溫</li>
+                <li>選用質地柔軟的食物（堅果醬、軟質能量棒），避免凍硬後咬碎齒具</li>
+                <li>主動補水，每小時行進建議飲水 300–500 ml，不等口渴才喝</li>
+              </ul>
+            </div>
+            <div class="env-block span2">
+              <div class="env-block-head">推薦糧食組合</div>
+              <ul>
+                <li><strong>行動糧：</strong>堅果醬包、高脂起司條、黑巧克力、能量果膠</li>
+                <li><strong>主食：</strong>脫水飯（加入橄欖油或奶油粉提高熱量密度）、即食米糕</li>
+                <li><strong>熱飲：</strong>可可粉（脂肪 + 醣類 + 溫熱效果三合一）、味噌湯包補鈉</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 中級山悶熱 -->
+        <div class="env-panel" id="env-midmtn">
+          <div class="alert alert-warn">
+            <div class="alert-title">中級山悶熱 · 高濕環境</div>
+            氣溫高、林間無風、濕度高，食物腐敗速度顯著加快；大量排汗造成電解質快速流失；高溫導致食慾抑制，實際攝取熱量容易低於消耗。
+          </div>
+          <div class="env-grid">
+            <div class="env-block">
+              <div class="env-block-head">環境風險</div>
+              <ul>
+                <li>氣溫 30°C 以上、高濕環境下，烘焙類麵包 D1 即可能出現黴菌</li>
+                <li>排汗量大，電解質（特別是鈉）流失速度是高山環境的 2–3 倍</li>
+                <li>高溫下食慾受抑制，山友常跳過正餐，造成隱性熱量負債</li>
+                <li>炊煮熱食降低意願，午餐若無冷食準備可能完全略過</li>
+              </ul>
+            </div>
+            <div class="env-block">
+              <div class="env-block-head">糧食對策</div>
+              <ul>
+                <li><strong>禁止高水份烘焙</strong>——麵包、饅頭換成脫水餅乾、真空包米果</li>
+                <li>主攻酸甜開胃——梅乾、果乾、果凍飲料有助在食慾抑制下維持進食意願</li>
+                <li><strong>大量備存電解質</strong>——建議每半天一包電解質粉，補鈉優先於補水</li>
+                <li>午餐以免炊煮冷食為主，避免高溫下生火作業延誤行程</li>
+              </ul>
+            </div>
+            <div class="env-block span2">
+              <div class="env-block-head">推薦糧食組合</div>
+              <ul>
+                <li><strong>行動糧：</strong>梅乾、果乾、真空包堅果、鹹餅乾（補鈉兼補能量）</li>
+                <li><strong>主食：</strong>即食米飯（冷泡版）、冷泡燕麥、脫水豆干</li>
+                <li><strong>補給飲：</strong>電解質粉 + 冷水、梅粉冷泡飲，避免過量純水造成低血鈉</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- 溪谷水寒 -->
+        <div class="env-panel" id="env-gorge">
+          <div class="alert alert-danger">
+            <div class="alert-title">溪谷水寒 · 突發雨勢環境</div>
+            持續接觸溪水加速體熱流失，失溫風險高於一般登山；食物易浸水腐敗；午後雷陣雨可能導致意外滯留，備糧計畫必須包含額外天數。
+          </div>
+          <div class="env-grid">
+            <div class="env-block">
+              <div class="env-block-head">環境風險</div>
+              <ul>
+                <li>水中傳導散熱速度是空氣的 25 倍，長時間涉水即使氣溫不低也可能引發失溫</li>
+                <li>背包防水不足時食物全面浸濕，乾燥糧受潮後腐敗速度加快</li>
+                <li>午後雷陣雨平均持續 1–3 小時，溪谷水位暴漲可能導致被迫滯留</li>
+                <li>炊煮環境受限（無遮蔽、柴火濕潤），熱食補充困難</li>
+              </ul>
+            </div>
+            <div class="env-block">
+              <div class="env-block-head">糧食對策</div>
+              <ul>
+                <li><strong>食物全面雙層夾鏈袋防水</strong>，脆弱品項另加乾燥劑</li>
+                <li><strong>提高脂肪行動糧比例</strong>——對抗水寒失溫的即時熱量來源</li>
+                <li>備足 D+1 至 D+2 緊急糧——選用免炊煮、免加水、單手可食品項</li>
+                <li>攜帶小型固體燃料（固態酒精、Esbit）作為備用炊具，不依賴乾柴</li>
+              </ul>
+            </div>
+            <div class="env-block span2">
+              <div class="env-block-head">推薦糧食組合</div>
+              <ul>
+                <li><strong>行動糧：</strong>堅果醬包、高脂起司條、能量果膠（全部免炊煮、防水包裝）</li>
+                <li><strong>主食：</strong>即食飯糰（出發前製作，第一天食用）、泡麵（需熱水，列為非緊急備用）</li>
+                <li><strong>緊急備糧：</strong>花生醬 + 壓縮餅乾——可在寒冷、潮濕、徒手狀態下立即食用</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════════
+       N3 · 糧食規劃工具
+  ══════════════════════════════════════════ -->
+  <section id="n3">
+    <div class="sec-header">
+      <div class="sec-layer">N3 · 糧食與能量補給</div>
+      <h2 class="sec-title">糧食規劃工具 · <em>熱量估算與出發前查核</em></h2>
+      <p class="sec-sub">依個人體型、行程強度與環境條件估算熱量需求，並透過查核表確認糧食準備的基本防線。</p>
+    </div>
+
+    <!-- 熱量計算機 -->
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">個人化熱量估算</div>
+        <div class="tool-tag">Mifflin-St Jeor BMR × 登山 MET 值</div>
+      </div>
+      <div class="tool-inner">
+        <div class="calc-grid">
+          <div class="form-group">
+            <label>性別</label>
+            <select id="gender">
+              <option value="male">男性</option>
+              <option value="female">女性</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>年齡（歲）</label>
+            <input type="number" id="age" value="30" min="15" max="80">
+          </div>
+          <div class="form-group">
+            <label>體重（kg）</label>
+            <input type="number" id="weight" value="65" min="30" max="150">
+          </div>
+          <div class="form-group">
+            <label>身高（cm）</label>
+            <input type="number" id="height" value="170" min="140" max="210">
+          </div>
+          <div class="form-group">
+            <label>背包負重（kg）</label>
+            <input type="number" id="backpack" value="12" min="0" max="50">
+          </div>
+          <div class="form-group">
+            <label>每日行進時數（小時）</label>
+            <input type="number" id="hours" value="7" min="1" max="16">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>地形強度</label>
+          <select id="terrain">
+            <option value="5.3">平緩縱走（MET 5.3）</option>
+            <option value="6.5" selected>一般中坡（MET 6.5）</option>
+            <option value="7.8">陡坡重裝（MET 7.8）</option>
+            <option value="8.5">技術地形 / 溪谷（MET 8.5）</option>
+          </select>
+        </div>
+        <button class="calc-btn" onclick="calculateCalories()">估算每日熱量需求</button>
+
+        <div class="result-box" id="calcResult">
+          <div class="result-main" id="resultTotal"></div>
+          <div class="result-sub" id="resultSub"></div>
+          <div class="result-breakdown">
+            <div class="rb-item">
+              <div class="rb-label">基礎代謝（BMR）</div>
+              <div class="rb-val" id="resBMR">—</div>
+            </div>
+            <div class="rb-item">
+              <div class="rb-label">行進消耗</div>
+              <div class="rb-val" id="resExercise">—</div>
+            </div>
+            <div class="rb-item">
+              <div class="rb-label">建議備糧熱量</div>
+              <div class="rb-val" id="resBuffer">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-info" style="margin-top:16px;">
+          <div class="alert-title">公式說明</div>
+          BMR 採用 Mifflin-St Jeor 公式（男：10W + 6.25H − 5A + 5；女：10W + 6.25H − 5A − 161）。行進消耗以 MET × 體重 × 時數計算，其中 MET 值依地形強度選取。建議備糧熱量為估算值 +10%，作為緊急緩衝。本工具為規劃參考，個人代謝差異可達 ±15%。
+        </div>
+      </div>
+    </div>
+
+    <!-- 查核表 -->
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">出發前糧食查核表</div>
+        <div class="tool-tag">點選項目標記完成</div>
+      </div>
+      <div class="tool-inner">
+        <ul class="checklist" id="checklist">
+          <li class="check-item" id="ci-1">
+            <input type="checkbox" id="c1" onchange="toggleCheck('ci-1')">
+            <label for="c1"><strong>保存性：</strong>主食與行動糧已選用常溫耐放的脫水、真空包或乾燥品項，生鮮食物僅限第一天使用。</label>
+          </li>
+          <li class="check-item" id="ci-2">
+            <input type="checkbox" id="c2" onchange="toggleCheck('ci-2')">
+            <label for="c2"><strong>輕量化：</strong>已在家中拆除所有商業外包裝紙盒，依餐份分裝，行動糧熱量密度確認大於 4 kcal/g。</label>
+          </li>
+          <li class="check-item" id="ci-3">
+            <input type="checkbox" id="c3" onchange="toggleCheck('ci-3')">
+            <label for="c3"><strong>炊煮效率：</strong>晚餐規劃為「一鍋到底」；午餐以免炊煮冷食為主，不依賴開火。</label>
+          </li>
+          <li class="check-item" id="ci-4">
+            <input type="checkbox" id="c4" onchange="toggleCheck('ci-4')">
+            <label for="c4"><strong>電解質備量：</strong>已準備足夠的電解質粉或鹽錠，預估每半天一份，高溫或溪谷行程加倍備量。</label>
+          </li>
+          <li class="check-item" id="ci-5">
+            <input type="checkbox" id="c5" onchange="toggleCheck('ci-5')">
+            <label for="c5"><strong>防水包裝：</strong>溪谷行程已將所有食物以雙層夾鏈袋或乾燥袋包覆，脆弱品項另加乾燥劑。</label>
+          </li>
+          <li class="check-item" id="ci-6">
+            <input type="checkbox" id="c6" onchange="toggleCheck('ci-6')">
+            <label for="c6"><strong>環境友善：</strong>炊煮水量已精準預估，計畫零廚餘，不將難以處理的湯汁殘留於自然環境。</label>
+          </li>
+        </ul>
+
+        <div class="alert alert-danger" style="margin-top:20px;">
+          <div class="alert-title">緊急備糧自我審查</div>
+          您的緊急備糧是否滿足以下三個條件：<strong>免炊煮、免加水、單手即可打開食用</strong>？在雙手濕冷、體力耗竭的緊急情況下，需要熱水的泡麵無法提供即時能量。建議以<strong>花生醬包 + 壓縮餅乾</strong>或<strong>能量果膠</strong>作為緊急備糧的核心，備量為正常行程 +1 至 +2 天。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="page-footer">
+    <div class="footer-left">
+      <strong>SAR · TW</strong> · 台灣山域搜救訓練平台<br>
+      N · 糧食與能量補給 · nightmoon720
+    </div>
+    <div class="footer-right">
+      3 MODULES<br>
+      N GROUP<br>
+      VERSION 2025
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+  /* ── 環境面板切換 ── */
+  function switchEnv(id) {
+    document.querySelectorAll('.env-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.env-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('env-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  /* ── 熱量計算 ── */
+  function calculateCalories() {
+    const gender  = document.getElementById('gender').value;
+    const age     = parseFloat(document.getElementById('age').value)     || 30;
+    const weight  = parseFloat(document.getElementById('weight').value)  || 65;
+    const height  = parseFloat(document.getElementById('height').value)  || 170;
+    const pack    = parseFloat(document.getElementById('backpack').value)|| 0;
+    const hours   = parseFloat(document.getElementById('hours').value)   || 7;
+    const met     = parseFloat(document.getElementById('terrain').value) || 6.5;
+
+    // Mifflin-St Jeor BMR
+    const bmr = gender === 'male'
+      ? (10 * weight + 6.25 * height - 5 * age + 5)
+      : (10 * weight + 6.25 * height - 5 * age - 161);
+
+    // 行進消耗：MET × 總負重（體重 + 背包）× 時數
+    const totalWeight  = weight + pack;
+    const exerciseCal  = met * totalWeight * hours;
+
+    const total        = Math.round(bmr + exerciseCal);
+    const buffer       = Math.round(total * 1.1);
+
+    document.getElementById('resBMR').textContent      = Math.round(bmr)         + ' kcal';
+    document.getElementById('resExercise').textContent = Math.round(exerciseCal) + ' kcal';
+    document.getElementById('resBuffer').textContent   = buffer                  + ' kcal';
+    document.getElementById('resultTotal').textContent = total + ' kcal／日';
+    document.getElementById('resultSub').textContent   =
+      '建議備糧熱量（+10% 緩衝）：' + buffer + ' kcal／日。依環境調整：高山低溫建議再加 200–400 kcal，溪谷水寒建議再加 300–500 kcal。';
+
+    document.getElementById('calcResult').classList.add('show');
+  }
+
+  /* ── 查核表 ── */
+  function toggleCheck(id) {
+    document.getElementById(id).classList.toggle(
+      'checked',
+      document.querySelector('#' + id + ' input').checked
+    );
+  }
+
+  /* ── Nav active on scroll ── */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+</script>
+
+</body>
+</html>
