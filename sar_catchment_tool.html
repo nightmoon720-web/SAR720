@@ -651,6 +651,17 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 2px;
   transition: width .4s ease;
 }
+.fill-green  { background: #2E7D52; }
+.fill-yellow { background: #D4892A; }
+.fill-red    { background: #C8401A; }
+
+.rain-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
 /* ── Alert ── */
 .alert {
   border-radius: 4px;
@@ -833,6 +844,7 @@ input[type="range"]::-moz-range-thumb {
 
 @media (max-width: 600px) {
   .hero-title { font-size: 1.6rem; }
+  .rain-input-row { grid-template-columns: 1fr; }
   .tl-dot-col { display: none; }
   .tl-node { grid-template-columns: 1fr; }
 }
@@ -847,7 +859,9 @@ input[type="range"]::-moz-range-thumb {
   <a class="nav-home" href="index.html">← 首頁</a>
   <div class="nav-sep"></div>
   <div class="nav-links">
-    <a href="#terrain" class="active" data-section="terrain">S4-C · 地形速查</a>
+    <a href="#calc" class="active" data-section="calc">S4-A · 集水區概念</a>
+    <a href="#rain" data-section="rain">S4-B · 雨量監測站</a>
+    <a href="#terrain" data-section="terrain">S4-C · 地形速查</a>
     <a href="#sim" data-section="sim">S4-D · 決策模擬</a>
   </div>
   <div class="nav-badge">S4 · 集水區工具</div>
@@ -860,8 +874,12 @@ input[type="range"]::-moz-range-thumb {
   <p class="hero-sub">整合地形參數計算、雨量監測輸入、地形類型速查與決策模擬。<br>供溯溪嚮導在現場即時評估暴漲風險，制定撤退決策。</p>
   <div class="hero-meta">
     <div class="hero-stat">
-      <div class="hero-stat-num">2</div>
+      <div class="hero-stat-num">4</div>
       <div class="hero-stat-label">整合工具</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">10–90</div>
+      <div class="hero-stat-label">分鐘 · 反應時間範圍</div>
     </div>
     <div class="hero-stat">
       <div class="hero-stat-num">3</div>
@@ -872,6 +890,156 @@ input[type="range"]::-moz-range-thumb {
 
 <!-- Main -->
 <div class="main">
+
+  <!-- ══════════════════ S4-A 集水區概念教學 ══════════════════ -->
+  <section id="calc">
+    <div class="sec-header">
+      <div class="sec-layer">S4-A · 集水區概念</div>
+      <h2 class="sec-title">集水區是什麼 · <em>為什麼重要</em></h2>
+      <p class="sec-sub">不是下雨就要撤退。真正的關鍵是：這場雨落在多大的範圍，最終匯集到你腳下這條溪。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">互動概念示意</div>
+        <div class="tool-tag">拖動滑桿，觀察水量與水位變化</div>
+      </div>
+      <div class="tool-inner">
+
+        <!-- 概念說明 -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem">
+          <div style="background:var(--paper);border:1px solid var(--rule2);border-radius:4px;padding:1rem">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--accent-S);letter-spacing:.1em;margin-bottom:.5rem">CONCEPT 01</div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:.4rem">集水區 = 漏斗</div>
+            <div style="font-size:12px;color:var(--dim);line-height:1.8">山頂到你站的位置，所有雨水最終都會往同一條溪流走。這個範圍就是集水區。面積越大，漏斗越大。</div>
+          </div>
+          <div style="background:var(--paper);border:1px solid var(--rule2);border-radius:4px;padding:1rem">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--accent-S);letter-spacing:.1em;margin-bottom:.5rem">CONCEPT 02</div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:.4rem">流量 ≠ 水位</div>
+            <div style="font-size:12px;color:var(--dim);line-height:1.8">同樣的流量，V 型峽谷水位暴漲；寬谷只是漫灘。決定你危不危險的，是下游地形，不只是流量本身。</div>
+          </div>
+          <div style="background:var(--paper);border:1px solid var(--rule2);border-radius:4px;padding:1rem">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--accent-S);letter-spacing:.1em;margin-bottom:.5rem">CONCEPT 03</div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:.4rem">你看不見上游</div>
+            <div style="font-size:12px;color:var(--dim);line-height:1.8">你腳下是晴天，上游 20km 可能正在下豪雨。集水區越大，上游的天氣越難掌握，風險越難預測。</div>
+          </div>
+        </div>
+
+        <!-- 互動模擬 -->
+        <div style="border:1px solid var(--rule2);border-radius:4px;overflow:hidden;background:var(--paper)">
+          <div style="background:var(--stone2);border-bottom:1px solid var(--rule);padding:.6rem 1rem;font-family:var(--mono);font-size:11px;font-weight:600">
+            互動模擬：同樣下 150mm 雨，結果差多少？
+          </div>
+          <div style="padding:1.2rem">
+
+            <!-- 滑桿區 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+              <div class="field">
+                <label>集水區面積</label>
+                <div class="slider-row">
+                  <input type="range" id="sim-area" min="1" max="200" value="20" oninput="updateSim()">
+                  <span class="slider-val" id="sim-area-val">20 km²</span>
+                </div>
+                <div class="field-hint">小支流 1–5 km² ／ 中型溪谷 10–50 km² ／ 主流 &gt;100 km²</div>
+              </div>
+              <div class="field">
+                <label>下游地形</label>
+                <select id="sim-channel" onchange="updateSim()" style="background:var(--stone);border:1px solid var(--rule2);border-radius:3px;padding:.6rem .8rem;font-family:var(--sans);font-size:13px;color:var(--ink);width:100%">
+                  <option value="v">V 型峽谷</option>
+                  <option value="u" selected>U 型寬谷</option>
+                  <option value="fan">扇形沖積扇</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 視覺化 -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem">
+
+              <!-- 流量計 -->
+              <div style="border:1px solid var(--rule2);border-radius:4px;padding:1rem;text-align:center">
+                <div style="font-family:var(--mono);font-size:10px;color:var(--dim2);margin-bottom:.6rem">匯集流量（估算）</div>
+                <div style="font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--accent-S);line-height:1" id="sim-flow">—</div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--dim2);margin-top:.3rem">m³/s</div>
+                <div style="margin-top:.8rem;height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+                  <div id="sim-flow-bar" style="height:100%;border-radius:3px;background:var(--accent-S);transition:width .4s ease;width:0%"></div>
+                </div>
+              </div>
+
+              <!-- 水位計 -->
+              <div style="border:1px solid var(--rule2);border-radius:4px;padding:1rem;text-align:center">
+                <div style="font-family:var(--mono);font-size:10px;color:var(--dim2);margin-bottom:.6rem">水位上升高度（估算）</div>
+                <div style="font-family:var(--mono);font-size:2rem;font-weight:700;line-height:1" id="sim-level" style="color:var(--ink)">—</div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--dim2);margin-top:.3rem">公尺</div>
+                <div style="margin-top:.8rem;height:6px;background:var(--rule);border-radius:3px;overflow:hidden">
+                  <div id="sim-level-bar" style="height:100%;border-radius:3px;transition:width .4s ease,background .4s ease;width:0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 斷面示意圖 -->
+            <div style="margin-bottom:1rem">
+              <div style="font-family:var(--mono);font-size:10px;color:var(--dim2);margin-bottom:.5rem;letter-spacing:.08em">河道斷面示意</div>
+              <canvas id="sim-canvas" width="600" height="140" style="width:100%;height:auto;border-radius:4px;background:var(--stone)"></canvas>
+            </div>
+
+            <!-- 結論 -->
+            <div id="sim-conclusion" style="padding:.8rem 1rem;border-radius:4px;border:1px solid var(--rule2);font-size:13px;line-height:1.8;background:var(--stone)"></div>
+          </div>
+        </div>
+
+        <!-- 核心觀念總結 -->
+        <div class="alert alert-info" style="margin-top:1.2rem">
+          <div class="alert-title">📌 判斷撤退的正確邏輯</div>
+          不是「下雨了要撤退」，而是：<strong>上游集水區多大？土壤是否飽和？下游是什麼地形？</strong> 三個問題同時成立才是高風險。小集水區 + V 型峽谷 = 小雨也要謹慎；大集水區 + 寬谷 = 豪雨也有緩衝時間。
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ S4-B 雨量監測 ══════════════════ -->
+  <section id="rain">
+    <div class="sec-header">
+      <div class="sec-layer">S4-B · 雨量監測站</div>
+      <h2 class="sec-title">上游雨量 · <em>風險評級</em></h2>
+      <p class="sec-sub">手動輸入上游各雨量站數據，工具自動評估整體風險並給出操作建議。</p>
+    </div>
+
+    <div class="alert alert-info">
+      <div class="alert-title">資料來源建議</div>
+      活動前從<strong>中央氣象署開放資料平台（opendata.cwa.gov.tw）</strong>下載目標集水區鄰近雨量站資料，或使用「水利防災資訊網」即時站數據。野外無網路時手動記錄後輸入。
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">雨量站數據輸入</div>
+        <div class="tool-tag">最多可輸入 4 個監測站</div>
+      </div>
+      <div class="tool-inner">
+        <div id="station-inputs">
+          <!-- 動態生成 -->
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="calcRain()">▶ 評估整體風險</button>
+          <button class="btn btn-outline" onclick="addStation()" id="add-btn">＋ 新增雨量站</button>
+          <button class="btn btn-outline" onclick="resetRain()">重置</button>
+        </div>
+
+        <div id="rain-result" style="display:none">
+          <div class="divider" style="margin:1.5rem 0"></div>
+          <div class="station-grid" id="station-display"></div>
+          <div id="rain-verdict-wrap" class="verdict-wrap show">
+            <div class="verdict-head" id="rain-verdict-head">
+              <div class="verdict-icon" id="rain-verdict-icon"></div>
+              <div class="verdict-label" id="rain-verdict-label"></div>
+            </div>
+            <div class="verdict-body" id="rain-verdict-body"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ══════════════════ S4-C 地形速查 ══════════════════ -->
   <section id="terrain">
@@ -1036,6 +1204,315 @@ input[type="range"]::-moz-range-thumb {
 </div>
 
 <script>
+/* ══════════════════════════════════════════
+   S4-A · 集水區概念互動模擬
+══════════════════════════════════════════ */
+
+function updateSim() {
+  const area    = parseFloat(document.getElementById('sim-area').value) || 20;
+  const channel = document.getElementById('sim-channel').value;
+
+  document.getElementById('sim-area-val').textContent = area + ' km²';
+
+  // 固定雨量 150mm，計算逕流量
+  // Q = C × i × A，C = 0.7（山區逕流係數），i = 150mm = 0.15m
+  // 假設 6 小時集中降雨
+  const rain_m  = 0.15;
+  const duration_s = 6 * 3600;
+  const area_m2 = area * 1e6;
+  const C = 0.7;
+  const flow = (C * rain_m * area_m2) / duration_s; // m³/s
+
+  // 水位估算：依地形斷面寬度換算
+  // V 型：寬度窄，水位高；U 型：中；扇形：寬，水位低
+  const widthFactor = { v: 8, u: 25, fan: 60 }[channel]; // 假設有效河寬（m）
+  const depth = flow / (widthFactor * 2.5); // 簡化：Q = W × D × V，V≈2.5m/s
+
+  // 顯示數值
+  document.getElementById('sim-flow').textContent = flow < 1000 ? Math.round(flow) : (flow/1000).toFixed(1) + 'k';
+  document.getElementById('sim-level').textContent = depth.toFixed(1);
+
+  // 進度條
+  const flowPct = Math.min(100, (flow / 5000) * 100);
+  const levelPct = Math.min(100, (depth / 8) * 100);
+  document.getElementById('sim-flow-bar').style.width = flowPct + '%';
+
+  const levelBar = document.getElementById('sim-level-bar');
+  levelBar.style.width = levelPct + '%';
+  levelBar.style.background = depth < 1 ? '#2E7D52' : depth < 3 ? '#D4892A' : '#C8401A';
+  document.getElementById('sim-level').style.color = depth < 1 ? '#2E7D52' : depth < 3 ? '#B47A1A' : '#C8401A';
+
+  // 畫斷面圖
+  drawCrossSection(channel, depth);
+
+  // 結論文字
+  const channelName = { v: 'V 型峽谷', u: 'U 型寬谷', fan: '扇形沖積扇' }[channel];
+  const areaDesc = area <= 5 ? '小型集水區' : area <= 50 ? '中型集水區' : '大型集水區';
+  let risk, advice;
+
+  if (depth < 0.5) {
+    risk = '✓ 低水位影響';
+    advice = '水位上升有限，維持正常監控即可。但仍需設置水位標記石。';
+  } else if (depth < 2) {
+    risk = '⚠ 中度水位上升';
+    advice = '水位將明顯上升，應縮短行程，確保有足夠撤退時間。';
+  } else {
+    risk = '⛔ 危險水位';
+    advice = '水位上升幅度可能超過人體站立高度，若在此地形中遭遇暴漲幾乎無法自救。';
+  }
+
+  document.getElementById('sim-conclusion').innerHTML =
+    `<strong style="font-family:var(--mono);font-size:11px;color:var(--accent-S)">${areaDesc}（${area} km²）× ${channelName} × 150mm 降雨</strong><br>` +
+    `匯集流量約 <strong>${flow < 1000 ? Math.round(flow) : (flow/1000).toFixed(1)+'k'} m³/s</strong>，` +
+    `水位上升估算約 <strong>${depth.toFixed(1)} 公尺</strong>。<br>` +
+    `<span style="font-weight:700">${risk}</span>　${advice}`;
+}
+
+function drawCrossSection(channel, depth) {
+  const canvas = document.getElementById('sim-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // 背景
+  ctx.fillStyle = '#EDE7D9';
+  ctx.fillRect(0, 0, W, H);
+
+  const cx = W / 2;
+  const baseY = H - 20;
+  const maxWaterH = H - 50;
+
+  // 畫岩壁
+  ctx.strokeStyle = '#6B6560';
+  ctx.lineWidth = 2;
+  ctx.fillStyle = '#CFC9BC';
+
+  if (channel === 'v') {
+    // V 型：兩側幾乎垂直，谷底極窄
+    ctx.beginPath();
+    ctx.moveTo(0, 20);
+    ctx.lineTo(cx - 15, baseY);
+    ctx.lineTo(cx + 15, baseY);
+    ctx.lineTo(W, 20);
+    ctx.lineTo(W, 0);
+    ctx.lineTo(0, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  } else if (channel === 'u') {
+    // U 型：谷底較寬，兩側中等坡度
+    ctx.beginPath();
+    ctx.moveTo(0, 20);
+    ctx.lineTo(cx - 100, baseY);
+    ctx.lineTo(cx + 100, baseY);
+    ctx.lineTo(W, 20);
+    ctx.lineTo(W, 0);
+    ctx.lineTo(0, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  } else {
+    // 扇形：寬平底，兩側極緩
+    ctx.beginPath();
+    ctx.moveTo(0, 40);
+    ctx.lineTo(cx - 220, baseY);
+    ctx.lineTo(cx + 220, baseY);
+    ctx.lineTo(W, 40);
+    ctx.lineTo(W, 0);
+    ctx.lineTo(0, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  // 河床底色
+  ctx.fillStyle = '#BDB6A8';
+  ctx.fillRect(0, baseY, W, H - baseY);
+
+  // 水位
+  const maxDepthM = 8;
+  const waterH = Math.min((depth / maxDepthM) * maxWaterH, maxWaterH);
+  const waterY = baseY - waterH;
+  const waterColor = depth < 1 ? 'rgba(26,107,107,0.5)' : depth < 3 ? 'rgba(212,137,42,0.55)' : 'rgba(200,64,26,0.55)';
+
+  ctx.fillStyle = waterColor;
+
+  if (channel === 'v') {
+    // 水位在 V 型：三角形截面
+    const halfW = 15 + (waterH / (baseY - 20)) * (cx - 15);
+    ctx.beginPath();
+    ctx.moveTo(cx - halfW, waterY);
+    ctx.lineTo(cx - 15, baseY);
+    ctx.lineTo(cx + 15, baseY);
+    ctx.lineTo(cx + halfW, waterY);
+    ctx.closePath();
+    ctx.fill();
+  } else if (channel === 'u') {
+    const halfW = Math.min(100, 20 + waterH * 0.7);
+    ctx.beginPath();
+    ctx.moveTo(cx - halfW - waterH * 0.6, waterY);
+    ctx.lineTo(cx - 100, baseY);
+    ctx.lineTo(cx + 100, baseY);
+    ctx.lineTo(cx + halfW + waterH * 0.6, waterY);
+    ctx.closePath();
+    ctx.fill();
+  } else {
+    const halfW = Math.min(220, 80 + waterH * 1.8);
+    ctx.beginPath();
+    ctx.moveTo(cx - halfW, waterY);
+    ctx.lineTo(cx - 220, baseY);
+    ctx.lineTo(cx + 220, baseY);
+    ctx.lineTo(cx + halfW, waterY);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // 水位線標示
+  ctx.strokeStyle = depth < 1 ? '#1A6B6B' : depth < 3 ? '#D4892A' : '#C8401A';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath();
+  ctx.moveTo(20, waterY);
+  ctx.lineTo(W - 20, waterY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 水位高度標註
+  ctx.fillStyle = depth < 1 ? '#1A6B6B' : depth < 3 ? '#B47A1A' : '#C8401A';
+  ctx.font = 'bold 12px IBM Plex Mono, monospace';
+  ctx.fillText(`▲ ${depth.toFixed(1)} m`, W - 70, waterY - 6);
+
+  // 人形比例尺（1.7m 高）
+  const personH = (1.7 / maxDepthM) * maxWaterH;
+  const personX = 40;
+  const personY = baseY - personH;
+  ctx.fillStyle = '#1C1A17';
+  ctx.fillRect(personX - 3, personY, 6, personH);
+  ctx.beginPath();
+  ctx.arc(personX, personY - 6, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.font = '10px IBM Plex Mono, monospace';
+  ctx.fillStyle = '#6B6560';
+  ctx.fillText('1.7m', personX + 8, baseY - 4);
+}
+
+/* ══════════════════════════════════════════
+   S4-B · 雨量監測站
+══════════════════════════════════════════ */
+
+let stationCount = 2;
+
+function buildStationInputs() {
+  const wrap = document.getElementById('station-inputs');
+  wrap.innerHTML = '';
+  for (let i = 0; i < stationCount; i++) {
+    const label = i === 0 ? '最上游站' : i === 1 ? '中游站' : i === 2 ? '下游站' : '補充站 ' + i;
+    const row = document.createElement('div');
+    row.className = 'rain-input-row';
+    row.innerHTML = `
+      <div class="field">
+        <label for="s-name-${i}">${label} · 站名</label>
+        <input type="text" id="s-name-${i}" placeholder="例：合歡山雨量站" style="background:var(--paper);border:1px solid var(--rule2);border-radius:3px;padding:.6rem .8rem;font-family:var(--sans);font-size:14px;color:var(--ink);width:100%;">
+      </div>
+      <div class="field">
+        <label for="s-val-${i}">24h 累積雨量（mm）</label>
+        <input type="number" id="s-val-${i}" placeholder="0" min="0" max="1000" step="1">
+      </div>
+    `;
+    wrap.appendChild(row);
+  }
+  document.getElementById('add-btn').style.display = stationCount >= 4 ? 'none' : '';
+}
+
+function addStation() {
+  if (stationCount >= 4) return;
+  stationCount++;
+  buildStationInputs();
+}
+
+function calcRain() {
+  const stations = [];
+  for (let i = 0; i < stationCount; i++) {
+    const name = document.getElementById('s-name-' + i)?.value || ('站 ' + (i + 1));
+    const val  = parseFloat(document.getElementById('s-val-' + i)?.value) || 0;
+    stations.push({ name: name || ('站 ' + (i + 1)), val });
+  }
+
+  const maxVal = Math.max(...stations.map(s => s.val));
+  const avgVal = stations.reduce((a, b) => a + b.val, 0) / stations.length;
+
+  // 顯示站卡
+  const display = document.getElementById('station-display');
+  display.innerHTML = '';
+  stations.forEach(s => {
+    const pct = Math.min(100, (s.val / 500) * 100);
+    const fillClass = s.val < 80 ? 'fill-green' : s.val < 200 ? 'fill-yellow' : 'fill-red';
+    const card = document.createElement('div');
+    card.className = 'station-card';
+    card.innerHTML = `
+      <div class="station-name">${s.name}</div>
+      <div style="display:flex;align-items:baseline;gap:.3rem">
+        <div class="station-val">${s.val}</div>
+        <div class="station-unit">mm / 24h</div>
+      </div>
+      <div class="station-bar-wrap">
+        <div class="station-bar-fill ${fillClass}" style="width:${pct}%"></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--dim2);margin-top:.3rem">
+        ${s.val < 80 ? '正常' : s.val < 200 ? '⚠ 大雨' : s.val < 350 ? '⛔ 豪雨' : '⛔⛔ 大豪雨+'}
+      </div>
+    `;
+    display.appendChild(card);
+  });
+
+  // 決策建議
+  const head = document.getElementById('rain-verdict-head');
+  const body = document.getElementById('rain-verdict-body');
+  let icon, label, bodyHtml, bgClass;
+
+  if (maxVal >= 350) {
+    icon = '⛔'; label = '嚴禁入溪 — 大豪雨以上等級';
+    bgClass = 'level-red';
+    bodyHtml = `上游最高站雨量達 ${maxVal} mm/24h，已超過大豪雨標準（350mm）。<br>
+    <strong style="color:#C8401A">嚴禁所有入溪活動。若已在溪中，立即拋棄非必要裝備，全速撤往最高地形。</strong><br>
+    緊急聯絡：消防署 119 ｜ 山難救援：119 轉台灣山岳搜救協會`;
+  } else if (maxVal >= 200) {
+    icon = '⚠'; label = '暫緩活動 — 已達豪雨標準';
+    bgClass = 'level-yellow';
+    bodyHtml = `上游最高站雨量 ${maxVal} mm/24h，達豪雨標準（200mm）。<br>
+    <strong style="color:#B47A1A">應暫緩入溪，等待至少 12 小時後重新評估。</strong> 若活動已進行中，<br>
+    立即往水位線以上 15m 撤退，清點人員，等待洪峰通過後再評估下一步。`;
+  } else if (maxVal >= 80 || avgVal >= 50) {
+    icon = '⚡'; label = '加強監控 — 進入黃色警戒';
+    bgClass = 'level-yellow';
+    bodyHtml = `雨量達大雨等級（最高站 ${maxVal} mm，平均 ${avgVal.toFixed(0)} mm）。<br>
+    <strong style="color:#B47A1A">縮短行程，確保 14:00 前離溪。</strong> 每 15 分鐘觀察水位標記石，指派專人監測上游雷達回波。<br>
+    出現任一暴漲前兆，立即啟動撤退，不得討論。`;
+  } else {
+    icon = '✓'; label = '條件良好 — 持續監控';
+    bgClass = 'level-green';
+    bodyHtml = `目前各站雨量均在正常範圍（最高 ${maxVal} mm/24h）。<br>
+    <strong style="color:#2E7D52">可正常活動，但不可大意。</strong> 依標準 SOP 設置水位標記石，每 30 分鐘查閱雷達回波圖，<br>
+    向全員說明暴漲五大前兆，並確認每人知道最近的撤退高地位置。`;
+  }
+
+  head.className = 'verdict-head ' + bgClass;
+  head.style.borderBottom = '1px solid var(--rule)';
+  document.getElementById('rain-verdict-icon').textContent = icon;
+  document.getElementById('rain-verdict-label').textContent = label;
+  body.innerHTML = bodyHtml;
+
+  document.getElementById('rain-result').style.display = 'block';
+  document.getElementById('rain-result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function resetRain() {
+  stationCount = 2;
+  buildStationInputs();
+  document.getElementById('rain-result').style.display = 'none';
+}
+
 /* ══════════════════════════════════════════
    S4-C · 地形速查
 ══════════════════════════════════════════ */
@@ -1220,7 +1697,7 @@ function resetSim() {
    Nav active state on scroll
 ══════════════════════════════════════════ */
 
-const sections = ['terrain', 'sim'];
+const sections = ['calc', 'rain', 'terrain', 'sim'];
 const navLinks = document.querySelectorAll('.nav-links a');
 
 function updateNav() {
@@ -1237,6 +1714,8 @@ function updateNav() {
 window.addEventListener('scroll', updateNav, { passive: true });
 
 /* ── Init ── */
+updateSim();
+buildStationInputs();
 renderSim();
 </script>
 </body>
