@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B4 · 虎頭蜂螫傷 — SAR TW</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:   #F5F0E8;
+  --stone:   #EDE7D9;
+  --stone2:  #E3DDD0;
+  --rule:    #CFC9BC;
+  --rule2:   #BDB6A8;
+  --ink:     #1C1A17;
+  --dim:     #6B6560;
+  --dim2:    #9A948E;
+  --fire:    #C8401A;
+
+  --accent-A: #C8401A;
+  --accent-E: #9B5E1A;
+  --accent-B: #7A3A6E;
+  --accent-C: #2C4A6E;
+  --accent-D: #3D5C3A;
+  --accent-T: #5C3A7A;
+  --accent-S: #1A6B6B;
+  --accent-R: #8B4A1A;
+  --accent-W: #1A5C6B;
+
+  --mono:  'IBM Plex Mono', monospace;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+
+  --nav-h: 52px;
+  --spine: 4px;
+  --gutter: clamp(1.5rem, 5vw, 3.5rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  padding-top: var(--nav-h);
+}
+
+/* SPINE */
+.spine {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--spine);
+  height: 100vh;
+  background: var(--accent-B);
+  z-index: 100;
+}
+
+/* NAV */
+.top-nav {
+  position: fixed;
+  top: 0; left: var(--spine); right: 0;
+  height: var(--nav-h);
+  background: var(--stone);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0 var(--gutter);
+  z-index: 90;
+}
+.nav-logo {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--fire);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.nav-home {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--dim);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.nav-home:hover { color: var(--ink); }
+.nav-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
+.nav-links {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  flex: 1;
+}
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  text-decoration: none;
+  padding: 0.25rem 0.6rem;
+  border-left: 2px solid transparent;
+  white-space: nowrap;
+}
+.nav-links a[data-layer="B"] { border-left-color: var(--accent-B); }
+.nav-links a.active { color: var(--ink); font-weight: 600; }
+.nav-links a:hover { color: var(--ink); }
+.nav-links a.nav-cross { opacity: 0.55; }
+
+/* MAIN */
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem var(--gutter) 5rem;
+}
+
+/* SEC HEADER */
+.sec-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+.sec-layer {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-B);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.sec-title {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+.sec-title em {
+  font-style: normal;
+  color: var(--accent-B);
+}
+.sec-sub {
+  color: var(--dim);
+  font-size: 14px;
+  max-width: 600px;
+}
+
+/* TOOL FRAME */
+.tool-frame {
+  background: var(--stone);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+.tool-bar {
+  background: var(--stone2);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.6rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.tool-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tool-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim2);
+}
+.tool-inner {
+  padding: 1.5rem 1.25rem;
+}
+
+/* ALERT */
+.alert {
+  border-left: 3px solid var(--rule2);
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1rem;
+  font-size: 14px;
+  line-height: 1.6;
+  background: rgba(255,255,255,0.25);
+  border-radius: 0 2px 2px 0;
+}
+.alert-danger { border-left-color: var(--fire); }
+.alert-warn   { border-left-color: var(--accent-E); }
+.alert-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.alert-danger .alert-title { color: var(--fire); }
+.alert-warn   .alert-title { color: var(--accent-E); }
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.step {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.step:last-child { border-bottom: none; }
+.step-dot {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--paper);
+  background: var(--accent-B);
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+}
+.step-body { flex: 1; }
+.step-body strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  color: var(--ink);
+}
+.step-body p { font-size: 13.5px; color: var(--dim); }
+.step-body em { font-style: normal; color: var(--accent-B); font-weight: 600; }
+
+/* SEASON CALENDAR */
+.season-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 3px;
+  margin-bottom: 1rem;
+}
+.month-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.month-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--dim2);
+  text-align: center;
+}
+.month-bar {
+  width: 100%;
+  height: 28px;
+  border-radius: 2px;
+  position: relative;
+  cursor: default;
+}
+.month-bar::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 2px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 10;
+}
+.month-bar:hover::after { opacity: 1; }
+
+.risk-low    { background: #C8C3B8; }
+.risk-med    { background: #B8924A; }
+.risk-high   { background: #C8601A; }
+.risk-peak   { background: #A02010; }
+
+.season-legend {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim);
+}
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.season-note {
+  font-size: 12.5px;
+  color: var(--dim);
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--rule);
+  line-height: 1.6;
+}
+
+/* SPECIES TABLE */
+.species-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.species-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--dim2);
+  text-align: left;
+  padding: 0.4rem 0.75rem;
+  background: var(--stone2);
+  border-bottom: 1px solid var(--rule);
+}
+.species-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  vertical-align: top;
+}
+.species-table tr:last-child td { border-bottom: none; }
+.species-table tr:hover td { background: rgba(255,255,255,0.3); }
+.risk-stars { color: var(--fire); letter-spacing: -1px; }
+.risk-stars-dim { color: var(--rule2); letter-spacing: -1px; }
+.sp-name { font-weight: 700; display: block; }
+.sp-latin { font-family: var(--mono); font-size: 10px; color: var(--dim2); }
+
+/* MYTH TABLE */
+.myth-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.myth-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--dim2);
+  text-align: left;
+  padding: 0.4rem 0.75rem;
+  background: var(--stone2);
+  border-bottom: 1px solid var(--rule);
+}
+.myth-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.myth-table tr:last-child td { border-bottom: none; }
+.myth-x { color: var(--fire); font-weight: 700; font-family: var(--mono); }
+.myth-why { color: var(--dim); }
+
+/* SOURCE */
+details.source-block {
+  border-top: 1px solid var(--rule);
+  margin-top: 1rem;
+}
+details.source-block summary {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--dim2);
+  text-transform: uppercase;
+  padding: 0.6rem 0;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+details.source-block summary::before {
+  content: '▶';
+  font-size: 8px;
+  transition: transform 0.15s;
+}
+details.source-block[open] summary::before { transform: rotate(90deg); }
+.source-list {
+  padding: 0.75rem 0 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.source-item {
+  font-size: 12px;
+  color: var(--dim);
+  padding-left: 1rem;
+  line-height: 1.5;
+}
+.source-item strong {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim2);
+  font-weight: 700;
+  display: block;
+  letter-spacing: 0.05em;
+}
+
+/* FOOTER */
+.page-footer {
+  border-top: 1px solid var(--rule);
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim2);
+  flex-wrap: wrap;
+}
+.footer-right { text-align: right; }
+</style>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<nav class="top-nav">
+  <div class="nav-logo">SAR // TW</div>
+  <a class="nav-home" href="index.html">← 首頁</a>
+  <div class="nav-sep"></div>
+  <div class="nav-links">
+    <a href="#b4" class="active" data-layer="B">B4 · 虎頭蜂螫傷</a>
+    <a href="sar_training_batch2.html#b1" class="nav-cross" data-layer="B">B1 · 失溫分級</a>
+    <a href="sar_training_batch2.html#b2" class="nav-cross" data-layer="B">B2 · 高山反應</a>
+    <a href="sar_training_batch2.html#b3" class="nav-cross" data-layer="B">B3 · 失蹤者行為</a>
+  </div>
+</nav>
+
+<main>
+
+  <section id="b4">
+    <div class="sec-header">
+      <div class="sec-layer">B4 · 高山醫療</div>
+      <h2 class="sec-title">虎頭蜂螫傷 · <em>辨識、處置、後送判斷</em></h2>
+      <p class="sec-sub">7–11 月台灣山域的主要生物性危害。蜂群攻擊的致命性來自毒素累積與延遲器官損傷，而非只有即時過敏反應——本模組協助隊員在野外做出正確的後送決策。</p>
+    </div>
+
+    <!-- TOOL 1: 季節風險 -->
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">季節風險曆</div>
+        <div class="tool-tag">農業部林業署 · 台北榮總毒物中心 2001–2021</div>
+      </div>
+      <div class="tool-inner">
+        <div class="season-grid">
+          <!-- Jan -->
+          <div class="month-cell">
+            <div class="month-bar risk-low" data-label="1月｜低風險：蜂群越冬，活動極少"></div>
+            <div class="month-label">1</div>
+          </div>
+          <!-- Feb -->
+          <div class="month-cell">
+            <div class="month-bar risk-low" data-label="2月｜低風險：越冬期末，蜂王尚未築巢"></div>
+            <div class="month-label">2</div>
+          </div>
+          <!-- Mar -->
+          <div class="month-cell">
+            <div class="month-bar risk-low" data-label="3月｜低–中：新蜂王開始築巢，蜂群規模小"></div>
+            <div class="month-label">3</div>
+          </div>
+          <!-- Apr -->
+          <div class="month-cell">
+            <div class="month-bar risk-low" data-label="4月｜低–中：育幼期，蜂群仍小"></div>
+            <div class="month-label">4</div>
+          </div>
+          <!-- May -->
+          <div class="month-cell">
+            <div class="month-bar risk-med" data-label="5月｜中：蜂群成長，地下巢開始難以察覺"></div>
+            <div class="month-label">5</div>
+          </div>
+          <!-- Jun -->
+          <div class="month-cell">
+            <div class="month-bar risk-med" data-label="6月｜中：工蜂數量增加，護巢性提升"></div>
+            <div class="month-label">6</div>
+          </div>
+          <!-- Jul -->
+          <div class="month-cell">
+            <div class="month-bar risk-high" data-label="7月｜高：活動高峰開始，事故通報明顯上升"></div>
+            <div class="month-label">7</div>
+          </div>
+          <!-- Aug -->
+          <div class="month-cell">
+            <div class="month-bar risk-high" data-label="8月｜高：蜂群壯大，警戒範圍擴大"></div>
+            <div class="month-label">8</div>
+          </div>
+          <!-- Sep -->
+          <div class="month-cell">
+            <div class="month-bar risk-peak" data-label="9月｜極高峰：全年通報最多月，蜂巢個體數最大"></div>
+            <div class="month-label">9</div>
+          </div>
+          <!-- Oct -->
+          <div class="month-cell">
+            <div class="month-bar risk-peak" data-label="10月｜極高峰：培育新蜂王期，攻擊性最強"></div>
+            <div class="month-label">10</div>
+          </div>
+          <!-- Nov -->
+          <div class="month-cell">
+            <div class="month-bar risk-high" data-label="11月｜高：蜂群漸崩解，但殘存工蜂仍有攻擊性"></div>
+            <div class="month-label">11</div>
+          </div>
+          <!-- Dec -->
+          <div class="month-cell">
+            <div class="month-bar risk-low" data-label="12月｜低：蜂群崩解，越冬進入靜止期"></div>
+            <div class="month-label">12</div>
+          </div>
+        </div>
+
+        <div class="season-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#C8C3B8"></div>低</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#B8924A"></div>中</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#C8601A"></div>高</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#A02010"></div>極高峰</div>
+        </div>
+
+        <p class="season-note">
+          入秋後蜂巢開始培育新一代蜂王與雄蜂，警戒範圍擴大，是全年傷人事件最集中的時段。
+          台北榮總毒物中心分析 2001–2021 年 611 位蜂螫通報病患，確認 <strong>9 月通報人數為全年最高</strong>。
+          農業部數據顯示活動高峰為 <strong>7–11 月</strong>。
+        </p>
+
+      </div>
+    </div>
+
+    <!-- TOOL 2: 物種辨識 -->
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">物種辨識 · 山域常見三種</div>
+        <div class="tool-tag">農業部 · 台灣蜂類保育協會</div>
+      </div>
+      <div class="tool-inner">
+        <table class="species-table">
+          <thead>
+            <tr>
+              <th>種類</th>
+              <th>蜂巢位置</th>
+              <th>外觀特徵</th>
+              <th>攻擊性</th>
+              <th>SAR 現場注意</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <span class="sp-name">中華大虎頭蜂</span>
+                <span class="sp-latin">Vespa mandarinia</span>
+              </td>
+              <td>地下巢、枯木根部</td>
+              <td>體型最大（3–4cm）；頭部橘黃色，腹部橙黑條紋</td>
+              <td>
+                <span class="risk-stars">★★★★★</span>
+                <br><small style="color:var(--dim2)">主要致死種</small>
+              </td>
+              <td>地下巢完全不可見，踩踏或踢到枯木即觸發。一旦觸發撤退距離需 <strong>200m 以上</strong>。</td>
+            </tr>
+            <tr>
+              <td>
+                <span class="sp-name">黑腹虎頭蜂</span>
+                <span class="sp-latin">Vespa tropica</span>
+              </td>
+              <td>地下巢、草叢、土堤</td>
+              <td>腹部黑色為主，第一節橙黃色；體型中大</td>
+              <td>
+                <span class="risk-stars">★★★★</span><span class="risk-stars-dim">★</span>
+                <br><small style="color:var(--dim2)">高度危險</small>
+              </td>
+              <td>草叢中最常見地下巢種之一。安全距離建議 <strong>10m 以上</strong>，發現警戒蜂立即繞行。</td>
+            </tr>
+            <tr>
+              <td>
+                <span class="sp-name">黃腳虎頭蜂</span>
+                <span class="sp-latin">Vespa velutina</span>
+              </td>
+              <td>樹上懸掛灰紙球巢</td>
+              <td>腳部黃色；體型中型；蜂巢形似足球，掛於樹枝</td>
+              <td>
+                <span class="risk-stars">★★★</span><span class="risk-stars-dim">★★</span>
+                <br><small style="color:var(--dim2)">中度危險</small>
+              </td>
+              <td>樹上巢視覺可見，相對可提前迴避。但蜂巢若在登山道旁樹上，經過時容易誤觸。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="alert alert-warn" style="margin-top:1rem">
+          <div class="alert-title">地下巢是山域最大隱患</div>
+          地下巢在地面無明顯標誌，踩踏枯木根部、土坡裂縫即可觸發。行進中出現單隻虎頭蜂在頭部盤旋不去（偵察蜂），應立即停止前進，靜待其離開或主動繞行，切勿揮打。
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TOOL 3: 現場處置步驟 -->
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">現場處置流程</div>
+        <div class="tool-tag">農業部 · 台灣蜂類保育協會 · 農業E報</div>
+      </div>
+      <div class="tool-inner">
+        <div class="timeline">
+          <div class="step">
+            <div class="step-dot">P1</div>
+            <div class="step-body">
+              <strong>撤離優先，急救其次</strong>
+              <p>在蜂群警戒範圍內做任何急救動作都是錯誤的。<em>直線撤退 200m 以上</em>，不要揮打、不要遮臉後原地趴下——虎頭蜂攻擊時會在目標身上留下費洛蒙，引來更多蜂群圍攻。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">P2</div>
+            <div class="step-body">
+              <strong>移除螫傷部位附近衣物</strong>
+              <p>衣物吸附費洛蒙，可能持續引發追擊或同行者遭二次螫刺。確認安全後盡快移除或更換。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">P3</div>
+            <div class="step-body">
+              <strong>大量清水沖洗傷口</strong>
+              <p>清水沖洗螫傷部位 <em>10–15 分鐘</em>，減少皮膚表面殘留毒液。野外可用水袋或溪水。<strong>虎頭蜂無殘針</strong>（與蜜蜂不同），不需拔刺。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">P4</div>
+            <div class="step-body">
+              <strong>冷敷（有條件才做）</strong>
+              <p>冷水布或冰袋敷於傷口，緩解局部疼痛與腫脹，<em>不影響毒素吸收速度</em>。不要因為尋找冷敷材料而延誤後送判斷。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">P5</div>
+            <div class="step-body">
+              <strong>過敏反應監測（最關鍵步驟）</strong>
+              <p>螫傷後 30 分鐘為高風險窗口，持續觀察：<em>喉嚨緊、聲音沙啞、呼吸困難、全身蕁麻疹、意識改變或暈厥</em>。出現任何上述症狀立即通報後送，不等待觀察。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">P6</div>
+            <div class="step-body">
+              <strong>記錄螫刺數量、部位與時間</strong>
+              <p>到院時醫師需要此資訊決定治療強度。野外能估計就估計，螫傷位置（頭頸部風險較高）也需記錄。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">P7</div>
+            <div class="step-body">
+              <strong>傷者禁止自行走動（後送前）</strong>
+              <p>走動加速血液循環，加快毒素全身吸收。<em>讓傷者平躺靜止等待後送</em>。有意識者可給少量水；無意識或嘔吐者側臥防嗆。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-danger" style="margin-top:1.25rem">
+          <div class="alert-title">假性穩定期警告</div>
+          傷者可能因腎上腺素分泌，在螫傷後 30–60 分鐘內看起來狀態良好。這是爭取後送的黃金時間，不是放鬆信號。30 針以上即使當下無明顯不適，仍<strong>必須後送並觀察 24 小時</strong>——延遲性腎損傷、橫紋肌溶解可在 24–72 小時後發作。
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOL 4: 迷思破解 -->
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">常見迷思 · 不應做的事</div>
+        <div class="tool-tag">台灣蜂類保育協會 · 農業部</div>
+      </div>
+      <div class="tool-inner">
+        <table class="myth-table">
+          <thead>
+            <tr>
+              <th>迷思說法</th>
+              <th>為什麼錯</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="myth-x">✕</span> 原地趴下不動等蜂散去</td>
+              <td class="myth-why">攻擊時費洛蒙留在身上，趴下只讓蜂群持續圍攻。應直線快速撤離。</td>
+            </tr>
+            <tr>
+              <td><span class="myth-x">✕</span> 揮打或噴殺蟲劑驅趕</td>
+              <td class="myth-why">揮打製造氣流讓蜂更能鎖定目標；殺蟲劑無法殺死虎頭蜂，反而刺激費洛蒙釋放。</td>
+            </tr>
+            <tr>
+              <td><span class="myth-x">✕</span> 躲進水中等蜂散去</td>
+              <td class="myth-why">虎頭蜂會守在水邊等候，延誤逃脫並增加失溫風險。</td>
+            </tr>
+            <tr>
+              <td><span class="myth-x">✕</span> 擠壓傷口排毒</td>
+              <td class="myth-why">虎頭蜂無殘針，擠壓只加速毒素從皮膚擴散至深層組織。</td>
+            </tr>
+            <tr>
+              <td><span class="myth-x">✕</span> 塗抹尿液、牙膏、泥土</td>
+              <td class="myth-why">無任何緩解毒素效果，且增加傷口感染風險。</td>
+            </tr>
+            <tr>
+              <td><span class="myth-x">✕</span> 喝酒止痛</td>
+              <td class="myth-why">酒精擴張血管，加速毒素吸收入全身循環。</td>
+            </tr>
+            <tr>
+              <td><span class="myth-x">✕</span> 螫幾針沒關係，撐過去就好</td>
+              <td class="myth-why">毒素累積量線性增加，且延遲器官損傷可在事後 24–72 小時才發作，「當下感覺好」不代表安全。</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- 統一引用區 -->
+  <div class="tool-frame" style="margin-top:3rem">
+    <div class="tool-bar">
+      <div class="tool-label">資料來源與引用</div>
+      <div class="tool-tag">B4 · 虎頭蜂螫傷模組</div>
+    </div>
+    <div class="tool-inner">
+
+      <div style="margin-bottom:1rem">
+        <div style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--dim2);text-transform:uppercase;margin-bottom:0.6rem">法規依據</div>
+        <div class="source-list">
+          <div class="source-item">
+            <strong>藥事法第 50 條</strong>
+            處方藥定義——EpiPen（腎上腺素自動注射器）須醫師處方取得，一般民眾與 SAR 隊員不得自行備藥。衛福部食藥署藥品查詢可確認處方分類。
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1rem;padding-top:0.75rem;border-top:1px solid var(--rule)">
+        <div style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--dim2);text-transform:uppercase;margin-bottom:0.6rem">季節性與流行病學</div>
+        <div class="source-list">
+          <div class="source-item">
+            <strong>台北榮民總醫院毒物中心</strong>
+            Yang CC et al.（2001–2021）蜂螫傷通報病例分析，n=611，確認 9 月通報人數為全年最高。轉引自 Heho 健康（2024/08）。
+          </div>
+          <div class="source-item">
+            <strong>農業部林業及自然保育署</strong>
+            台灣山林悠遊網公告：登山休閒時遇到虎頭蜂怎麼辦？虎頭蜂活躍季節資料（7–11 月）。
+          </div>
+          <div class="source-item">
+            <strong>新竹縣政府農業處</strong>
+            虎頭蜂活躍季節提醒，2023/08。
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1rem;padding-top:0.75rem;border-top:1px solid var(--rule)">
+        <div style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--dim2);text-transform:uppercase;margin-bottom:0.6rem">物種辨識與行為</div>
+        <div class="source-list">
+          <div class="source-item">
+            <strong>台灣蜂類保育協會</strong>
+            理事長蔡明憲、宜蘭大學昆蟲系陳裕文教授接受媒體採訪說明；窩窩獨立媒體（2025/10）、台灣事實查核中心（2025/01）。
+          </div>
+          <div class="source-item">
+            <strong>農業部林業及自然保育署</strong>
+            台灣虎頭蜂種類與分布資料。
+          </div>
+        </div>
+      </div>
+
+      <div style="padding-top:0.75rem;border-top:1px solid var(--rule)">
+        <div style="font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--dim2);text-transform:uppercase;margin-bottom:0.6rem">臨床處置</div>
+        <div class="source-list">
+          <div class="source-item">
+            <strong>農業部農業E報</strong>
+            登山遇到虎頭蜂怎麼辦？官方公告——現場處置步驟與常見迷思。
+          </div>
+          <div class="source-item">
+            <strong>延遲器官損傷資料</strong>
+            Chen CK et al.（2004）Hornet stings causing acute renal failure. <em>Nephrology Dialysis Transplantation</em>——橫紋肌溶解與腎損傷延遲發作之臨床紀錄。建議查核原始期刊後引用。
+          </div>
+          <div class="source-item">
+            <strong>說明</strong>
+            螫刺數量閾值（30 針）為針對無過敏史成人平均體重之臨床估算值，無絕對安全閾值，兒童、老人、過敏者在更低針數即可達危險毒素量。本模組所有處置建議均以野外非醫療人員為對象，不含藥物施用指引。
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <div class="footer-left">
+      <strong>SAR · TW</strong> · 台灣山域搜救訓練平台<br>
+      B · 高山醫療群組 · nightmoon720
+    </div>
+    <div class="footer-right">
+      3 TOOLS<br>
+      B GROUP<br>
+      VERSION 2025
+    </div>
+  </div>
+
+</main>
+
+
+
+</body>
+</html>
