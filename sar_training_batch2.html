@@ -539,7 +539,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
   <div class="sec-header">
     <div class="sec-layer">C1 · 技術執行</div>
     <h2 class="sec-title">繩索力學<em>三件事</em></h2>
-    <p class="sec-sub">滑輪省力比 · V 字雙錨點夾角 · 轉向點合力 — 硬數學，不是示意。</p>
+    <p class="sec-sub">滑輪省力比 · V 字雙錨點夾角 · COD vs 偏力對照 — 硬數學，不是示意。</p>
   </div>
 
   <div class="tool-frame">
@@ -552,7 +552,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
         <div class="rm-tabs" id="rm-tabs">
           <div class="rm-tab on" data-i="0"><div class="tw">① 滑輪省力比</div><div class="td">你以為省幾倍，其實省幾倍</div></div>
           <div class="rm-tab" data-i="1"><div class="tw">② V 字雙錨點</div><div class="td">夾角越開，每支越累</div></div>
-          <div class="rm-tab" data-i="2"><div class="tw">③ 轉向點</div><div class="td">折得越兇，錨點越重</div></div>
+          <div class="rm-tab" data-i="2"><div class="tw">③ COD vs 偏力</div><div class="td">同樣角度，方向相反</div></div>
         </div>
         <div class="rm-main">
           <div class="rm-stage">
@@ -564,6 +564,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
       </div>
     </div>
   </div>
+
 </section>
 
 <footer class="page-footer">
@@ -1150,31 +1151,6 @@ input[type="range"].light-range::-webkit-slider-thumb {
     const l = document.getElementById('rm-vL'); l.addEventListener('input', () => { st.vLoad = +l.value; setPct(l, 'var(--amber)'); panelV(); draw(); }); setPct(l, 'var(--amber)');
   }
 
-  function panelD() {
-    const th = st.dAngle, T = st.dTens;
-    const f = 2 * T * Math.sin(th * Math.PI / 360);
-    const pct = Math.round(f / T * 100);
-    const z = pct < 70 ? ['var(--safe)', '輕載'] : pct < 120 ? ['var(--amber)', '中載'] : pct < 170 ? ['var(--ember)', '重載'] : ['var(--fire)', '接近2倍'];
-    document.getElementById('rm-panel').innerHTML = `
-      <div class="rm-bigread" style="--br-accent:${z[0]}">
-        <span class="rl">轉向錨承受合力</span>
-        <span class="rv">${f.toFixed(1)}<small>kg · ${pct}%</small></span>
-      </div>
-      <div class="rm-ctl" style="--br-accent:var(--violet)">
-        <div class="cr"><span class="cn">繩子轉向角 θ</span><span class="cv" style="color:${z[0]}">${th}° · ${z[1]}</span></div>
-        <input type="range" class="light-range" id="rm-dA" min="0" max="180" value="${th}" style="--range-accent:var(--violet)">
-        <div class="rm-note" style="margin-top:.5rem">0° = 繩幾乎直通（錨點幾乎不受力）；180° = 繩對折（錨點承受2倍張力）。</div>
-      </div>
-      <div class="rm-ctl" style="--br-accent:var(--violet)">
-        <div class="cr"><span class="cn">繩內張力</span><span class="cv">${T} kg</span></div>
-        <input type="range" class="light-range" id="rm-dT" min="50" max="200" value="${T}" style="--range-accent:var(--violet)">
-      </div>
-      <div class="rm-formula"><b>合力 = 2 × 張力 × sin(½×${th}°) = ${f.toFixed(1)} kg</b></div>
-      <div class="rm-note">這跟V字<b>不同</b>：一條連續繩通過轉向錨，錨點承受兩股繩的合力。<b>V字大角度衝向無限大；轉向點最多只到繩張力的2倍（200%）</b>——同樣是「角度」，物理完全不同。</div>`;
-    const a = document.getElementById('rm-dA'); a.addEventListener('input', () => { st.dAngle = +a.value; setPct(a, 'var(--violet)'); panelD(); draw(); }); setPct(a, 'var(--violet)');
-    const t = document.getElementById('rm-dT'); t.addEventListener('input', () => { st.dTens = +t.value; setPct(t, 'var(--violet)'); panelD(); draw(); }); setPct(t, 'var(--violet)');
-  }
-
   function bg() { ctx.fillStyle = '#F5F0E8'; ctx.fillRect(0, 0, W, H); ctx.strokeStyle = 'rgba(0,0,0,.05)'; ctx.lineWidth = 1; for (let x = 0; x < W; x += 36) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); } for (let y = 0; y < H; y += 36) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); } }
   function arrow(x1, y1, x2, y2, col, wd) { ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = wd; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); const a = Math.atan2(y2 - y1, x2 - x1), h = 8 + wd; ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x2 - h * Math.cos(a - .4), y2 - h * Math.sin(a - .4)); ctx.lineTo(x2 - h * Math.cos(a + .4), y2 - h * Math.sin(a + .4)); ctx.closePath(); ctx.fill(); }
 
@@ -1295,32 +1271,145 @@ input[type="range"].light-range::-webkit-slider-thumb {
     if (danger) { ctx.fillStyle = '#C8401A'; ctx.font = 'bold 16px IBM Plex Mono'; ctx.textAlign = 'center'; ctx.fillText('⚠ 連鎖拔除風險', cx, H * 0.93); }
   }
 
+  function panelD() {
+    document.getElementById('rm-badge').textContent = 'COD vs 偏力';
+    document.getElementById('rm-panel').innerHTML = `
+      <div style="font-family:var(--mono);font-size:11px;color:var(--dim2);letter-spacing:.05em;margin-bottom:.5rem">同樣 θ=90°，受力相同，但方向完全相反</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.75rem">
+        <div class="rm-formula" style="text-align:center;--br-accent:#2C7A8A">
+          <div style="font-size:10px;color:var(--dim2);margin-bottom:.25rem">COD · 定向滑輪</div>
+          <b style="color:#2C7A8A">F = W × 2cos(θ/2)</b>
+          <div style="font-size:10px;color:var(--dim);margin-top:.25rem">角度↑ → 錨點越輕</div>
+        </div>
+        <div class="rm-formula" style="text-align:center;--br-accent:#6B4FA0">
+          <div style="font-size:10px;color:var(--dim2);margin-bottom:.25rem">偏力 · Deviation</div>
+          <b style="color:#6B4FA0">F = 2W × sin(θ/2)</b>
+          <div style="font-size:10px;color:var(--dim);margin-top:.25rem">角度↑ → 錨點越重</div>
+        </div>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11px">
+          <thead>
+            <tr style="background:var(--stone2)">
+              <th style="padding:.4rem .5rem;text-align:left;border:1px solid var(--rule);color:var(--dim2)">θ</th>
+              <th style="padding:.4rem .5rem;text-align:center;border:1px solid var(--rule);color:#2C7A8A">COD</th>
+              <th style="padding:.4rem .5rem;text-align:center;border:1px solid var(--rule);color:#6B4FA0">偏力</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:.35rem .5rem;border:1px solid var(--rule);font-weight:700">0°</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#C8401A;font-weight:700">2.00×</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#2E7D52;font-weight:700">0.00×</td></tr>
+            <tr style="background:var(--stone)"><td style="padding:.35rem .5rem;border:1px solid var(--rule);font-weight:700">30°</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#D4781A;font-weight:700">1.93×</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#2E7D52;font-weight:700">0.52×</td></tr>
+            <tr><td style="padding:.35rem .5rem;border:1px solid var(--rule);font-weight:700">60°</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#B89030;font-weight:700">1.73×</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#B89030;font-weight:700">1.00×</td></tr>
+            <tr style="background:var(--stone2);outline:2px solid #6B4FA0;outline-offset:-1px"><td style="padding:.35rem .5rem;border:1px solid var(--rule);font-weight:700">90° ★</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#B89030;font-weight:700">1.41×</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#B89030;font-weight:700">1.41×</td></tr>
+            <tr><td style="padding:.35rem .5rem;border:1px solid var(--rule);font-weight:700">120°</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#2E7D52;font-weight:700">1.00×</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#D4781A;font-weight:700">1.73×</td></tr>
+            <tr style="background:var(--stone)"><td style="padding:.35rem .5rem;border:1px solid var(--rule);font-weight:700">180°</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#2E7D52;font-weight:700">0.00×</td><td style="padding:.35rem .5rem;border:1px solid var(--rule);text-align:center;color:#C8401A;font-weight:700">2.00×</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="rm-note" style="margin-top:.6rem">⚠ 90° 時兩者數字相同（1.41×），但 COD 此後越來越輕，偏力越來越重。<b>偏力錨點必須使用獨立固定點。</b></div>
+    `;
+  }
+
   function drawD() {
-    const th = st.dAngle, T = st.dTens;
-    const f = 2 * T * Math.sin(th * Math.PI / 360);
-    document.getElementById('rm-badge').textContent = '轉向 / 偏向點';
-    const cx = W * 0.42, cy = H * 0.45;
-    ctx.fillStyle = '#F5F0E8'; ctx.strokeStyle = '#6B4FA0'; ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.arc(cx, cy, 14, 0, 7); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = '#6B4FA0'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('⚓', cx, cy + 5);
-    const inAng = -Math.PI / 2, outAng = inAng + th * Math.PI / 180;
-    const Llen = Math.min(W, H) * 0.32;
-    const ix = cx + Math.cos(inAng) * Llen, iy = cy + Math.sin(inAng) * Llen;
-    const ox = cx + Math.cos(outAng) * Llen, oy = cy + Math.sin(outAng) * Llen;
-    ctx.strokeStyle = '#6B4FA0'; ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.moveTo(ix, iy); ctx.lineTo(cx, cy); ctx.lineTo(ox, oy); ctx.stroke();
-    ctx.fillStyle = '#6B4FA0'; ctx.font = 'bold 12px IBM Plex Mono';
-    ctx.fillText(T + 'kg', ix, iy - 7); ctx.fillText(T + 'kg', ox + 18, oy);
-    const bis = (inAng + outAng) / 2 + Math.PI;
-    const pct = f / T;
-    const col = pct < 0.7 ? '#2E7D52' : pct < 1.2 ? '#B89030' : pct < 1.7 ? '#D4781A' : '#C8401A';
-    const aLen = 28 + pct * Math.min(W, H) * 0.45;
-    arrow(cx, cy, cx + Math.cos(bis) * aLen, cy + Math.sin(bis) * aLen, col, 5);
-    ctx.fillStyle = col; ctx.font = 'bold 16px IBM Plex Mono'; ctx.textAlign = 'left';
-    ctx.fillText(f.toFixed(0) + 'kg (' + Math.round(pct * 100) + '%)', cx + Math.cos(bis) * aLen + 7, cy + Math.sin(bis) * aLen);
-    ctx.strokeStyle = '#1C1A17'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx, cy, 38, inAng, outAng); ctx.stroke();
-    ctx.fillStyle = '#1C1A17'; ctx.font = 'bold 13px IBM Plex Mono'; ctx.textAlign = 'center';
-    const mid = (inAng + outAng) / 2; ctx.fillText(th + '°', cx + Math.cos(mid) * 54, cy + Math.sin(mid) * 54);
+    document.getElementById('rm-badge').textContent = 'COD vs 偏力 · θ=90°';
+    const W2 = W / 2;
+
+    function arrowLocal(x1,y1,x2,y2,col,wd) {
+      ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=wd;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      const a=Math.atan2(y2-y1,x2-x1), h=7+wd;
+      ctx.beginPath(); ctx.moveTo(x2,y2);
+      ctx.lineTo(x2-h*Math.cos(a-.4),y2-h*Math.sin(a-.4));
+      ctx.lineTo(x2-h*Math.cos(a+.4),y2-h*Math.sin(a+.4));
+      ctx.closePath(); ctx.fill();
+    }
+
+    // 分隔線
+    ctx.strokeStyle = 'var(--rule)'; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(W2, H*0.05); ctx.lineTo(W2, H*0.95); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // ── 左：COD 定向滑輪 ──
+    const lcx = W2 * 0.52, lcy = H * 0.50;
+    const rL = Math.min(W2, H) * 0.28;
+    // 繩子：從左進，往上出（90°）
+    const lInX = lcx - rL, lInY = lcy;
+    const lOutX = lcx, lOutY = lcy - rL;
+    ctx.strokeStyle = '#2C7A8A'; ctx.lineWidth = 3.5; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(lInX, lInY);
+    ctx.quadraticCurveTo(lcx - 14, lcy - 14, lOutX, lOutY); ctx.stroke();
+    // W 方塊（左）
+    ctx.fillStyle = '#1C1A17';
+    ctx.beginPath(); ctx.roundRect(lInX - 22, lInY - 14, 42, 26, 4); ctx.fill();
+    ctx.fillStyle = '#F5F0E8'; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText('W', lInX, lInY + 4);
+    arrowLocal(lInX - 24, lInY, lInX - 40, lInY, '#C8401A', 2.5);
+    // 施力端（上）
+    ctx.fillStyle = '#2A6FBF'; ctx.beginPath(); ctx.arc(lOutX, lOutY, 6, 0, Math.PI*2); ctx.fill();
+    arrowLocal(lOutX, lOutY - 4, lOutX, lOutY - 20, '#2A6FBF', 2.5);
+    ctx.fillStyle = '#2A6FBF'; ctx.font = 'bold 10px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText('施力', lOutX, lOutY - 26);
+    // 滑輪
+    ctx.fillStyle = '#F5F0E8'; ctx.strokeStyle = '#2C7A8A'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(lcx, lcy, 12, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#2C7A8A'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('⚙', lcx, lcy + 4);
+    // F 合力
+    arrowLocal(lcx, lcy, lcx + 46, lcy + 46, '#D4781A', 4);
+    ctx.fillStyle = '#D4781A'; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'left';
+    ctx.fillText('F=1.41×', lcx + 50, lcy + 50);
+    // θ 弧
+    ctx.strokeStyle = '#1C1A17'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(lcx, lcy, 34, -Math.PI, -Math.PI/2); ctx.stroke();
+    ctx.fillStyle = '#1C1A17'; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText('90°', lcx - 26, lcy - 22);
+    // 標題
+    ctx.fillStyle = '#2C7A8A'; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText('COD · 角度↑ → 錨點越輕', W2 * 0.5, H * 0.93);
+
+    // ── 右：偏力 Deviation ──
+    const rcx = W2 + W2 * 0.48, rcy = H * 0.50;
+    const rR = Math.min(W2, H) * 0.28;
+    const mainTopX = rcx - rR * 0.5, mainTopY = rcy - rR * 0.7;
+    const mainBotX = rcx - rR * 0.5, mainBotY = rcy + rR * 0.5;
+    const devX = rcx + rR * 0.25, devY = rcy;
+    // 主繩上段
+    ctx.strokeStyle = '#6B4FA0'; ctx.lineWidth = 3.5;
+    ctx.beginPath(); ctx.moveTo(mainTopX, mainTopY); ctx.lineTo(devX, devY); ctx.stroke();
+    // 主繩下段（弧形）
+    ctx.beginPath(); ctx.moveTo(devX, devY);
+    ctx.quadraticCurveTo(devX - 12, devY + 18, mainBotX, mainBotY); ctx.stroke();
+    // 虛線（主繩延長方向）
+    ctx.setLineDash([3,3]); ctx.strokeStyle = '#BDB6A8'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(mainTopX, mainTopY); ctx.lineTo(mainTopX, mainTopY - 22); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#9A948E'; ctx.font = '10px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText('主繩', mainTopX, mainTopY - 28);
+    // W 方塊（下）
+    ctx.fillStyle = '#1C1A17';
+    ctx.beginPath(); ctx.roundRect(mainBotX - 20, mainBotY, 40, 24, 4); ctx.fill();
+    ctx.fillStyle = '#F5F0E8'; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText('W', mainBotX, mainBotY + 16);
+    arrowLocal(mainBotX, mainBotY + 26, mainBotX, mainBotY + 40, '#C8401A', 2.5);
+    // 偏力錨點
+    ctx.fillStyle = '#F5F0E8'; ctx.strokeStyle = '#2E7D52'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(devX, devY, 12, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#2E7D52'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('⚓', devX, devY + 4);
+    // F 合力（往右）
+    arrowLocal(devX, devY, devX + 50, devY, '#D4781A', 4);
+    ctx.fillStyle = '#D4781A'; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'left';
+    ctx.fillText('F=1.41×', devX + 54, devY + 4);
+    // θ 弧
+    ctx.strokeStyle = '#1C1A17'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(devX, devY, 34, Math.PI, Math.PI * 1.5, false); ctx.stroke();
+    ctx.fillStyle = '#1C1A17'; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText('90°', devX - 26, devY - 20);
+    // 標題
+    ctx.fillStyle = '#6B4FA0'; ctx.font = 'bold 11px IBM Plex Mono'; ctx.textAlign = 'center';
+    ctx.fillText('偏力 · 角度↑ → 錨點越重', W2 + W2 * 0.5, H * 0.93);
   }
 
   const builders = [panelPulley, panelV, panelD];
