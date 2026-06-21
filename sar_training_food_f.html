@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W54D7NGH23"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W54D7NGH23');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAR · F 群組 · 野外糧食規劃</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:   #F5F0E8;
+  --stone:   #EDE7D9;
+  --stone2:  #E3DDD0;
+  --rule:    #CFC9BC;
+  --rule2:   #BDB6A8;
+  --ink:     #1C1A17;
+  --dim:     #6B6560;
+  --dim2:    #9A948E;
+  --fire:    #C8401A;
+
+  --accent-A: #C8401A;
+  --accent-E: #9B5E1A;
+  --accent-B: #7A3A6E;
+  --accent-C: #2C4A6E;
+  --accent-D: #3D5C3A;
+  --accent-T: #5C3A7A;
+  --accent-S: #1A6B6B;
+  --accent-R: #8B4A1A;
+  --accent-W: #1A5C6B;
+  --accent-F: #5C6B2A;  /* F · 野外糧食規劃（橄欖綠） */
+
+  --mono:  'IBM Plex Mono', monospace;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+
+  --nav-h: 52px;
+  --spine: 4px;
+  --gutter: clamp(1.5rem, 5vw, 3.5rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  padding-top: var(--nav-h);
+}
+
+/* SPINE */
+.spine {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--spine);
+  height: 100vh;
+  background: var(--accent-F);
+  z-index: 200;
+}
+
+/* NAV */
+.top-nav {
+  position: fixed;
+  top: 0; left: var(--spine); right: 0;
+  height: var(--nav-h);
+  background: var(--stone);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 0 var(--gutter);
+  z-index: 100;
+  overflow-x: auto;
+}
+
+.nav-logo {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--fire);
+  letter-spacing: .05em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-home {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--dim);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.nav-home:hover { color: var(--ink); }
+
+.nav-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: .2rem;
+  align-items: center;
+}
+
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--dim);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border-left: 2px solid transparent;
+  white-space: nowrap;
+  transition: background .15s, color .15s;
+}
+.nav-links a:hover { background: var(--stone2); color: var(--ink); }
+.nav-links a.active {
+  color: var(--ink);
+  border-left-color: var(--accent-F);
+  background: var(--stone2);
+}
+.nav-links a[data-layer="A"] { border-left-color: var(--accent-A); }
+.nav-links a[data-layer="R"] { border-left-color: var(--accent-R); }
+.nav-links a.nav-cross { opacity: .55; }
+.nav-links a.nav-cross:hover { opacity: 1; }
+
+/* MAIN */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem var(--gutter) 5rem;
+}
+
+/* SECTION HEADER */
+.sec-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.sec-layer {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent-F);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+
+.sec-title {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: .75rem;
+}
+.sec-title em {
+  font-style: normal;
+  color: var(--accent-F);
+}
+
+.sec-sub {
+  color: var(--dim);
+  font-size: 14px;
+  max-width: 600px;
+}
+
+/* TOOL FRAME */
+.tool-frame {
+  background: var(--stone);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.tool-bar {
+  background: var(--stone2);
+  border-bottom: 1px solid var(--rule);
+  padding: .6rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tool-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.tool-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim2);
+}
+
+.tool-inner {
+  padding: 1.5rem 1.2rem;
+}
+
+/* ALERT */
+.alert {
+  border-left: 3px solid var(--rule2);
+  padding: .9rem 1.1rem;
+  margin: 1.2rem 0;
+  font-size: 13.5px;
+  background: var(--stone);
+  border-radius: 0 4px 4px 0;
+}
+.alert-danger { border-left-color: var(--accent-A); }
+.alert-warn   { border-left-color: var(--accent-E); }
+.alert-info   { border-left-color: var(--accent-F); }
+.alert-title  {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: .4rem;
+}
+.alert-danger .alert-title { color: var(--accent-A); }
+.alert-warn   .alert-title { color: var(--accent-E); }
+.alert-info   .alert-title { color: var(--accent-F); }
+
+/* FOOD GRID */
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.food-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+}
+.food-card:hover {
+  border-color: var(--accent-F);
+  box-shadow: 0 2px 8px rgba(92,107,42,.12);
+}
+.food-card.selected {
+  border-color: var(--accent-F);
+  background: #f0f2e8;
+}
+
+.food-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: .4rem;
+}
+
+.food-name {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.food-kcal {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent-F);
+  background: rgba(92,107,42,.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.food-meta {
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: .5rem;
+}
+
+.food-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+}
+
+.food-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--dim2);
+  background: var(--stone2);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+.food-tag.terrain-mid  { color: #9B5E1A; background: rgba(155,94,26,.1); }
+.food-tag.terrain-high { color: #2C4A6E; background: rgba(44,74,110,.1); }
+.food-tag.terrain-cyn  { color: #1A6B6B; background: rgba(26,107,107,.1); }
+.food-tag.origin-tw    { color: var(--accent-F); background: rgba(92,107,42,.1); }
+.food-tag.origin-jp    { color: #8B2020; background: rgba(139,32,32,.1); }
+.food-tag.origin-kr    { color: #2A5C8B; background: rgba(42,92,139,.1); }
+.food-tag.origin-cn    { color: #8B4A1A; background: rgba(139,74,26,.1); }
+.food-tag.emerg        { color: var(--accent-A); background: rgba(200,64,26,.1); }
+
+/* FILTER BAR */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-bottom: 1.2rem;
+}
+
+.filter-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 5px 12px;
+  border: 1px solid var(--rule2);
+  border-radius: 20px;
+  background: var(--paper);
+  color: var(--dim);
+  cursor: pointer;
+  transition: all .15s;
+}
+.filter-btn:hover { border-color: var(--accent-F); color: var(--ink); }
+.filter-btn.active {
+  background: var(--accent-F);
+  border-color: var(--accent-F);
+  color: #fff;
+}
+
+/* KCAL TABLE */
+.kcal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.kcal-table th {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--dim2);
+  text-align: left;
+  padding: .5rem .8rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--stone2);
+}
+.kcal-table td {
+  padding: .55rem .8rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.kcal-table tr:last-child td { border-bottom: none; }
+.kcal-table tr:hover td { background: var(--stone2); }
+
+.kcal-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+.kcal-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--accent-F);
+  flex-shrink: 0;
+  opacity: .75;
+}
+.kcal-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent-F);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* SECTION DIVIDER */
+.sec-divider {
+  margin: 3rem 0 2.5rem;
+  border: none;
+  border-top: 1px solid var(--rule);
+}
+
+/* SUBSECTION LABEL */
+.subsec {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--dim2);
+  margin-bottom: 1rem;
+}
+
+/* STORAGE INFO */
+.storage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: .8rem;
+  margin-bottom: 1rem;
+}
+
+.storage-card {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: .8rem 1rem;
+  background: var(--paper);
+}
+.storage-env {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: .3rem;
+}
+.env-mid  { color: var(--accent-E); }
+.env-high { color: var(--accent-C); }
+.env-cyn  { color: var(--accent-S); }
+
+.storage-days {
+  font-size: 22px;
+  font-weight: 900;
+  font-family: var(--mono);
+  line-height: 1;
+  margin-bottom: .2rem;
+}
+.storage-note {
+  font-size: 12px;
+  color: var(--dim);
+}
+
+/* FOOTER */
+.page-footer {
+  margin-top: 5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 12px;
+  color: var(--dim2);
+  font-family: var(--mono);
+}
+.footer-right { text-align: right; line-height: 1.8; }
+
+/* F4 QUIZ */
+.q-block {
+  margin-bottom: 1.8rem;
+}
+.q-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dim);
+  letter-spacing: .04em;
+  margin-bottom: .7rem;
+}
+.q-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.q-btn {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  padding: 8px 18px;
+  border: 1px solid var(--rule2);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  transition: all .15s;
+}
+.q-btn:hover { border-color: var(--accent-F); color: var(--accent-F); }
+.q-btn.selected {
+  background: var(--accent-F);
+  border-color: var(--accent-F);
+  color: #fff;
+}
+
+/* F4 RESULT */
+.f4-result {
+  margin-top: 2rem;
+  border-top: 2px solid var(--accent-F);
+  padding-top: 1.5rem;
+}
+.f4-style-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent-F);
+  margin-bottom: .4rem;
+}
+.f4-style-name {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 900;
+  margin-bottom: .3rem;
+}
+.f4-kcal-range {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--dim);
+  margin-bottom: 1.2rem;
+}
+.f4-kcal-range strong {
+  color: var(--accent-F);
+  font-size: 15px;
+}
+.f4-notes {
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+  margin-bottom: 1.2rem;
+}
+.f4-note {
+  display: flex;
+  gap: .7rem;
+  align-items: flex-start;
+  font-size: 13.5px;
+}
+.f4-note-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-F);
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+.f4-warn {
+  border-left: 3px solid var(--accent-A);
+  padding: .8rem 1rem;
+  background: var(--stone);
+  border-radius: 0 4px 4px 0;
+  font-size: 13px;
+  margin-bottom: 1.2rem;
+}
+.f4-warn-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent-A);
+  margin-bottom: .3rem;
+}
+.f4-food-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent-F);
+  text-decoration: none;
+  border: 1px solid var(--accent-F);
+  padding: 6px 14px;
+  border-radius: 4px;
+  transition: all .15s;
+}
+.f4-food-link:hover {
+  background: var(--accent-F);
+  color: #fff;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .food-grid { grid-template-columns: 1fr; }
+  .top-nav { gap: .8rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<nav class="top-nav">
+  <div class="nav-logo">SAR // TW</div>
+  <a class="nav-home" href="index.html">← 首頁</a>
+  <div class="nav-sep"></div>
+  <div class="nav-links">
+    <a href="#f2" class="active" data-layer="F">F2 食材速查</a>
+    <a href="#f3" data-layer="F">F3 熱量密度</a>
+    <a href="#f4" data-layer="F">F4 緊急備糧</a>
+    <a href="#f5" data-layer="F">F5 補給策略</a>
+    <a href="sar_training_batch_RW.html#r1" class="nav-cross" data-layer="R">R · 野外資源</a>
+    <a href="sar_training_batch1.html#a1" class="nav-cross" data-layer="A">A · 搜救基礎</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ══════════════════════════════════════
+       F1 · 食材速查庫
+  ══════════════════════════════════════ -->
+  <section id="f2">
+    <div class="sec-header">
+      <div class="sec-layer">F2 · 野外糧食規劃</div>
+      <h2 class="sec-title">多日登山食材速查 · <em>按地形篩選</em></h2>
+      <p class="sec-sub">涵蓋台灣、中國、日本、韓國醃製與乾燥食材，依中級山、高山、溯溪環境分類，含保存天數與熱量密度。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">食材速查庫</div>
+        <div class="tool-tag">點選卡片加入打包清單 · F4</div>
+      </div>
+      <div class="tool-inner">
+
+        <div class="filter-bar" id="filterBar">
+          <button class="filter-btn active" data-filter="all">全部</button>
+          <button class="filter-btn" data-filter="醃製肉類">醃製肉類</button>
+          <button class="filter-btn" data-filter="海鮮乾貨">海鮮乾貨</button>
+          <button class="filter-btn" data-filter="乳製品">乳製品</button>
+          <button class="filter-btn" data-filter="澱粉主食">澱粉主食</button>
+          <button class="filter-btn" data-filter="堅果油脂">堅果油脂</button>
+          <button class="filter-btn" data-filter="乾燥蔬菜">乾燥蔬菜</button>
+          <button class="filter-btn" data-filter="緊急備糧">緊急備糧</button>
+        </div>
+
+        <div class="food-grid" id="foodGrid"></div>
+
+        <div class="alert alert-info">
+          <div class="alert-title">保存判斷原則</div>
+          眼睛和鼻子比日期更可靠：表面出油但乾燥→正常；表面黏滑→丟掉；酸味或阿摩尼亞味→立刻丟掉。
+          高山低溫可多放 1–2 天；中級山濕熱是天敵。
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════
+       F2 · 熱量密度比較
+  ══════════════════════════════════════ -->
+  <section id="f3">
+    <div class="sec-header">
+      <div class="sec-layer">F3 · 野外糧食規劃</div>
+      <h2 class="sec-title">熱量密度比較 · <em>kcal / 100g</em></h2>
+      <p class="sec-sub">重量受限時，熱量密度是選材的核心指標。長程縱走目標 500 kcal/100g 以上；一般多日行程 350+ 即可接受。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">熱量密度對照表</div>
+        <div class="tool-tag">數值為乾燥／風乾狀態</div>
+      </div>
+      <div class="tool-inner">
+        <table class="kcal-table" id="kcalTable">
+          <thead>
+            <tr>
+              <th>食材</th>
+              <th>kcal/100g</th>
+              <th>熱量視覺</th>
+              <th>地形適性</th>
+            </tr>
+          </thead>
+          <tbody id="kcalBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="alert alert-warn">
+      <div class="alert-title">高海拔食慾下降</div>
+      海拔 3000m 以上多數人食慾明顯下降，建議備高密度但口感清爽的食材（堅果、魚乾），避免過甜或過油膩，以確保實際攝入量。
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════
+       F3 · 緊急備糧與失溫場景
+  ══════════════════════════════════════ -->
+  <section id="f4">
+    <div class="sec-header">
+      <div class="sec-layer">F4 · 野外糧食規劃</div>
+      <h2 class="sec-title">緊急備糧 · <em>失溫場景優先順序</em></h2>
+      <p class="sec-sub">緊急狀態下身體需要的不是熱量最高的食物，而是<em>吸收最快的能量來源</em>。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">失溫緊急補給順序</div>
+        <div class="tool-tag">依吸收速度排列</div>
+      </div>
+      <div class="tool-inner">
+        <div class="timeline" id="emergTimeline"></div>
+
+        <div class="alert alert-danger">
+          <div class="alert-title">重要</div>
+          固體食物在極度失溫者身上可能引發嘔吐。優先給液態糖或葡萄糖錠，等核心體溫回升後再給固體食物。
+          若傷者意識不清，<strong>勿嘗試餵食任何食物</strong>。
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">高熱量緊急備糧清單</div>
+        <div class="tool-tag">建議每人每行程攜帶 400–600 kcal 緊急備糧</div>
+      </div>
+      <div class="tool-inner">
+        <div id="emergFoodGrid" class="food-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════════════════════════════════════
+       F4 · 個人補給策略
+  ══════════════════════════════════════ -->
+  <section id="f5">
+    <div class="sec-header">
+      <div class="sec-layer">F5 · 野外糧食規劃</div>
+      <h2 class="sec-title">個人補給策略 · <em>三個問題找出你的風格</em></h2>
+      <p class="sec-sub">每個人的飲食基線不同。三個選擇，30 秒內得到針對你的補給建議。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">補給策略評估</div>
+        <div class="tool-tag">選完即產生結果，無需送出</div>
+      </div>
+      <div class="tool-inner">
+
+        <!-- Q1 -->
+        <div class="q-block" id="q1-block">
+          <div class="q-label">Q1 · 你怎麼形容自己的飲食習慣？</div>
+          <div class="q-options">
+            <button class="q-btn" data-q="1" data-val="normal">正常吃</button>
+            <button class="q-btn" data-q="1" data-val="light">偏少吃</button>
+            <button class="q-btn" data-q="1" data-val="trained">有耐餓訓練</button>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-block" id="q2-block">
+          <div class="q-label">Q2 · 上山你優先考慮什麼？</div>
+          <div class="q-options">
+            <button class="q-btn" data-q="2" data-val="fullness">吃飽有力氣</button>
+            <button class="q-btn" data-q="2" data-val="light">輕量快速</button>
+            <button class="q-btn" data-q="2" data-val="balance">兩者平衡</button>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-block" id="q3-block">
+          <div class="q-label">Q3 · 你的行程強度？</div>
+          <div class="q-options">
+            <button class="q-btn" data-q="3" data-val="hike">健行步調</button>
+            <button class="q-btn" data-q="3" data-val="technical">技術攀登／溯溪</button>
+            <button class="q-btn" data-q="3" data-val="alpine">高海拔縱走</button>
+          </div>
+        </div>
+
+        <!-- RESULT -->
+        <div id="f4-result" class="f4-result" style="display:none"></div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="page-footer">
+    <div class="footer-left">
+      <strong>SAR · TW</strong> · 台灣山域搜救訓練平台<br>
+      F · 野外糧食規劃 · nightmoon720
+    </div>
+    <div class="footer-right">
+      4 MODULES<br>
+      F GROUP<br>
+      VERSION 2025
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════
+// DATA
+// ══════════════════════════════════════
+const foods = [
+  // 醃製肉類
+  { name: '四川煙燻臘肉', cat: '醃製肉類', kcal: 480, origin: 'cn', desc: '低水份、煙燻防腐，最耐放', days: { mid: 5, high: 7, cyn: 4 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-cn'], use: '切片炒飯' },
+  { name: '廣式臘腸', cat: '醃製肉類', kcal: 430, origin: 'cn', desc: '甜鹹易切，油脂豐富', days: { mid: 4, high: 6, cyn: 3 }, tags: ['terrain-mid','terrain-high','origin-cn'], use: '蒸飯同煮' },
+  { name: '金華火腿切片', cat: '醃製肉類', kcal: 390, origin: 'cn', desc: '極鹹、鮮味強，少量即夠', days: { mid: 6, high: 9, cyn: 5 }, tags: ['terrain-mid','terrain-high','origin-cn'], use: '煮湯提鮮、直接啃' },
+  { name: '客家風雞腿', cat: '醃製肉類', kcal: 290, origin: 'tw', desc: '需確認表面乾燥不黏滑', days: { mid: 3, high: 5, cyn: 2 }, tags: ['terrain-mid','terrain-high','origin-tw'], use: '煮食或直接食用' },
+  { name: '薩拉米（日本超市版）', cat: '醃製肉類', kcal: 430, origin: 'jp', desc: '品質穩定，無需加熱', days: { mid: 7, high: 10, cyn: 6 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-jp'], use: '直接食用' },
+  { name: '韓式육포（牛肉乾）', cat: '醃製肉類', kcal: 310, origin: 'kr', desc: '甜鹹薄切，行進補充蛋白質', days: { mid: 7, high: 10, cyn: 7 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-kr'], use: '行進間直接食用' },
+  { name: '西班牙 Chorizo', cat: '醃製肉類', kcal: 455, origin: 'tw', desc: '辣香腸，城市超市可購', days: { mid: 5, high: 8, cyn: 4 }, tags: ['terrain-mid','terrain-high','origin-tw'], use: '煮湯或烤食' },
+  { name: '台式牛肉乾', cat: '醃製肉類', kcal: 320, origin: 'tw', desc: '台灣最易取得的肉乾', days: { mid: 7, high: 10, cyn: 6 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-tw'], use: '行進間食用' },
+  // 海鮮乾貨
+  { name: '韓式어포（明太魚乾）', cat: '海鮮乾貨', kcal: 340, origin: 'kr', desc: '高蛋白極輕，耐放', days: { mid: 14, high: 14, cyn: 10 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-kr'], use: '直接撕著啃' },
+  { name: '魷魚絲', cat: '海鮮乾貨', kcal: 295, origin: 'tw', desc: '輕量、高蛋白、低脂', days: { mid: 14, high: 14, cyn: 10 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-tw'], use: '行進間零食' },
+  { name: '鮪魚罐（真空鋁袋版）', cat: '海鮮乾貨', kcal: 185, origin: 'jp', desc: '輕量、防水袋裝更佳', days: { mid: 99, high: 99, cyn: 99 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-jp'], use: '配飯、拌麵' },
+  { name: '鯖魚味噌煮罐頭', cat: '海鮮乾貨', kcal: 200, origin: 'jp', desc: '日本登山主流食材', days: { mid: 99, high: 99, cyn: 99 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-jp'], use: '配飯、煮湯' },
+  // 乳製品
+  { name: '帕馬森起司（硬質）', cat: '乳製品', kcal: 392, origin: 'tw', desc: '低溫下一週+，高蛋白高脂', days: { mid: 4, high: 8, cyn: 3 }, tags: ['terrain-high','origin-tw'], use: '直接啃或撒麵' },
+  { name: '奶油條真空包', cat: '乳製品', kcal: 720, origin: 'tw', desc: '熱量密度極高，低溫固態好帶', days: { mid: 3, high: 7, cyn: 2 }, tags: ['terrain-high','origin-tw'], use: '炒飯提香、沖飲料加熱量' },
+  { name: '酥油塊', cat: '乳製品', kcal: 900, origin: 'tw', desc: '藏族傳統，最高熱量密度', days: { mid: 5, high: 14, cyn: 3 }, tags: ['terrain-high','origin-tw'], use: '煮酥油茶、拌飯' },
+  // 澱粉主食
+  { name: '凍乾飯（山之廚）', cat: '澱粉主食', kcal: 380, origin: 'tw', desc: '台灣品牌，加水即食', days: { mid: 99, high: 99, cyn: 99 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-tw'], use: '加熱水復水' },
+  { name: '科學麵', cat: '澱粉主食', kcal: 480, origin: 'tw', desc: '免煮、高熱量、輕量', days: { mid: 99, high: 99, cyn: 99 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-tw'], use: '直接乾吃或泡食' },
+  { name: '冬粉', cat: '澱粉主食', kcal: 340, origin: 'tw', desc: '輕量、快熟（2分鐘）', days: { mid: 99, high: 99, cyn: 99 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-tw'], use: '煮湯' },
+  // 堅果油脂
+  { name: '夏威夷豆', cat: '堅果油脂', kcal: 718, origin: 'tw', desc: '最高熱量密度堅果', days: { mid: 99, high: 99, cyn: 99 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-tw'], use: '行進間補充' },
+  { name: '花生醬包', cat: '堅果油脂', kcal: 588, origin: 'tw', desc: '單份包裝，高蛋白高熱量', days: { mid: 99, high: 99, cyn: 99 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-tw'], use: '直接擠食、塗餅乾' },
+  // 乾燥蔬菜
+  { name: '梅干菜', cat: '乾燥蔬菜', kcal: 280, origin: 'tw', desc: '鹹份高自然防腐，拌飯神器', days: { mid: 99, high: 99, cyn: 99 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-tw'], use: '拌飯炒食' },
+  { name: '韓國海苔（김）', cat: '乾燥蔬菜', kcal: 385, origin: 'kr', desc: '礦物質豐富，韓登山者靈魂', days: { mid: 99, high: 99, cyn: 99 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-kr'], use: '包飯、直接吃' },
+  { name: '高菜漬（日式醃芥菜）', cat: '乾燥蔬菜', kcal: 45, origin: 'jp', desc: '真空包輕量，補充電解質', days: { mid: 7, high: 10, cyn: 5 }, tags: ['terrain-mid','terrain-high','terrain-cyn','origin-jp'], use: '配飯' },
+  // 緊急備糧
+  { name: '葡萄糖錠', cat: '緊急備糧', kcal: 380, origin: 'tw', desc: '失溫、低血糖最快速補充', days: { mid: 99, high: 99, cyn: 99 }, tags: ['emerg','terrain-mid','terrain-high','terrain-cyn'], use: '緊急直接含服' },
+  { name: '黑巧克力 85%', cat: '緊急備糧', kcal: 600, origin: 'tw', desc: '高脂低糖，低溫不融', days: { mid: 30, high: 60, cyn: 20 }, tags: ['emerg','terrain-mid','terrain-high','terrain-cyn'], use: '行進零食兼緊急用' },
+  { name: '蜂蜜條', cat: '緊急備糧', kcal: 304, origin: 'tw', desc: '液態糖，失溫後快速吸收', days: { mid: 99, high: 99, cyn: 99 }, tags: ['emerg','terrain-mid','terrain-high','terrain-cyn'], use: '緊急直接擠食' },
+  { name: '台灣戰備壓縮乾糧', cat: '緊急備糧', kcal: 450, origin: 'tw', desc: '網路有流通，密度高、耐儲存', days: { mid: 99, high: 99, cyn: 99 }, tags: ['emerg','terrain-mid','terrain-high','terrain-cyn'], use: '緊急口糧' },
+  { name: '運動膠（GU/Maurten）', cat: '緊急備糧', kcal: 100, origin: 'tw', desc: '單包小、即時吸收', days: { mid: 99, high: 99, cyn: 99 }, tags: ['emerg','terrain-mid','terrain-high','terrain-cyn'], use: '行進補充或緊急用' },
+];
+
+const kcalData = [
+  { name: '酥油／奶油', kcal: 900, terrain: '高山' },
+  { name: '夏威夷豆', kcal: 718, terrain: '全地形' },
+  { name: '花生醬', kcal: 588, terrain: '全地形' },
+  { name: '黑巧克力 85%', kcal: 600, terrain: '全地形' },
+  { name: '米乖乖', kcal: 520, terrain: '全地形' },
+  { name: '科學麵（乾）', kcal: 480, terrain: '全地形' },
+  { name: '四川煙燻臘肉', kcal: 480, terrain: '全地形' },
+  { name: '西班牙 Chorizo', kcal: 455, terrain: '全地形' },
+  { name: '廣式臘腸', kcal: 430, terrain: '全地形' },
+  { name: '薩拉米', kcal: 430, terrain: '全地形' },
+  { name: '韓國海苔', kcal: 385, terrain: '全地形' },
+  { name: '帕馬森起司', kcal: 392, terrain: '高山優先' },
+  { name: '凍乾飯', kcal: 380, terrain: '全地形' },
+  { name: '葡萄糖錠', kcal: 380, terrain: '緊急備糧' },
+  { name: '韓式牛肉乾', kcal: 310, terrain: '全地形' },
+  { name: '韓式魚乾', kcal: 340, terrain: '全地形' },
+];
+
+const emergSteps = [
+  { label: '第一優先', title: '葡萄糖錠／方糖', desc: '最快吸收，直接含服。失溫、低血糖首選。', time: '吸收：約 5 分鐘' },
+  { label: '第二優先', title: '蜂蜜條／液態糖', desc: '擠入口中，吸收僅略慢於葡萄糖錠。易攜帶。', time: '吸收：約 10–15 分鐘' },
+  { label: '第三優先', title: '黑巧克力', desc: '糖脂兼具，體溫回升後的持續供應。', time: '吸收：約 20–30 分鐘' },
+  { label: '第四優先', title: '堅果／油脂', desc: '最慢消化，但熱量最持久。體況穩定後食用。', time: '吸收：1–2 小時' },
+];
+
+
+
+// ══════════════════════════════════════
+// RENDER FOOD GRID
+// ══════════════════════════════════════
+function renderFoodGrid(filter = 'all') {
+  const grid = document.getElementById('foodGrid');
+  const filtered = filter === 'all' ? foods : foods.filter(f => f.cat === filter);
+  grid.innerHTML = filtered.map((f, i) => `
+    <div class="food-card" data-idx="${foods.indexOf(f)}" onclick="toggleFood(this)">
+      <div class="food-card-head">
+        <div class="food-name">${f.name}</div>
+        <div class="food-kcal">${f.kcal} kcal</div>
+      </div>
+      <div class="food-meta">${f.desc} · ${f.use}</div>
+      <div class="food-tags">
+        <span class="food-tag">${f.cat}</span>
+        ${f.tags.map(t => {
+          const labels = {
+            'terrain-mid': '中級山',
+            'terrain-high': '高山',
+            'terrain-cyn': '溯溪',
+            'origin-tw': '台灣',
+            'origin-jp': '日本',
+            'origin-kr': '韓國',
+            'origin-cn': '中國',
+            'emerg': '緊急備糧',
+          };
+          return `<span class="food-tag ${t}">${labels[t] || t}</span>`;
+        }).join('')}
+        <span class="food-tag">中 ${f.days.mid}天 · 高 ${f.days.high}天 · 溪 ${f.days.cyn}天${f.days.mid >= 99 ? '（長期）' : ''}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleFood(el) {
+  el.classList.toggle('selected');
+}
+
+// Filter buttons
+document.getElementById('filterBar').addEventListener('click', e => {
+  if (!e.target.matches('.filter-btn')) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  renderFoodGrid(e.target.dataset.filter);
+});
+
+// ══════════════════════════════════════
+// RENDER KCAL TABLE
+// ══════════════════════════════════════
+function renderKcalTable() {
+  const max = Math.max(...kcalData.map(d => d.kcal));
+  document.getElementById('kcalBody').innerHTML = kcalData
+    .sort((a, b) => b.kcal - a.kcal)
+    .map(d => `
+      <tr>
+        <td>${d.name}</td>
+        <td><span class="kcal-num">${d.kcal}</span></td>
+        <td>
+          <div class="kcal-bar-wrap">
+            <div class="kcal-bar" style="width:${Math.round(d.kcal / max * 140)}px"></div>
+          </div>
+        </td>
+        <td><span style="font-size:12px;color:var(--dim)">${d.terrain}</span></td>
+      </tr>
+    `).join('');
+}
+
+// ══════════════════════════════════════
+// RENDER EMERG TIMELINE
+// ══════════════════════════════════════
+function renderEmergTimeline() {
+  document.getElementById('emergTimeline').innerHTML = emergSteps.map((s, i) => `
+    <div class="step" style="display:flex;gap:1rem;margin-bottom:1.2rem;align-items:flex-start">
+      <div class="step-dot" style="
+        font-family:var(--mono);font-size:10px;font-weight:700;
+        background:var(--accent-${i === 0 ? 'A' : i === 1 ? 'E' : 'F'});
+        color:#fff;padding:4px 8px;border-radius:3px;
+        white-space:nowrap;flex-shrink:0;margin-top:2px">${s.label}</div>
+      <div>
+        <strong>${s.title}</strong>
+        <p style="font-size:13px;color:var(--dim);margin-top:.2rem">${s.desc}</p>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--dim2)">${s.time}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════
+// RENDER EMERG FOOD GRID
+// ══════════════════════════════════════
+function renderEmergFoodGrid() {
+  const emergFoods = foods.filter(f => f.cat === '緊急備糧');
+  const grid = document.getElementById('emergFoodGrid');
+  grid.innerHTML = emergFoods.map(f => `
+    <div class="food-card">
+      <div class="food-card-head">
+        <div class="food-name">${f.name}</div>
+        <div class="food-kcal">${f.kcal} kcal</div>
+      </div>
+      <div class="food-meta">${f.desc}</div>
+      <div class="food-tags">
+        ${f.tags.map(t => {
+          const labels = { 'emerg': '緊急備糧', 'terrain-mid': '中級山', 'terrain-high': '高山', 'terrain-cyn': '溯溪', 'origin-tw': '台灣' };
+          return `<span class="food-tag ${t}">${labels[t] || t}</span>`;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════
+// F4 · 補給策略
+// ══════════════════════════════════════
+const f4Answers = { 1: null, 2: null, 3: null };
+
+// 風格矩陣：[飲食習慣][優先考量][行程強度]
+const f4Matrix = {
+  normal: {
+    fullness: {
+      hike:      { name: '穩健型 · 足量補給',    kcal: [2800, 3200], cats: ['澱粉主食','醃製肉類','乾燥蔬菜'], notes: ['以凍乾飯或科學麵為主食，搭配臘肉或魚乾增加風味與蛋白質', '每天三餐完整，晚餐建議煮食，早餐可簡化為沖泡', '行進間備堅果或肉乾，每 2 小時補充一次'], warn: null },
+      technical: { name: '穩健型 · 技術強度',    kcal: [3200, 4000], cats: ['醃製肉類','堅果油脂','澱粉主食'], notes: ['技術操作消耗比健行高 30–50%，即使吃飽也可能入不敷出', '建議每日主動增加油脂攝取（奶油、堅果）', '溯溪或攀登當天早餐一定要吃，不可只靠行進間補充'], warn: '技術地形下判斷力下降往往比體力更早出現，而判斷力下降的原因之一是血糖不穩定。寧可多帶 200g 食物。' },
+      alpine:    { name: '穩健型 · 高海拔適應',   kcal: [2600, 3200], cats: ['堅果油脂','海鮮乾貨','澱粉主食'], notes: ['高海拔食慾下降是生理反應，強迫進食效果差', '優先選清爽好入口的食材：魚乾、堅果、薄餅', '即使吃不下正餐，行進間少量多次補充堅果和能量棒'], warn: '正常食量在高海拔可能只吃得下一半。備足緊急口糧，不要以為自己的食慾不會受影響。' },
+    },
+    light: {
+      hike:      { name: '精簡型 · 健行模式',    kcal: [2200, 2800], cats: ['堅果油脂','海鮮乾貨','澱粉主食'], notes: ['以乾糧為主，減少煮食，節省時間與燃料', '堅果＋魚乾＋能量棒可支撐整天行進', '晚餐考慮泡麵或凍乾飯作為一天唯一熱食'], warn: null },
+      technical: { name: '精簡型 · 技術地形',    kcal: [2800, 3500], cats: ['堅果油脂','醃製肉類','緊急備糧'], notes: ['輕量優先在技術地形仍可行，但緊急備糧不能縮減', '薩拉米＋堅果是輕量高密度的核心組合', '技術操作前必須補充糖分，不可空腹進行'], warn: '輕量策略在技術地形有其極限。溯溪或攀登時，緊急備糧是安全底線，不能為了輕量犧牲。' },
+      alpine:    { name: '精簡型 · 高海拔縱走',   kcal: [2400, 3000], cats: ['堅果油脂','緊急備糧','澱粉主食'], notes: ['高海拔食慾差＋輕量需求，堅果是最佳解', '酥油或奶油加入熱飲，在不增加重量前提下大幅提升熱量', '行進間每小時主動吃一小把堅果，不要等餓了再吃'], warn: null },
+    },
+    balance: {
+      hike:      { name: '均衡型 · 健行模式',    kcal: [2600, 3000], cats: ['澱粉主食','醃製肉類','堅果油脂'], notes: ['早晚煮食，中午行進間乾糧', '臘腸或臘肉是最省空間的風味來源', '堅果作為行進補充，晚上可以吃得好一點'], warn: null },
+      technical: { name: '均衡型 · 技術地形',    kcal: [3000, 3800], cats: ['醃製肉類','堅果油脂','緊急備糧'], notes: ['技術操作日增加 500–800 kcal 預算', '操作前一餐特別重要，建議增加碳水比例', '緊急備糧額外備一份，技術地形變數多'], warn: null },
+      alpine:    { name: '均衡型 · 高海拔縱走',   kcal: [2700, 3300], cats: ['堅果油脂','海鮮乾貨','澱粉主食'], notes: ['清爽＋高密度是高海拔的最佳組合', '韓式魚乾和堅果是高海拔行進的主力', '到達高點後食慾可能完全消失，提前在上坡前吃'], warn: null },
+    },
+  },
+  light: {
+    fullness: {
+      hike:      { name: '節制型 · 足量補給',    kcal: [2200, 2800], cats: ['澱粉主食','海鮮乾貨','乾燥蔬菜'], notes: ['偏少吃但仍以足量為目標，選擇低體積高密度食材', '凍乾飯比煮白飯熱量效率高，適合你的習慣', '行進間即使不餓也要每 2 小時主動補充'], warn: null },
+      technical: { name: '節制型 · 技術強度',    kcal: [2800, 3500], cats: ['堅果油脂','醃製肉類','緊急備糧'], notes: ['偏少吃的習慣在技術地形是風險因子', '建議設定固定補給時間點，不依賴飢餓感判斷', '技術操作前強制進食，不管當下是否有食慾'], warn: '偏少吃的基線在高強度技術操作下容易低估消耗。強烈建議在這類行程主動增加攝取，以飢餓感以外的計劃性方式進食。' },
+      alpine:    { name: '節制型 · 高海拔縱走',   kcal: [2200, 2800], cats: ['堅果油脂','緊急備糧','海鮮乾貨'], notes: ['偏少吃＋高海拔食慾下降，是雙重低攝入風險', '建議以高密度零食替代正餐概念：堅果、酥油塊', '緊急備糧備兩份，一份日常墊底，一份真正緊急用'], warn: '偏少吃體質在高海拔的能量儲備本來就薄，加上食慾下降可能數天嚴重不足。務必設定每日最低攝取目標。' },
+    },
+    light: {
+      hike:      { name: '極簡型 · 健行模式',    kcal: [1800, 2400], cats: ['堅果油脂','海鮮乾貨','緊急備糧'], notes: ['極輕量配合低食量，適合短程或有充分適應的行者', '堅果＋魚乾＋能量棒可作為單日全部糧食', '建議仍備一份緊急備糧，不可完全壓縮'], warn: '這個組合的熱量儲備很薄。行程延誤或緊急狀況下，缺乏食物會迅速影響判斷力。' },
+      technical: { name: '極簡型 · 技術地形',    kcal: [2500, 3200], cats: ['堅果油脂','醃製肉類','緊急備糧'], notes: ['極簡配技術地形是高風險組合，建議重新評估', '至少保留緊急備糧不壓縮，作為安全底線', '技術操作前後必須進食，這不是選項'], warn: '偏少吃＋輕量＋技術地形三重疊加，是糧食風險最高的組合。強烈建議增加緊急備糧比例，並在行程規劃上預留餘裕。' },
+      alpine:    { name: '極簡型 · 高海拔縱走',   kcal: [2000, 2600], cats: ['堅果油脂','緊急備糧','澱粉主食'], notes: ['高密度零食替代傳統三餐是可行的高海拔策略', '酥油塊是這個組合的核心食材，熱量最高', '每天設定最低熱量目標，不依賴食慾'], warn: null },
+    },
+    balance: {
+      hike:      { name: '輕巧均衡型',           kcal: [2000, 2600], cats: ['堅果油脂','海鮮乾貨','澱粉主食'], notes: ['輕量但不走極端，早晚各一次正餐', '中午行進間補充堅果和魚乾即可', '體重輕的好處是背包壓力小，這個配置很適合長程'], warn: null },
+      technical: { name: '輕巧均衡 · 技術地形',  kcal: [2600, 3300], cats: ['堅果油脂','醃製肉類','緊急備糧'], notes: ['技術操作日增加預算，其他天維持輕量', '薩拉米是這個組合的最佳蛋白質來源', '緊急備糧不壓縮'], warn: null },
+      alpine:    { name: '輕巧均衡 · 高海拔',    kcal: [2200, 2800], cats: ['堅果油脂','海鮮乾貨','澱粉主食'], notes: ['清爽輕量很適合高海拔，食慾差時更容易入口', '韓式魚乾和夏威夷豆是主力', '備酥油塊作為熱量補充底牌'], warn: null },
+    },
+  },
+  trained: {
+    fullness: {
+      hike:      { name: '耐餓型 · 足量補給',    kcal: [2400, 3000], cats: ['醃製肉類','澱粉主食','堅果油脂'], notes: ['耐餓訓練讓你的最低運作熱量比一般人低，這是優勢', '但「足量」目標仍然重要，特別是多日行程後期', '建議維持正常進食節奏，不要因為不餓就跳餐'], warn: null },
+      technical: { name: '耐餓型 · 技術強度',    kcal: [2800, 3500], cats: ['醃製肉類','堅果油脂','緊急備糧'], notes: ['耐餓能力在技術地形是真正的優勢', '即便如此，技術操作前仍建議主動進食', '薩拉米＋堅果＋少量碳水是很好的技術日配置'], warn: null },
+      alpine:    { name: '耐餓型 · 高海拔縱走',   kcal: [2200, 2800], cats: ['堅果油脂','海鮮乾貨','緊急備糧'], notes: ['耐餓訓練＋高海拔是少數真正可以精簡的組合', '堅果＋魚乾可支撐多天行進', '仍建議備足緊急備糧，耐餓不代表免疫於突發狀況'], warn: null },
+    },
+    light: {
+      hike:      { name: '精實型 · 極輕量',      kcal: [1800, 2400], cats: ['堅果油脂','海鮮乾貨','緊急備糧'], notes: ['這是最輕量的可行配置', '耐餓訓練讓你可以撐過低攝入期', '行程 3 天以內適用，更長行程建議增加澱粉主食'], warn: null },
+      technical: { name: '精實型 · 技術地形',    kcal: [2400, 3000], cats: ['堅果油脂','醃製肉類','緊急備糧'], notes: ['耐餓＋輕量＋技術地形，這個組合需要充分的自我了解', '建議只在熟悉的地形採用，新環境保守一點', '緊急備糧是這個配置中唯一不能壓縮的'], warn: '這個組合對個人狀態的自我判斷要求很高。耐餓訓練有效，但技術操作下的精細動作和決策仍需要穩定的血糖支撐。' },
+      alpine:    { name: '精實型 · 高海拔縱走',   kcal: [2000, 2600], cats: ['堅果油脂','緊急備糧','海鮮乾貨'], notes: ['耐餓訓練在高海拔食慾抑制的環境下特別有效', '酥油塊＋堅果＋魚乾是這個配置的核心三件', '行程節奏可以保持輕量快速，這是明顯優勢'], warn: null },
+    },
+    balance: {
+      hike:      { name: '自律均衡型',           kcal: [2200, 2800], cats: ['澱粉主食','醃製肉類','堅果油脂'], notes: ['耐餓基線＋均衡策略，是多日行程最穩健的配置之一', '早晚正餐，行進間輕補，節奏清楚', '可以帶風味好的食材，因為重量預算相對寬裕'], warn: null },
+      technical: { name: '自律均衡 · 技術地形',  kcal: [2600, 3200], cats: ['醃製肉類','堅果油脂','澱粉主食'], notes: ['這是技術地形的理想組合', '技術操作日增加碳水比例，其他天維持均衡', '可以帶品質好的食材，例如金華火腿或硬質起司'], warn: null },
+      alpine:    { name: '自律均衡 · 高海拔',    kcal: [2200, 2800], cats: ['堅果油脂','海鮮乾貨','醃製肉類'], notes: ['耐餓訓練讓高海拔食慾下降影響較小', '仍建議選清爽食材，不要挑戰高海拔的腸胃', '這個組合在高海拔縱走中有明顯優勢'], warn: null },
+    },
+  },
+};
+
+const catFilterLabel = {
+  '澱粉主食': '澱粉主食',
+  '醃製肉類': '醃製肉類',
+  '堅果油脂': '堅果油脂',
+  '海鮮乾貨': '海鮮乾貨',
+  '乾燥蔬菜': '乾燥蔬菜',
+  '緊急備糧': '緊急備糧',
+  '乳製品':   '乳製品',
+};
+
+document.querySelectorAll('.q-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const q = btn.dataset.q;
+    document.querySelectorAll(`.q-btn[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    f4Answers[q] = btn.dataset.val;
+    if (f4Answers[1] && f4Answers[2] && f4Answers[3]) renderF4Result();
+  });
+});
+
+function renderF4Result() {
+  const profile = f4Matrix[f4Answers[1]][f4Answers[2]][f4Answers[3]];
+  const result = document.getElementById('f4-result');
+  const [lo, hi] = profile.kcal;
+
+  const notesHtml = profile.notes.map(n => `
+    <div class="f4-note">
+      <div class="f4-note-dot"></div>
+      <div>${n}</div>
+    </div>`).join('');
+
+  const warnHtml = profile.warn ? `
+    <div class="f4-warn">
+      <div class="f4-warn-title">特別注意</div>
+      ${profile.warn}
+    </div>` : '';
+
+  const linksHtml = profile.cats.map(cat => `
+    <a class="f4-food-link" href="#f2" onclick="applyF4Filter('${cat}')">
+      → ${cat}
+    </a>`).join('');
+
+  result.innerHTML = `
+    <div class="f4-style-label">你的補給風格</div>
+    <div class="f4-style-name">${profile.name}</div>
+    <div class="f4-kcal-range">建議每日熱量：<strong>${lo.toLocaleString()}–${hi.toLocaleString()} kcal</strong></div>
+    <div class="f4-notes">${notesHtml}</div>
+    ${warnHtml}
+    <div style="font-family:var(--mono);font-size:11px;color:var(--dim2);margin-bottom:.6rem;letter-spacing:.04em">建議優先食材類別 →</div>
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem">${linksHtml}</div>
+  `;
+  result.style.display = 'block';
+  setTimeout(() => result.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+}
+
+function applyF4Filter(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === cat);
+  });
+  renderFoodGrid(cat);
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+renderFoodGrid();
+renderKcalTable();
+renderEmergTimeline();
+renderEmergFoodGrid();
+</script>
+</body>
+</html>
