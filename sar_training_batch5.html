@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W54D7NGH23"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W54D7NGH23');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>台灣山域搜救 · T 地形導航</title>
@@ -636,6 +644,65 @@ p.body-text {
 html.in-iframe .nav   { display: none !important; }
 html.in-iframe .spine { display: none !important; }
 html.in-iframe .page-body { padding-top: 0 !important; padding-left: 1rem !important; }
+
+/* ── TN · 地形導航補充模組 ── */
+.tool-cols {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  align-items: start;
+}
+@media (max-width: 640px) { .tool-cols { grid-template-columns: 1fr; } }
+
+.canvas-wrap {
+  flex-shrink: 0;
+}
+.canvas-wrap canvas {
+  display: block;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--stone);
+}
+.dual-canvas { display: flex; gap: .5rem; align-items: flex-start; }
+.canvas-col { display: flex; flex-direction: column; gap: .4rem; align-items: center; }
+.canvas-col span {
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  letter-spacing: .12em; color: var(--dim2); text-transform: uppercase;
+}
+
+.ctrl-group { margin-bottom: 1rem; }
+.ctrl-label {
+  display: flex; justify-content: space-between;
+  font-family: var(--mono); font-size: 11px; color: var(--dim);
+  margin-bottom: .4rem;
+}
+.ctrl-val {
+  font-weight: 700; color: var(--accent-T);
+}
+input[type="range"] {
+  width: 100%; accent-color: var(--accent-T);
+  cursor: pointer;
+}
+
+.btn-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .5rem; }
+.btn {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  padding: .45rem .9rem; border-radius: 4px; border: 1.5px solid var(--rule2);
+  background: var(--stone); color: var(--ink); cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.btn:hover { background: var(--stone2); border-color: var(--accent-T); }
+.btn.btn-danger { border-color: var(--fire); color: var(--fire); }
+.btn.btn-danger:hover { background: #FCF0EB; }
+
+.note {
+  font-family: var(--mono); font-size: 11px; color: var(--dim);
+  line-height: 1.65; margin-top: .75rem;
+  padding: .65rem .9rem;
+  background: var(--stone); border-left: 3px solid var(--accent-T);
+  border-radius: 0 4px 4px 0;
+}
+.note em { color: var(--accent-T); font-style: normal; font-weight: 700; }
 </style>
 <script>if(window.self!==window.top){document.documentElement.classList.add("in-iframe");}</script>
 </head>
@@ -653,6 +720,10 @@ html.in-iframe .page-body { padding-top: 0 !important; padding-left: 1rem !impor
     <a href="#t3" class="nav-link" data-layer="T">T3 指北針定位</a>
     <a href="#t4" class="nav-link" data-layer="T">T4 獸徑辨識</a>
     <a href="#t5" class="nav-link" data-layer="T">T5 水域危害</a>
+    <a href="#tn1" class="nav-link" data-layer="T">TN1 地磁偏角</a>
+    <a href="#tn2" class="nav-link" data-layer="T">TN2 等高線視覺化</a>
+    <a href="#tn3" class="nav-link" data-layer="T">TN3 立竿見影</a>
+    <a href="#tn4" class="nav-link" data-layer="T">TN4 手錶定向</a>
     <span class="nav-divider"></span>
     <a href="sar_training_batch1.html#a1" class="nav-link nav-cross" data-layer="A">A · 搜救基礎</a>
     <a href="sar_training_batch2.html#b1" class="nav-link nav-cross" data-layer="B">B · 決策規劃</a>
@@ -1374,6 +1445,180 @@ html.in-iframe .page-body { padding-top: 0 !important; padding-left: 1rem !impor
   </div>
 </section>
 
+  <!-- ═══ TN1 地磁偏角校準 ═══ -->
+  <section id="tn1">
+    <div class="sec-header">
+      <div class="sec-layer">TN1 · 地形導航</div>
+      <h2 class="sec-title">地磁偏角 · <em>磁北 vs 網格北校準</em></h2>
+      <p class="sec-sub">台灣本島磁偏角約為西偏 3°–5°（依地區與年份略異）。忽略偏角會讓你每公里偏移 52–87 公尺。本工具讓你直觀理解偏角對指北針讀數的影響。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">COMPASS DECLINATION SIM</div>
+        <div class="tool-tag">GMA / MN / GN 三角關係</div>
+      </div>
+      <div class="tool-inner">
+        <div class="tool-cols">
+          <div>
+            <div class="ctrl-group">
+              <div class="ctrl-label">
+                <span>地磁偏角 (GMA)</span>
+                <span class="ctrl-val" id="gma-val">西偏 5°</span>
+              </div>
+              <input type="range" id="gma-input" min="-15" max="15" value="-5" step="1">
+            </div>
+            <div class="ctrl-group">
+              <div class="ctrl-label">
+                <span>旋轉指北針方位圈</span>
+                <span class="ctrl-val" id="compass-val">45°</span>
+              </div>
+              <input type="range" id="compass-input" min="0" max="360" value="45" step="1">
+            </div>
+            <div class="alert alert-warn">
+              <div class="alert-title">台灣偏角提醒</div>
+              台灣磁偏角為<strong>西偏</strong>，意即磁針指向比真北偏左。需在磁方位角上<strong>加上偏角度數</strong>才能換算成真方位角。每次入山前應查詢當年最新數值。
+            </div>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="compassCanvas" width="240" height="240"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TN2 等高線判讀 ═══ -->
+  <section id="tn2">
+    <div class="sec-header">
+      <div class="sec-layer">TN2 · 地形導航</div>
+      <h2 class="sec-title">地形判讀 · <em>等高線密度與坡度關係</em></h2>
+      <p class="sec-sub">等高線越密集代表坡度越陡。調整山峰參數，觀察 3D 立體形態如何對應 2D 等高線圖上的線條疏密。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">CONTOUR LINE VISUALIZER</div>
+        <div class="tool-tag">每 20m 一條等高線</div>
+      </div>
+      <div class="tool-inner">
+        <div class="tool-cols">
+          <div>
+            <div class="ctrl-group">
+              <div class="ctrl-label">
+                <span>主峰高度</span>
+                <span class="ctrl-val" id="topo-height-val">90m</span>
+              </div>
+              <input type="range" id="topo-height-input" min="40" max="120" value="90" step="5">
+            </div>
+            <div class="ctrl-group">
+              <div class="ctrl-label">
+                <span>山體坡度</span>
+                <span class="ctrl-val" id="topo-slope-val">標準</span>
+              </div>
+              <input type="range" id="topo-slope-input" min="15" max="45" value="25" step="5">
+            </div>
+            <div class="note">
+              等高線<em>圈數</em> = 高度 ÷ 間距（20m）。圈的<em>間距寬窄</em>對應坡度緩陡，山頂無法再縮的最小圈即為頂峰。
+            </div>
+          </div>
+          <div class="canvas-wrap">
+            <div class="dual-canvas">
+              <div class="canvas-col">
+                <span>3D 透視</span>
+                <canvas id="topo3DCanvas" width="115" height="135"></canvas>
+              </div>
+              <div class="canvas-col">
+                <span>等高線圖</span>
+                <canvas id="topo2DCanvas" width="115" height="135"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TN3 立竿見影 ═══ -->
+  <section id="tn3">
+    <div class="sec-header">
+      <div class="sec-layer">TN3 · 地形導航</div>
+      <h2 class="sec-title">自然定向 · <em>立竿見影法（影子尖端連線法）</em></h2>
+      <p class="sec-sub">在地面垂直插一根木竿，記錄早晨與午後兩個影子的尖端位置。連接這兩點的直線即為正東西向，其垂線為正南北向。此法在台灣四季均可操作。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">SHADOW TIP METHOD SIM</div>
+        <div class="tool-tag">需間隔至少 30 分鐘取兩次讀數</div>
+      </div>
+      <div class="tool-inner">
+        <div class="tool-cols">
+          <div>
+            <div class="ctrl-group">
+              <div class="ctrl-label">
+                <span>模擬時段（太陽方位）</span>
+                <span class="ctrl-val" id="time-val">上午 09:00</span>
+              </div>
+              <input type="range" id="sun-input" min="20" max="160" value="55" step="1">
+            </div>
+            <div class="btn-row">
+              <button class="btn" id="btn-mark">📍 記錄影尖端（放石頭）</button>
+              <button class="btn btn-danger" id="btn-clear">✕ 清除</button>
+            </div>
+            <div class="alert alert-warn" style="margin-top: 1rem;">
+              <div class="alert-title">操作要訣</div>
+              第一個石頭放在較早的時間（影子偏西）；第二個放在較晚的時間（影子偏東）。連線方向：<strong>石頭1（西）→ 石頭2（東）</strong>。兩點間距越大，定向越精確。
+            </div>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="shadowCanvas" width="240" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TN4 手錶定向法 ═══ -->
+  <section id="tn4">
+    <div class="sec-header">
+      <div class="sec-layer">TN4 · 地形導航</div>
+      <h2 class="sec-title">手錶定向 · <em>時針角平分線指南法（北半球）</em></h2>
+      <p class="sec-sub">將<strong>時針指向太陽</strong>，時針與 12 點刻度之間夾角的角平分線即指向正南方。此為估算法，準確度隨日照角度而變，高緯度或冬季日照低時誤差較大。</p>
+    </div>
+
+    <div class="tool-frame">
+      <div class="tool-bar">
+        <div class="tool-label">WATCH BEARING METHOD SIM</div>
+        <div class="tool-tag">北半球適用 · 地方時（非夏令時）</div>
+      </div>
+      <div class="tool-inner">
+        <div class="tool-cols">
+          <div>
+            <div class="ctrl-group">
+              <div class="ctrl-label">
+                <span>時針指向（對準太陽）</span>
+                <span class="ctrl-val" id="watch-val">8 點鐘</span>
+              </div>
+              <input type="range" id="watch-input" min="1" max="24" value="8" step="1">
+            </div>
+            <div class="alert alert-danger">
+              <div class="alert-title">下午時段注意</div>
+              下午（13:00 以後）時針超過 12 點方向，平分線計算方式不同。本模擬已正確處理 24 小時的方位——<em>下午的南方指向會落在時針左側</em>。
+            </div>
+            <div class="alert alert-warn">
+              <div class="alert-title">夏令時間修正</div>
+              台灣目前不實施夏令時間，無需修正。若在其他實施夏令時間的國家，應將時針回撥一小時再操作。
+            </div>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="watchCanvas" width="240" height="240"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </div><!-- end page-body -->
 
 <script>
@@ -1582,8 +1827,290 @@ window.t5Tab = function(btn){
   document.getElementById('t5-'+haz).classList.add('active');
 };
 
+// ═══════════════════════════════════════════
+// TN1 · 指北針偏角模擬
+// ═══════════════════════════════════════════
+const gmaInput     = document.getElementById('gma-input');
+const gmaVal       = document.getElementById('gma-val');
+const compassInput = document.getElementById('compass-input');
+const compassVal   = document.getElementById('compass-val');
+const compassCvs   = document.getElementById('compassCanvas');
+const ctxC         = compassCvs.getContext('2d');
+
+function drawCompass() {
+  const W = 240, H = 240, cx = 120, cy = 120, r = 105;
+  ctxC.clearRect(0, 0, W, H);
+  const gma        = parseFloat(gmaInput.value);
+  const compassAng = parseFloat(compassInput.value);
+  gmaVal.textContent     = gma === 0 ? '0°' : (gma > 0 ? `東偏 ${gma}°` : `西偏 ${Math.abs(gma)}°`);
+  compassVal.textContent = compassAng + '°';
+  ctxC.strokeStyle = 'rgba(207,201,188,0.5)'; ctxC.lineWidth = 1;
+  for (let i = 10; i < W; i += 28) {
+    ctxC.beginPath(); ctxC.moveTo(i, 0); ctxC.lineTo(i, H); ctxC.stroke();
+    ctxC.beginPath(); ctxC.moveTo(0, i); ctxC.lineTo(W, i); ctxC.stroke();
+  }
+  ctxC.strokeStyle = '#2C4A6E'; ctxC.lineWidth = 1.5;
+  ctxC.beginPath(); ctxC.moveTo(cx, cy); ctxC.lineTo(cx, cy - r + 8); ctxC.stroke();
+  ctxC.font = '600 9px IBM Plex Mono, monospace'; ctxC.fillStyle = '#2C4A6E';
+  ctxC.fillText('GN 網格北', cx - 28, cy - r + 4);
+  ctxC.save();
+  ctxC.translate(cx, cy); ctxC.rotate(-compassAng * Math.PI / 180);
+  ctxC.strokeStyle = '#1C1A17'; ctxC.lineWidth = 2.5;
+  ctxC.beginPath(); ctxC.arc(0, 0, r, 0, 2 * Math.PI); ctxC.stroke();
+  for (let i = 0; i < 36; i++) {
+    const a = i * 10 * Math.PI / 180;
+    const inner = i % 9 === 0 ? r - 10 : r - 5;
+    ctxC.strokeStyle = i % 9 === 0 ? '#1C1A17' : '#9A948E';
+    ctxC.lineWidth = i % 9 === 0 ? 1.5 : 1;
+    ctxC.beginPath();
+    ctxC.moveTo(Math.sin(a) * inner, -Math.cos(a) * inner);
+    ctxC.lineTo(Math.sin(a) * r, -Math.cos(a) * r);
+    ctxC.stroke();
+  }
+  ctxC.font = 'bold 14px Noto Serif TC, serif'; ctxC.fillStyle = '#1C1A17';
+  ctxC.fillText('N', -4, -r + 18); ctxC.fillText('S', -4, r - 7);
+  ctxC.fillText('E', r - 15, 5); ctxC.fillText('W', -r + 7, 5);
+  ctxC.restore();
+  ctxC.save(); ctxC.translate(cx, cy); ctxC.rotate(gma * Math.PI / 180);
+  ctxC.fillStyle = '#C8401A';
+  ctxC.beginPath();
+  ctxC.moveTo(0, 0); ctxC.lineTo(-7, -6); ctxC.lineTo(0, -(r - 22)); ctxC.lineTo(7, -6);
+  ctxC.closePath(); ctxC.fill();
+  ctxC.fillStyle = '#9A948E';
+  ctxC.beginPath();
+  ctxC.moveTo(0, 0); ctxC.lineTo(-7, 6); ctxC.lineTo(0, r - 22); ctxC.lineTo(7, 6);
+  ctxC.closePath(); ctxC.fill();
+  ctxC.font = '600 9px IBM Plex Mono, monospace'; ctxC.fillStyle = '#C8401A';
+  ctxC.fillText('MN 磁北', -20, -(r - 8));
+  ctxC.restore();
+  ctxC.fillStyle = '#1C1A17';
+  ctxC.beginPath(); ctxC.arc(cx, cy, 4, 0, 2 * Math.PI); ctxC.fill();
+}
+gmaInput.addEventListener('input', drawCompass);
+compassInput.addEventListener('input', drawCompass);
+drawCompass();
+
+// ═══════════════════════════════════════════
+// TN2 · 等高線視覺化
+// ═══════════════════════════════════════════
+const topoHInput = document.getElementById('topo-height-input');
+const topoHVal   = document.getElementById('topo-height-val');
+const topoSInput = document.getElementById('topo-slope-input');
+const topoSVal   = document.getElementById('topo-slope-val');
+const cvs3D      = document.getElementById('topo3DCanvas');
+const cvs2D      = document.getElementById('topo2DCanvas');
+const ctx3D      = cvs3D.getContext('2d');
+const ctx2D      = cvs2D.getContext('2d');
+
+function drawTopo() {
+  const h = parseFloat(topoHInput.value);
+  const slope = parseFloat(topoSInput.value);
+  topoHVal.textContent = h + 'm';
+  topoSVal.textContent = slope <= 20 ? '陡峭' : slope >= 38 ? '平緩' : '標準';
+  const ringSpacing = slope * 0.27;
+  const layers = Math.floor(h / 20);
+  const cx2 = 57, cy2 = 70;
+  ctx2D.clearRect(0, 0, 115, 135);
+  ctx2D.fillStyle = '#EDE7D9'; ctx2D.fillRect(0, 0, 115, 135);
+  for (let i = 1; i <= layers; i++) {
+    const rx = i * ringSpacing;
+    const ry = rx * 0.58;
+    if (rx > 54) break;
+    ctx2D.strokeStyle = (i % 5 === 0) ? '#5C3A7A' : '#8B4A1A';
+    ctx2D.lineWidth = (i % 5 === 0) ? 1.8 : 0.9;
+    ctx2D.beginPath(); ctx2D.ellipse(cx2, cy2, rx, ry, 0, 0, 2 * Math.PI); ctx2D.stroke();
+    if (i === 1 || i % 5 === 0) {
+      ctx2D.fillStyle = '#6B6560'; ctx2D.font = '7px IBM Plex Mono, monospace';
+      ctx2D.fillText(`${i * 20}m`, cx2 + rx + 2, cy2 + 3);
+    }
+  }
+  ctx2D.fillStyle = '#5C3A7A';
+  ctx2D.beginPath(); ctx2D.arc(cx2, cy2, 2.5, 0, 2 * Math.PI); ctx2D.fill();
+  ctx2D.font = '7px IBM Plex Mono, monospace';
+  ctx2D.fillText(`${h}m`, cx2 + 4, cy2 - 4);
+  const footSpread = slope * 1.5;
+  const peakY = Math.max(10, 125 - h * 0.65);
+  ctx3D.clearRect(0, 0, 115, 135);
+  const sky = ctx3D.createLinearGradient(0, 0, 0, 80);
+  sky.addColorStop(0, '#c7d9e8'); sky.addColorStop(1, '#EDE7D9');
+  ctx3D.fillStyle = sky; ctx3D.fillRect(0, 0, 115, 135);
+  ctx3D.fillStyle = '#CFC9BC'; ctx3D.fillRect(0, 120, 115, 15);
+  const grad = ctx3D.createLinearGradient(57 - footSpread, peakY, 57 + footSpread, 125);
+  grad.addColorStop(0, '#3D5C3A'); grad.addColorStop(1, '#6B8C68');
+  ctx3D.fillStyle = grad;
+  ctx3D.beginPath();
+  ctx3D.moveTo(Math.max(2, 57 - footSpread), 125);
+  ctx3D.quadraticCurveTo(57 - footSpread * 0.5, 125 - h * 0.3, 57, peakY);
+  ctx3D.quadraticCurveTo(57 + footSpread * 0.5, 125 - h * 0.3, Math.min(113, 57 + footSpread), 125);
+  ctx3D.closePath(); ctx3D.fill();
+  if (h >= 60) {
+    ctx3D.fillStyle = '#F5F0E8';
+    ctx3D.beginPath(); ctx3D.moveTo(57, peakY); ctx3D.lineTo(52, peakY + 11); ctx3D.lineTo(62, peakY + 11); ctx3D.closePath(); ctx3D.fill();
+  }
+  for (let i = 1; i <= layers; i++) {
+    const frac = (i * ringSpacing) / (footSpread || 1);
+    if (frac > 1) break;
+    const ly = peakY + frac * (125 - peakY);
+    const lx1 = 57 - frac * footSpread, lx2 = 57 + frac * footSpread;
+    ctx3D.strokeStyle = `rgba(207,201,188,${0.4 + frac * 0.35})`; ctx3D.lineWidth = 0.7;
+    ctx3D.beginPath(); ctx3D.moveTo(lx1, ly); ctx3D.lineTo(lx2, ly); ctx3D.stroke();
+  }
+}
+topoHInput.addEventListener('input', drawTopo);
+topoSInput.addEventListener('input', drawTopo);
+drawTopo();
+
+// ═══════════════════════════════════════════
+// TN3 · 立竿見影法
+// ═══════════════════════════════════════════
+const sunInput  = document.getElementById('sun-input');
+const timeVal   = document.getElementById('time-val');
+const btnMark   = document.getElementById('btn-mark');
+const btnClear  = document.getElementById('btn-clear');
+const shadowCvs = document.getElementById('shadowCanvas');
+const ctxSh     = shadowCvs.getContext('2d');
+let markedPts   = [];
+
+function sunAngleToTime(angle) {
+  const progress = (angle - 20) / 140;
+  const totalMin = 6 * 60 + progress * 12 * 60;
+  const h = Math.floor(totalMin / 60), m = Math.floor(totalMin % 60);
+  const meridiem = h < 12 ? '上午' : '下午';
+  const h12 = h > 12 ? h - 12 : h === 0 ? 12 : h;
+  return `${meridiem} ${String(h12).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+function shadowTip(sunDeg) {
+  const rad = sunDeg * Math.PI / 180;
+  const cx = 120, cy = 110, len = 75;
+  return { x: cx - len * Math.cos(rad), y: cy + len * Math.sin(rad) * 0.45 };
+}
+function drawShadow() {
+  const W = 240, H = 220;
+  ctxSh.clearRect(0, 0, W, H);
+  ctxSh.fillStyle = '#F0E8D4'; ctxSh.fillRect(0, 0, W, H);
+  ctxSh.strokeStyle = 'rgba(207,201,188,0.4)'; ctxSh.lineWidth = 0.5;
+  for (let i = 0; i < W; i += 24) {
+    ctxSh.beginPath(); ctxSh.moveTo(i, 0); ctxSh.lineTo(i, H); ctxSh.stroke();
+    ctxSh.beginPath(); ctxSh.moveTo(0, i); ctxSh.lineTo(W, i); ctxSh.stroke();
+  }
+  const sunDeg = parseFloat(sunInput.value);
+  timeVal.textContent = sunAngleToTime(sunDeg);
+  const cx = 120, cy = 110;
+  const tip = shadowTip(sunDeg);
+  ctxSh.strokeStyle = 'rgba(107,101,96,0.45)'; ctxSh.lineWidth = 6; ctxSh.lineCap = 'round';
+  ctxSh.beginPath(); ctxSh.moveTo(cx, cy); ctxSh.lineTo(tip.x, tip.y); ctxSh.stroke();
+  ctxSh.fillStyle = '#5C3A7A';
+  ctxSh.beginPath(); ctxSh.arc(cx, cy, 5, 0, 2 * Math.PI); ctxSh.fill();
+  const sunX = cx + 95 * Math.cos(sunDeg * Math.PI / 180);
+  const sunY = cy - 38;
+  ctxSh.fillStyle = '#C8401A';
+  ctxSh.beginPath(); ctxSh.arc(sunX, sunY < 8 ? 12 : sunY, 7, 0, 2 * Math.PI); ctxSh.fill();
+  ctxSh.fillStyle = '#9B5E1A'; ctxSh.font = '600 8px IBM Plex Mono, monospace';
+  ctxSh.fillText('☀', sunX - 3, sunY < 8 ? 25 : sunY + 15);
+  markedPts.forEach((p, idx) => {
+    ctxSh.fillStyle = '#5C3A7A';
+    ctxSh.beginPath(); ctxSh.arc(p.x, p.y, 5, 0, 2 * Math.PI); ctxSh.fill();
+    ctxSh.strokeStyle = '#1C1A17'; ctxSh.lineWidth = 1; ctxSh.stroke();
+    ctxSh.fillStyle = '#1C1A17'; ctxSh.font = '600 9px IBM Plex Mono, monospace';
+    ctxSh.fillText(`石${idx + 1}`, p.x + 7, p.y + 3);
+  });
+  if (markedPts.length >= 2) {
+    const p1 = markedPts[0], p2 = markedPts[1];
+    const westPt = p1.x < p2.x ? p1 : p2;
+    const eastPt = p1.x < p2.x ? p2 : p1;
+    ctxSh.strokeStyle = '#3D5C3A'; ctxSh.lineWidth = 2; ctxSh.setLineDash([5, 3]);
+    ctxSh.beginPath(); ctxSh.moveTo(westPt.x, westPt.y); ctxSh.lineTo(eastPt.x, eastPt.y); ctxSh.stroke();
+    ctxSh.setLineDash([]);
+    ctxSh.fillStyle = '#3D5C3A'; ctxSh.font = 'bold 10px Noto Sans TC, sans-serif';
+    ctxSh.fillText('← 西 W', westPt.x - 42, westPt.y - 6);
+    ctxSh.fillText('東 E →', eastPt.x + 6, eastPt.y - 6);
+    const mx = (westPt.x + eastPt.x) / 2, my = (westPt.y + eastPt.y) / 2;
+    ctxSh.strokeStyle = '#2C4A6E'; ctxSh.lineWidth = 2;
+    ctxSh.beginPath(); ctxSh.moveTo(mx, my); ctxSh.lineTo(mx, my - 30); ctxSh.stroke();
+    ctxSh.fillStyle = '#2C4A6E'; ctxSh.font = 'bold 10px Noto Sans TC, sans-serif';
+    ctxSh.fillText('↑ 北 N', mx + 4, my - 18);
+  }
+}
+btnMark.addEventListener('click', () => { if (markedPts.length >= 2) return; markedPts.push(shadowTip(parseFloat(sunInput.value))); drawShadow(); });
+btnClear.addEventListener('click', () => { markedPts = []; drawShadow(); });
+sunInput.addEventListener('input', drawShadow);
+drawShadow();
+
+// ═══════════════════════════════════════════
+// TN4 · 手錶定向法
+// ═══════════════════════════════════════════
+const watchInput = document.getElementById('watch-input');
+const watchVal   = document.getElementById('watch-val');
+const watchCvs   = document.getElementById('watchCanvas');
+const ctxW       = watchCvs.getContext('2d');
+
+function drawWatch() {
+  const W = 240, H = 240, cx = 120, cy = 120, r = 90;
+  const hour24 = parseInt(watchInput.value);
+  const isPM   = hour24 >= 13;
+  const hour12 = hour24 > 12 ? hour24 - 12 : hour24;
+  watchVal.textContent = `${hour24 < 10 ? '0' + hour24 : hour24}:00 (${isPM ? '下午' : '上午'} ${hour12} 點)`;
+  ctxW.clearRect(0, 0, W, H);
+  ctxW.fillStyle = '#EDE7D9'; ctxW.strokeStyle = '#1C1A17'; ctxW.lineWidth = 3;
+  ctxW.beginPath(); ctxW.arc(cx, cy, r, 0, 2 * Math.PI); ctxW.fill(); ctxW.stroke();
+  for (let i = 1; i <= 12; i++) {
+    const a = (i * 30 - 90) * Math.PI / 180;
+    const isQ = i % 3 === 0;
+    const inner = isQ ? r - 12 : r - 7;
+    ctxW.strokeStyle = '#1C1A17'; ctxW.lineWidth = isQ ? 2 : 1;
+    ctxW.beginPath();
+    ctxW.moveTo(cx + Math.cos(a) * inner, cy + Math.sin(a) * inner);
+    ctxW.lineTo(cx + Math.cos(a) * (r - 2), cy + Math.sin(a) * (r - 2));
+    ctxW.stroke();
+    if (isQ) {
+      ctxW.font = 'bold 11px IBM Plex Mono, monospace'; ctxW.fillStyle = '#1C1A17';
+      ctxW.textAlign = 'center'; ctxW.textBaseline = 'middle';
+      ctxW.fillText(i, cx + Math.cos(a) * (r - 22), cy + Math.sin(a) * (r - 22));
+    }
+  }
+  ctxW.textAlign = 'left'; ctxW.textBaseline = 'alphabetic';
+  const hourAngDeg = (hour12 * 30) - 90;
+  const hourAngRad = hourAngDeg * Math.PI / 180;
+  const hx = cx + (r - 28) * Math.cos(hourAngRad);
+  const hy = cy + (r - 28) * Math.sin(hourAngRad);
+  ctxW.strokeStyle = '#1C1A17'; ctxW.lineWidth = 4; ctxW.lineCap = 'round';
+  ctxW.beginPath(); ctxW.moveTo(cx, cy); ctxW.lineTo(hx, hy); ctxW.stroke();
+  ctxW.fillStyle = '#C8401A';
+  ctxW.beginPath(); ctxW.arc(hx, hy, 6, 0, 2 * Math.PI); ctxW.fill();
+  ctxW.font = '600 9px IBM Plex Mono, monospace'; ctxW.fillStyle = '#C8401A';
+  const lx = hx + 9 * Math.cos(hourAngRad), ly2 = hy + 9 * Math.sin(hourAngRad);
+  ctxW.fillText('☀', lx, ly2 + 4);
+  const hourFromNoon = hour12 * 30;
+  const bisectorFromTop = hourFromNoon / 2;
+  const southAngRad = (-90 + bisectorFromTop) * Math.PI / 180;
+  const sx = cx + (r - 14) * Math.cos(southAngRad);
+  const sy = cy + (r - 14) * Math.sin(southAngRad);
+  ctxW.strokeStyle = '#3D5C3A'; ctxW.lineWidth = 2.5;
+  ctxW.beginPath(); ctxW.moveTo(cx, cy); ctxW.lineTo(sx, sy); ctxW.stroke();
+  const perpAngle = southAngRad + Math.PI / 2;
+  ctxW.fillStyle = '#3D5C3A';
+  ctxW.beginPath();
+  ctxW.moveTo(sx, sy);
+  ctxW.lineTo(sx - 8 * Math.cos(southAngRad) + 5 * Math.cos(perpAngle), sy - 8 * Math.sin(southAngRad) + 5 * Math.sin(perpAngle));
+  ctxW.lineTo(sx - 8 * Math.cos(southAngRad) - 5 * Math.cos(perpAngle), sy - 8 * Math.sin(southAngRad) - 5 * Math.sin(perpAngle));
+  ctxW.closePath(); ctxW.fill();
+  ctxW.font = 'bold 11px Noto Sans TC, sans-serif'; ctxW.fillStyle = '#3D5C3A';
+  ctxW.fillText('南 S', sx + 8 * Math.cos(southAngRad) - 10, sy + 8 * Math.sin(southAngRad) + 4);
+  ctxW.strokeStyle = 'rgba(92,58,122,0.25)'; ctxW.lineWidth = 1.5; ctxW.setLineDash([3, 4]);
+  ctxW.beginPath(); ctxW.arc(cx, cy, 30, -90 * Math.PI / 180, (-90 + hourFromNoon) * Math.PI / 180); ctxW.stroke();
+  ctxW.setLineDash([]);
+  ctxW.fillStyle = '#1C1A17';
+  ctxW.beginPath(); ctxW.arc(cx, cy, 4, 0, 2 * Math.PI); ctxW.fill();
+  if (isPM) {
+    ctxW.font = '600 8px IBM Plex Mono, monospace'; ctxW.fillStyle = '#5C3A7A';
+    ctxW.fillText('下午模式 · 南方在時針左側', 8, H - 6);
+  }
+}
+watchInput.addEventListener('input', drawWatch);
+drawWatch();
+
 /* ── NAV ACTIVE STATE ── */
-const sections = ['t1','t2','t3','t4','t5'];
+const sections = ['t1','t2','t3','t4','t5','tn1','tn2','tn3','tn4'];
 const navLinks = {};
 sections.forEach(id=>{
   const el = document.querySelector(`.nav-link[href="#${id}"]`);

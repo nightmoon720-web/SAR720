@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-W54D7NGH23"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-W54D7NGH23');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣山域搜救 · 教學平台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS  (identical to batch1–5)
+   ============================================================ */
+:root {
+  --paper:   #F5F0E8;
+  --stone:   #EDE7D9;
+  --stone2:  #E3DDD0;
+  --rule:    #CFC9BC;
+  --rule2:   #BDB6A8;
+  --ink:     #1C1A17;
+  --dim:     #6B6560;
+  --dim2:    #9A948E;
+  --fire:    #C8401A;
+  --fire-lt: #E85C30;
+  --ember:   #D4781A;
+  --amber:   #B89030;
+  --safe:    #2E7D52;
+  --safe-lt: #3A9A65;
+  --moss:    #3D5C3A;
+  --slate:   #2C4A6E;
+  --charcoal:#4A4540;
+
+  --accent-A: #C8401A;
+  --accent-E: #9B5E1A;
+  --accent-B: #3D5C3A;
+  --accent-C: #2C4A6E;
+  --accent-D: #4A4540;
+  --accent-T: #5C3A7A;
+  --accent-S: #1A6B6B;   /* S · 溯溪技術 */
+  --accent-S-lt: #248C8C;
+
+  --mono:  'IBM Plex Mono', monospace;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+
+  --nav-h:   56px;
+  --spine-w: 4px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── SPINE ── */
+.spine {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--spine-w);
+  background: var(--accent-S);
+  z-index: 200;
+}
+
+/* ── NAV ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center;
+  padding: 0 2rem; gap: 2rem;
+  z-index: 100;
+}
+.nav-logo {
+  font-family: var(--mono); font-weight: 700; font-size: 13px;
+  color: var(--fire); letter-spacing: .08em; white-space: nowrap; flex: none;
+}
+.nav-links {
+  display: flex; gap: .2rem;
+  overflow-x: auto; scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-link {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  color: var(--dim); text-decoration: none;
+  padding: .35rem .65rem; border-radius: 4px; white-space: nowrap;
+  transition: .15s;
+}
+.nav-link:hover { background: var(--stone); color: var(--ink); }
+.nav-link.active { color: var(--accent-S); background: var(--stone); }
+.nav-link[data-layer="S"] { color: var(--accent-S); }
+.nav-link[data-layer="A"] { color: var(--accent-A); }
+.nav-link[data-layer="B"] { color: var(--accent-B); }
+.nav-link[data-layer="C"] { color: var(--accent-C); }
+.nav-link[data-layer="D"] { color: var(--accent-D); }
+.nav-link[data-layer="T"] { color: var(--accent-T); }
+.nav-divider {
+  width: 1px; height: 20px; background: var(--rule2);
+  align-self: center; flex: none;
+}
+.nav-home { color: var(--dim2) !important; }
+
+/* ── PAGE BODY ── */
+.page-body {
+  padding-top: calc(var(--nav-h) + 3rem);
+  padding-bottom: 8rem;
+  padding-left: calc(var(--spine-w) + clamp(1.5rem, 5vw, 4rem));
+  padding-right: clamp(1.5rem, 5vw, 4rem);
+  max-width: calc(var(--spine-w) + 960px);
+}
+
+/* ── SECTION HEADER ── */
+.sec-header {
+  padding: 4rem 0 2.5rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 2.5rem;
+}
+.sec-layer {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent-S); margin-bottom: .6rem;
+}
+.sec-title {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+  font-weight: 900; color: var(--ink); line-height: 1.15;
+}
+.sec-title em { color: var(--accent-S); font-style: normal; }
+.sec-sub {
+  margin-top: .75rem; font-size: 14px;
+  color: var(--dim); line-height: 1.6;
+}
+
+/* ── TOOL FRAME ── */
+.tool-frame {
+  background: var(--stone);
+  border: 1px solid var(--rule);
+  border-radius: 12px; overflow: hidden;
+  margin-bottom: 4rem;
+}
+.tool-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem 1.25rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--stone2);
+}
+.tool-label {
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  color: var(--accent-S); letter-spacing: .1em;
+}
+.tool-tag { font-family: var(--mono); font-size: 11px; color: var(--dim2); }
+.tool-inner { padding: 1.5rem; }
+
+/* ── SHARED TEXT ── */
+.t-label {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .18em; color: var(--dim2);
+  text-transform: uppercase; margin-bottom: .5rem; display: block;
+}
+p.body-text {
+  font-size: 14px; color: var(--dim); line-height: 1.7; margin-bottom: .85rem;
+}
+
+/* ── INFO NOTE ── */
+.info-note {
+  font-size: 13px; color: var(--dim);
+  background: var(--stone); border-left: 3px solid var(--rule2);
+  padding: .75rem 1rem; border-radius: 0 6px 6px 0;
+  margin: 1rem 0; line-height: 1.6;
+}
+.info-note.warn  { border-color: var(--ember); background: #FDF4EB; color: var(--ink); }
+.info-note.danger{ border-color: var(--fire);  background: #FCF0EB; color: var(--ink); }
+.info-note.safe  { border-color: var(--safe);  background: #EBF5EF; color: var(--ink); }
+.info-note strong { font-weight: 700; display: block; margin-bottom: .25rem; }
+
+/* ── COMPACT TABLE ── */
+.compact-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: .75rem 0; }
+.compact-table th {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .12em; color: var(--dim2);
+  border-bottom: 1px solid var(--rule2);
+  padding: .5rem .75rem; text-align: left;
+}
+.compact-table td {
+  padding: .55rem .75rem; border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.compact-table tr:last-child td { border-bottom: none; }
+.compact-table tr:hover td { background: var(--stone); }
+.compact-table .c-safe   { color: var(--safe);  font-weight: 700; }
+.compact-table .c-warn   { color: var(--ember); font-weight: 700; }
+.compact-table .c-danger { color: var(--fire);  font-weight: 700; }
+.compact-table .c-mono   { font-family: var(--mono); font-size: 12px; }
+
+/* ── FLOW STEPS ── */
+.flow-steps { display: flex; flex-direction: column; gap: .55rem; margin: 1rem 0; }
+.flow-step { display: flex; gap: .85rem; align-items: flex-start; }
+.flow-step-n {
+  flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent-S); color: #fff;
+  font-family: var(--mono); font-weight: 700; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.flow-step-n.warn   { background: var(--ember); }
+.flow-step-n.danger { background: var(--fire); }
+.flow-step-txt { font-size: 14px; color: var(--ink); line-height: 1.55; padding-top: 2px; }
+.flow-step-txt strong { color: var(--accent-S); }
+.flow-step-txt .fire  { color: var(--fire); font-weight: 700; }
+
+/* ── FORMULA BOX ── */
+.formula-box {
+  background: var(--stone2);
+  border: 1px dashed var(--rule2);
+  border-radius: 6px;
+  padding: .9rem 1.2rem;
+  font-family: var(--mono); font-size: 14px;
+  text-align: center; color: var(--ink);
+  margin: 1rem 0;
+}
+.formula-box b { color: var(--accent-S); }
+
+/* ── ROLE BLOCK ── */
+.role-block {
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent-S);
+  border-radius: 0 8px 8px 0;
+  background: var(--paper);
+  padding: 1rem 1.1rem;
+  margin: .75rem 0;
+}
+.role-block.warn   { border-left-color: var(--ember); }
+.role-block.danger { border-left-color: var(--fire); }
+.role-block.safe   { border-left-color: var(--safe); }
+.role-block .rb-label {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--dim2); margin-bottom: .3rem;
+}
+.role-block .rb-title { font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: .5rem; }
+
+/* ── FLIP CARD ── */
+.flip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: .85rem; margin: 1rem 0;
+}
+.flip-card { perspective: 700px; height: 130px; cursor: pointer; }
+.flip-inner {
+  width: 100%; height: 100%;
+  position: relative; transform-style: preserve-3d;
+  transition: transform .42s ease;
+}
+.flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-front, .flip-back {
+  position: absolute; inset: 0;
+  border-radius: 8px;
+  backface-visibility: hidden;
+  padding: .9rem 1rem;
+  border: 1px solid var(--rule);
+}
+.flip-front {
+  background: var(--paper);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.flip-back {
+  background: var(--stone);
+  transform: rotateY(180deg);
+  border-color: var(--accent-S);
+  display: flex; flex-direction: column; gap: .3rem;
+}
+.flip-front .ff-tag {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; color: var(--dim2); text-transform: uppercase;
+}
+.flip-front .ff-name { font-family: var(--serif); font-weight: 700; font-size: 16px; color: var(--ink); }
+.flip-front .ff-hint { font-size: 11px; color: var(--dim2); font-style: italic; }
+.flip-back .fb-label {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--accent-S); letter-spacing: .08em; text-transform: uppercase;
+}
+.flip-back .fb-val  { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--ink); }
+.flip-back .fb-desc { font-size: 12px; color: var(--dim); line-height: 1.5; }
+.flip-hint { font-size: 12px; color: var(--dim2); margin-bottom: .5rem; font-family: var(--mono); }
+
+/* ── TAB SYSTEM ── */
+.tab-row {
+  display: flex; gap: .4rem; flex-wrap: wrap;
+  margin-bottom: 0; border-bottom: 1px solid var(--rule);
+  padding-bottom: 0;
+}
+.tab-btn {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .06em; padding: .5rem .9rem;
+  border: none; background: none; color: var(--dim2);
+  cursor: pointer; border-bottom: 2px solid transparent;
+  transition: .15s; margin-bottom: -1px;
+}
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active { color: var(--accent-S); border-bottom-color: var(--accent-S); }
+.tab-panel { display: none; padding-top: 1.25rem; }
+.tab-panel.active { display: block; }
+
+/* ── ACCORDION ── */
+.accord { border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; margin: .5rem 0; }
+.accord + .accord { margin-top: .5rem; }
+.accord-head {
+  display: flex; align-items: center; gap: .85rem;
+  padding: .85rem 1rem; cursor: pointer;
+  background: var(--stone); transition: background .15s;
+}
+.accord-head:hover { background: var(--stone2); }
+.accord-num {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent-S); color: #fff;
+  font-family: var(--mono); font-weight: 700; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.accord-num.warn   { background: var(--ember); }
+.accord-num.danger { background: var(--fire); }
+.accord-title { flex: 1; }
+.accord-title .at-name { font-weight: 700; font-size: 14px; color: var(--ink); }
+.accord-title .at-sub  { font-size: 12px; color: var(--dim2); margin-top: 1px; }
+.accord-arrow { color: var(--dim2); font-size: 12px; transition: transform .2s; }
+.accord.open .accord-arrow { transform: rotate(90deg); }
+.accord-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height .3s ease, padding .3s;
+  background: var(--paper); padding: 0 1rem;
+}
+.accord.open .accord-body { max-height: 600px; padding: 1.1rem 1rem; }
+
+/* ── CALC BOX ── */
+.calc-grid { display: flex; flex-wrap: wrap; gap: .85rem; align-items: flex-end; margin-bottom: 1rem; }
+.calc-field { display: flex; flex-direction: column; gap: .3rem; flex: 1; min-width: 140px; }
+.calc-field label {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .12em; color: var(--dim2); text-transform: uppercase;
+}
+.calc-field input {
+  background: var(--paper); border: 1px solid var(--rule2);
+  border-radius: 6px; color: var(--ink);
+  font-family: var(--mono); font-size: 16px; font-weight: 600;
+  padding: .6rem .8rem; outline: none; transition: border-color .15s;
+}
+.calc-field input:focus { border-color: var(--accent-S); }
+.calc-btn {
+  background: var(--accent-S); color: #fff;
+  border: none; border-radius: 6px;
+  padding: .6rem 1.4rem; font-weight: 700;
+  font-family: var(--sans); font-size: 14px;
+  cursor: pointer; white-space: nowrap; transition: filter .15s;
+}
+.calc-btn:hover { filter: brightness(.9); }
+.calc-result {
+  background: var(--stone); border: 1px solid var(--rule);
+  border-radius: 8px; padding: 1rem 1.2rem; display: none; margin-top: .5rem;
+}
+.calc-result.show { display: block; }
+.result-val {
+  font-family: var(--mono); font-size: 1.5rem; font-weight: 700;
+  color: var(--accent-S); margin-bottom: .4rem;
+}
+.result-bar { height: 6px; border-radius: 3px; background: var(--rule); overflow: hidden; margin: .5rem 0; }
+.result-fill { height: 100%; border-radius: 3px; transition: width .4s, background .4s; }
+.result-note { font-size: 13px; color: var(--dim); }
+
+/* ── SVG DIAGRAM ── */
+.svg-wrap {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden; margin: 1rem 0;
+}
+.svg-wrap svg { display: block; width: 100%; }
+.svg-caption {
+  font-family: var(--mono); font-size: 11px; color: var(--dim2);
+  padding: .45rem 1rem; border-top: 1px solid var(--rule);
+  background: var(--stone);
+}
+
+/* ── CHANNEL SIMULATOR ── */
+.channel-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+@media(max-width:600px){ .channel-wrap { grid-template-columns: 1fr; } }
+.channel-stage {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 8px; overflow: hidden;
+}
+.channel-svg { display: block; width: 100%; cursor: pointer; }
+.channel-options { display: flex; flex-direction: column; gap: .6rem; }
+.channel-opt {
+  background: var(--stone); border: 1px solid var(--rule);
+  border-radius: 6px; padding: .7rem .9rem;
+  cursor: pointer; font-size: 13px; color: var(--dim);
+  transition: .15s; display: flex; align-items: center; gap: .6rem;
+}
+.channel-opt:hover { border-color: var(--rule2); color: var(--ink); }
+.channel-opt.correct { background: #EBF5EF; border-color: var(--safe); color: var(--moss); }
+.channel-opt.wrong   { background: #FCF0EB; border-color: var(--fire); color: var(--fire); }
+.channel-opt .co-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--rule2); flex-shrink: 0;
+}
+.channel-opt.correct .co-dot { background: var(--safe); }
+.channel-opt.wrong   .co-dot { background: var(--fire); }
+.channel-feedback {
+  margin-top: .85rem; padding: .8rem 1rem;
+  border-radius: 6px; font-size: 13px; display: none;
+}
+.channel-feedback.show { display: block; }
+.channel-feedback.correct { background: #EBF5EF; border-left: 3px solid var(--safe); color: var(--moss); }
+.channel-feedback.wrong   { background: #FCF0EB; border-left: 3px solid var(--fire); color: #8B2000; }
+.channel-reset {
+  margin-top: .65rem; font-family: var(--mono); font-size: 11px;
+  background: none; border: 1px solid var(--rule2); border-radius: 4px;
+  padding: .35rem .8rem; color: var(--dim2); cursor: pointer;
+  display: none;
+}
+.channel-reset.show { display: inline-block; }
+
+/* ── WEATHER TIMELINE ── */
+.timeline { display: flex; flex-direction: column; gap: 0; position: relative; margin: 1rem 0; }
+.timeline::before {
+  content: ''; position: absolute; left: 20px; top: 24px; bottom: 24px;
+  width: 2px; background: var(--rule2);
+}
+.tl-node {
+  display: flex; gap: 1rem; position: relative; padding-bottom: 1.2rem;
+  opacity: .45; transition: opacity .2s;
+}
+.tl-node.active { opacity: 1; }
+.tl-node.done   { opacity: .7; }
+.tl-dot {
+  flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--stone2); border: 2px solid var(--rule2);
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--dim2); display: flex; align-items: center; justify-content: center;
+  text-align: center; line-height: 1.2; z-index: 1;
+  transition: .2s;
+}
+.tl-node.active .tl-dot { background: var(--accent-S); border-color: var(--accent-S); color: #fff; }
+.tl-node.done .tl-dot   { background: var(--rule2); border-color: var(--rule2); color: var(--dim2); }
+.tl-content { flex: 1; padding-top: .5rem; }
+.tl-time    { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--dim2); margin-bottom: .25rem; }
+.tl-info    { font-size: 13.5px; color: var(--ink); line-height: 1.55; margin-bottom: .65rem; }
+.tl-choices { display: flex; flex-wrap: wrap; gap: .45rem; }
+.tl-choice {
+  background: var(--paper); border: 1px solid var(--rule2);
+  border-radius: 5px; padding: .4rem .85rem;
+  font-size: 12.5px; color: var(--dim); cursor: pointer; transition: .15s;
+}
+.tl-choice:hover { border-color: var(--accent-S); color: var(--ink); }
+.tl-choice.picked.correct { background: #EBF5EF; border-color: var(--safe); color: var(--moss); }
+.tl-choice.picked.wrong   { background: #FCF0EB; border-color: var(--fire); color: var(--fire); }
+.tl-explain { font-size: 12.5px; color: var(--dim); margin-top: .5rem; line-height: 1.5; display: none; }
+.tl-explain.show { display: block; }
+
+/* ── CHECKLIST ── */
+.ck-list { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+.ck-item {
+  display: flex; align-items: center; gap: .85rem;
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 6px; padding: .7rem .9rem; cursor: pointer;
+  transition: .15s; user-select: none;
+}
+.ck-item:hover { border-color: var(--rule2); }
+.ck-item.checked { background: #FCF0EB; border-color: var(--fire); }
+.ck-box {
+  width: 18px; height: 18px; border-radius: 3px;
+  border: 2px solid var(--rule2); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: .15s;
+}
+.ck-item.checked .ck-box { background: var(--fire); border-color: var(--fire); }
+.ck-text { font-size: 13.5px; color: var(--dim); }
+.ck-item.checked .ck-text { color: var(--fire); font-weight: 700; }
+.ck-status { font-family: var(--mono); font-size: 12px; color: var(--dim2); margin-top: .5rem; }
+
+/* ── PENDULUM SVG ANIMATION ── */
+.pend-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.25rem; }
+@media(max-width:600px){ .pend-wrap { grid-template-columns: 1fr; } }
+.pend-stage {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 8px; overflow: hidden;
+}
+#pend-svg { display: block; width: 100%; }
+.pend-controls { display: flex; flex-direction: column; gap: .75rem; }
+.pend-scenario-btn {
+  background: var(--stone); border: 1px solid var(--rule);
+  border-radius: 6px; padding: .65rem .9rem;
+  font-size: 13px; color: var(--dim); cursor: pointer; text-align: left;
+  transition: .15s; font-family: var(--sans);
+}
+.pend-scenario-btn:hover { border-color: var(--rule2); color: var(--ink); }
+.pend-scenario-btn.active { background: #EAF4F4; border-color: var(--accent-S); color: var(--accent-S); font-weight: 700; }
+.pend-desc { font-size: 13px; color: var(--dim); line-height: 1.6; }
+
+/* ── DECISION TREE ── */
+.dtree { display: flex; flex-direction: column; gap: .5rem; }
+.dtree-node {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 6px; overflow: hidden;
+}
+.dtree-q {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .75rem .9rem; cursor: pointer; background: var(--stone);
+  transition: background .15s;
+}
+.dtree-q:hover { background: var(--stone2); }
+.dtree-qn {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  color: var(--accent-S); flex-shrink: 0;
+}
+.dtree-qt { font-size: 13.5px; font-weight: 700; color: var(--ink); flex: 1; }
+.dtree-arr { font-size: 12px; color: var(--dim2); transition: transform .2s; }
+.dtree-node.open .dtree-arr { transform: rotate(90deg); }
+.dtree-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height .3s ease, padding .3s;
+  padding: 0 1rem;
+}
+.dtree-node.open .dtree-body { max-height: 500px; padding: .9rem 1rem; }
+.dtree-branch {
+  border-left: 2px solid var(--rule2); padding-left: .9rem; margin: .4rem 0;
+  font-size: 13px; color: var(--dim); line-height: 1.6;
+}
+.dtree-branch .db-cond { font-family: var(--mono); font-size: 11px; color: var(--accent-S); font-weight: 700; margin-bottom: .2rem; }
+.dtree-branch .db-cond.danger { color: var(--fire); }
+.dtree-branch .db-cond.warn { color: var(--ember); }
+.dtree-branch .db-action { color: var(--ink); }
+.dtree-branch .db-action strong { color: var(--fire); }
+
+/* ── iframe hide ── */
+html.in-iframe .nav   { display: none !important; }
+html.in-iframe .spine { display: none !important; }
+html.in-iframe .page-body { padding-top: 0 !important; padding-left: 1rem !important; }
+</style>
+<script>if(window.self!==window.top){document.documentElement.classList.add("in-iframe");}</script>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<nav class="nav">
+  <div class="nav-logo">SAR // TW</div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link nav-home">← 首頁</a>
+    <span class="nav-divider"></span>
+    <a href="#s1" class="nav-link active" data-layer="S">S1 水流力學</a>
+    <a href="#s2" class="nav-link"        data-layer="S">S2 氣象監測</a>
+    <a href="#s3" class="nav-link"        data-layer="S">S3 哨音手勢</a>
+    <a href="#s5" class="nav-link"        data-layer="S">S5 架繩系統</a>
+    <a href="#s6" class="nav-link"        data-layer="S">S6 鐘擺技術</a>
+    <span class="nav-divider"></span>
+    <a href="sar_training_batch1.html#a1" class="nav-link" data-layer="A">A · 搜救基礎</a>
+    <a href="sar_training_batch2.html#b1" class="nav-link" data-layer="B">B · 決策規劃</a>
+    <a href="sar_training_batch3.html#c2" class="nav-link" data-layer="C">C · 技術執行</a>
+    <a href="sar_training_batch4.html#d1" class="nav-link" data-layer="D">D · 延伸研究</a>
+    <a href="sar_training_batch5.html#t1" class="nav-link" data-layer="T">T · 地形導航</a>
+  </div>
+</nav>
+
+<div class="page-body">
+
+<!-- ══════════════════════════════════════════════
+     S1 · 水流力學
+══════════════════════════════════════════════ -->
+<section id="s1">
+  <div class="sec-header">
+    <div class="sec-layer">S1 · 溯溪技術</div>
+    <h2 class="sec-title">溪谷水流力學 · <em>通道判斷模擬器</em></h2>
+    <p class="sec-sub">六種水力結構識別 · 動水壓計算器 · 三大物理原則——理解水流才能正確判斷通道安全性。</p>
+  </div>
+
+  <!-- 三大物理原則 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S1-A · 三大物理原則</span>
+      <span class="tool-tag">基礎觀念</span>
+    </div>
+    <div class="tool-inner">
+      <div class="role-block">
+        <div class="rb-label">原則一 · F ∝ v²</div>
+        <div class="rb-title">流速加倍，衝擊力增為四倍</div>
+        <p class="body-text">水流衝擊力 <b>Fd = ½ρv²CdA</b>。2 m/s 的急流對成人軀幹的動水壓可超過 100 kgf，且這股力量<strong>持續不斷</strong>——它不退潮。</p>
+      </div>
+      <div class="role-block warn">
+        <div class="rb-label">原則二 · 持續施力</div>
+        <div class="rb-title">急流每一刻都在推，沒有停歇</div>
+        <p class="body-text">V困嵌夾、沸騰線受困者所承受的，是持續不間斷的水壓推力，這使得自救極度困難。</p>
+      </div>
+      <div class="role-block safe">
+        <div class="rb-label">原則三 · 可讀性</div>
+        <div class="rb-title">水面特徵反映水下結構，訓練目標是 3 秒識別</div>
+        <p class="body-text">倒V頂點的光滑水面、V流後方的白浪、漩渦剪力線——每一個水面現象都是水下地形的投影，受過訓練的嚮導可快速讀取。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 六種水力識別翻牌 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S1-B · 六種水力結構識別</span>
+      <span class="tool-tag">點擊翻牌查看詳細說明</span>
+    </div>
+    <div class="tool-inner">
+      <p class="flip-hint">— 點擊各卡片翻轉 —</p>
+      <div class="flip-grid">
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">Inverted V-Flow</div><div class="ff-name">倒 V 流</div></div>
+              <div class="ff-hint">尖端朝下游 · 水面光滑</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">安全狀態</div>
+              <div class="fb-val" style="color:var(--safe)">✓ 安全通道</div>
+              <div class="fb-desc">通道截面縮小→水流加速→無水下障礙。選倒V頂點為通過路線。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">V-Flow</div><div class="ff-name">V 流</div></div>
+              <div class="ff-hint">尖端朝上游 · 後方白浪</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">危害</div>
+              <div class="fb-val" style="color:var(--fire)">✗ 嵌夾高風險</div>
+              <div class="fb-desc">尖端後方緊鄰隱蔽巨石與亂流，是 V困嵌夾的高風險區。繞行回避。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">Eddy</div><div class="ff-name">漩渦流</div></div>
+              <div class="ff-hint">剪力線兩側流速差明顯</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">雙重特性</div>
+              <div class="fb-val" style="color:var(--ember)">△ 謹慎利用</div>
+              <div class="fb-desc">邊緣：最重要的避難點。中心：向下捲吸力，勿被動落入。以攻擊式游泳切入。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">Boiling Line</div><div class="ff-name">沸騰線</div></div>
+              <div class="ff-hint">白色氣泡密集交界</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">致命機制</div>
+              <div class="fb-val" style="color:var(--fire)">✗ PFD 失效</div>
+              <div class="fb-desc">大量空氣混入→水體密度驟降→PFD 浮力喪失。遠離，不得游入。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">Hydraulic Trap</div><div class="ff-name">滾筒流</div></div>
+              <div class="ff-hint">瀑底持續循環 · 轟鳴聲</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">救援禁忌</div>
+              <div class="fb-val" style="color:var(--fire)">✗ 致命陷阱</div>
+              <div class="fb-desc">縱剖面圓筒型循環。救生艇進入→浮力喪失→翻覆。唯拋繩袋或活餌救援。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">V-trap Entrapment</div><div class="ff-name">V困嵌夾</div></div>
+              <div class="ff-hint">腳卡入水下 V 型岩縫</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">救援原則</div>
+              <div class="fb-val" style="color:var(--fire)">✗ 反向力學</div>
+              <div class="fb-desc">絕不向下游拉。先從上游抬頭確保呼吸，再側向 Vector Pull 移出岩縫。</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════════════════════
+     S2 · 氣象監測
+══════════════════════════════════════════════ -->
+<section id="s2">
+  <div class="sec-header">
+    <div class="sec-layer">S2 · 溯溪技術</div>
+    <h2 class="sec-title">氣象監測 · <em>72小時決策時間軸</em></h2>
+    <p class="sec-sub">台灣溪谷集水區陡峭，降雨後 30–90 分鐘即可暴漲。嚮導的氣象判斷力直接決定隊伍存亡。<br><span style="font-size:12px;color:var(--dim2);">⚠ 注意：30–90 分鐘為中型集水區的參考值。小型 V 型峽谷、坡度極陡的短集水區，實測暴漲時間可能僅 <strong style="color:var(--accent-S);">10–15 分鐘</strong>。現場判斷應以最短時間為基準，不應等到「還有時間」才撤退。</span></p>
+  </div>
+
+  <!-- CWA 降雨分級 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S2-A · CWA 降雨分級標準</span>
+      <span class="tool-tag">中央氣象署現行正式標準</span>
+    </div>
+    <div class="tool-inner">
+      <table class="compact-table">
+        <thead><tr><th>等級</th><th>24h 累積</th><th>3h 累積</th><th>嚮導行動</th></tr></thead>
+        <tbody>
+          <tr><td>大雨</td><td>≥ 80 mm</td><td>1h ≥ 40 mm</td><td class="c-warn">加強監控 · 備妥撤退</td></tr>
+          <tr><td class="c-warn">豪雨</td><td class="c-warn">≥ 200 mm</td><td class="c-warn">≥ 100 mm</td><td class="c-warn">暫緩 · 進行中往高處</td></tr>
+          <tr><td class="c-danger">大豪雨</td><td class="c-danger">≥ 350 mm</td><td class="c-danger">≥ 200 mm</td><td class="c-danger">嚴禁下水 · 立即撤離</td></tr>
+          <tr><td class="c-danger">超大豪雨</td><td class="c-danger">≥ 500 mm</td><td>—</td><td class="c-danger">緊急撤離所有人員</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 72小時決策時間軸 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S2-B · 72小時決策時間軸</span>
+      <span class="tool-tag" id="tl-prog">0 / 4 節點完成</span>
+    </div>
+    <div class="tool-inner">
+      <p class="body-text">每個時間節點根據氣象情報做出決策。選錯後系統說明正確理由，繼續進行下一節點。</p>
+      <div class="timeline" id="tl-wrap"></div>
+      <div class="info-note" id="tl-final" style="display:none">
+        <strong>模擬結束</strong>氣象判斷是動態的——每個節點的條件都可能改變最終決策。重複練習直到每個節點的理由都能默背。
+        <button onclick="resetTimeline()" style="margin-top:.5rem;font-family:var(--mono);font-size:11px;background:none;border:1px solid var(--rule2);border-radius:4px;padding:.3rem .7rem;color:var(--dim2);cursor:pointer;">重新模擬</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 暴漲五大前兆 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S2-C · 暴漲五大前兆</span>
+      <span class="tool-tag">任一勾選即觸發撤退命令</span>
+    </div>
+    <div class="tool-inner">
+      <ul class="ck-list" id="ck-list">
+        <li class="ck-item" onclick="toggleCk(this)">
+          <div class="ck-box"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+          <span class="ck-text">① 上游山頭出現烏黑積雨雲（即便當地天氣晴朗）</span>
+        </li>
+        <li class="ck-item" onclick="toggleCk(this)">
+          <div class="ck-box"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+          <span class="ck-text">② 溪流出現「齊頭水」——一波同速等高推進的混濁水流</span>
+        </li>
+        <li class="ck-item" onclick="toggleCk(this)">
+          <div class="ck-box"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+          <span class="ck-text">③ 水色在 5 分鐘內明顯變混濁</span>
+        </li>
+        <li class="ck-item" onclick="toggleCk(this)">
+          <div class="ck-box"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+          <span class="ck-text">④ 水面漂流物（枝葉、泡沫）短時間大量增加</span>
+        </li>
+        <li class="ck-item" onclick="toggleCk(this)">
+          <div class="ck-box"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></div>
+          <span class="ck-text">⑤ 水位標記石顯示水位異常上升（哪怕只有 5–10 cm）</span>
+        </li>
+      </ul>
+      <div class="ck-status" id="ck-cnt">已勾選：0 / 5 項</div>
+      <div class="info-note danger" id="ck-alert" style="display:none">
+        <strong>🚨 撤退命令觸發</strong>立即指示全員向水位線以上至少 15 公尺的高地撤離。由嚮導單方面決定，不容討論。撤退中嚴禁返回取裝備。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     S3 · 哨音手勢
+══════════════════════════════════════════════ -->
+<section id="s3">
+  <div class="sec-header">
+    <div class="sec-layer">S3 · 溯溪技術</div>
+    <h2 class="sec-title">溪谷通訊 · <em>哨音手勢翻牌</em></h2>
+    <p class="sec-sub">瀑布水聲 80–100 dB，口語通訊完全失效。每次進溪前必須逐一確認全員都了解以下信號系統。</p>
+  </div>
+
+  <div class="info-note warn">
+    <strong>系統差異提醒</strong>ACA、V7、ICOpro 對同一哨音的定義不完全一致。台灣業界以下列系統為準，但每次出發前仍需向全員確認。
+  </div>
+
+  <!-- 哨音翻牌 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S3-A · 哨音翻牌複習</span>
+      <span class="tool-tag">正面：指令名稱 → 背面：哨音 + 說明</span>
+    </div>
+    <div class="tool-inner">
+      <p class="flip-hint">— 先記住指令名稱，翻牌確認對應哨音 —</p>
+      <div class="flip-grid">
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">WHISTLE SIGNAL</div><div class="ff-name">停止 STOP</div></div>
+              <div class="ff-hint">幾聲？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">哨音</div>
+              <div class="fb-val">● — — （1聲長哨）</div>
+              <div class="fb-desc">立即停止一切動作，目光投向信號源。接收方以1聲長哨回覆。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">WHISTLE SIGNAL</div><div class="ff-name">安全 · 離繩 OK</div></div>
+              <div class="ff-hint">幾聲？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">哨音</div>
+              <div class="fb-val">● ● （2聲短哨）</div>
+              <div class="fb-desc">下降者脫離繩索，上方人員方可收繩安排下一人。以2聲回覆。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">WHISTLE SIGNAL</div><div class="ff-name">下放繩索</div></div>
+              <div class="ff-hint">幾聲？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">哨音</div>
+              <div class="fb-val">● ● ● （3聲短哨）</div>
+              <div class="fb-desc">釋放繩索長度或啟動可釋放系統。記憶：先給後取，3=給。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">WHISTLE SIGNAL</div><div class="ff-name">收繩 Rope Up</div></div>
+              <div class="ff-hint">幾聲？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">哨音</div>
+              <div class="fb-val">● ● ● ● （4聲短哨）</div>
+              <div class="fb-desc">收緊主繩消除鬆弛。記憶：先給後取，4=收。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">WHISTLE SIGNAL</div><div class="ff-name">緊急救援</div></div>
+              <div class="ff-hint">幾聲？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">哨音</div>
+              <div class="fb-val" style="color:var(--fire)">●●●●●… 連續</div>
+              <div class="fb-desc">全體隊員立即進入緊急動員。接收方以連續哨音回覆並集合。</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 手勢翻牌 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S3-B · 手勢翻牌複習</span>
+      <span class="tool-tag">正面：指令名稱 → 背面：動作 + 邏輯</span>
+    </div>
+    <div class="tool-inner">
+      <p class="flip-hint">— 翻牌確認手勢動作及設計原因 —</p>
+      <div class="flip-grid">
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">HAND SIGNAL</div><div class="ff-name">停止 STOP</div></div>
+              <div class="ff-hint">什麼動作？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">動作</div>
+              <div class="fb-val">單臂水平伸出，掌心朝前</div>
+              <div class="fb-desc">V7 系統。或雙手頭頂交叉呈 X（ACA）。高輪廓，遠距清晰可辨。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">HAND SIGNAL</div><div class="ff-name">安全 OK</div></div>
+              <div class="ff-hint">什麼動作？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">動作</div>
+              <div class="fb-val">拳頭置於頭盔頂部</div>
+              <div class="fb-desc">固定在頭盔上方，避免與普通揮手混淆。遠距依然清晰。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">HAND SIGNAL</div><div class="ff-name">收繩 Take Up</div></div>
+              <div class="ff-hint">什麼動作？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">動作</div>
+              <div class="fb-val">食指朝上 · 順時針畫圈</div>
+              <div class="fb-desc">提示確保者收緊繩索，消除鬆弛繩段。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">HAND SIGNAL</div><div class="ff-name">給繩 Lower</div></div>
+              <div class="ff-hint">什麼動作？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">動作</div>
+              <div class="fb-val">食指朝下 · 順時針畫圈</div>
+              <div class="fb-desc">提示上方架繩者釋放繩索長度。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">HAND SIGNAL</div><div class="ff-name">前方危險</div></div>
+              <div class="ff-hint">什麼動作？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">動作</div>
+              <div class="fb-val">雙手指尖頭頂相觸成三角</div>
+              <div class="fb-desc">警示前方有滾筒流、漩渦或隱蔽岩縫。向上三角形輪廓鮮明。</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div><div class="ff-tag">HAND SIGNAL</div><div class="ff-name">前進 Go</div></div>
+              <div class="ff-hint">什麼動作？翻牌確認</div>
+            </div>
+            <div class="flip-back">
+              <div class="fb-label">動作 · 重要禁忌</div>
+              <div class="fb-val">整臂指向行進方向</div>
+              <div class="fb-desc" style="color:var(--fire)">嚴禁指向危險源——緊張狀態下隊員會本能跟隨手指方向。</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     S5 · 架繩系統
+══════════════════════════════════════════════ -->
+<section id="s5">
+  <div class="sec-header">
+    <div class="sec-layer">S5 · 溯溪技術</div>
+    <h2 class="sec-title">架繩系統 · <em>MMO 步驟教學</em></h2>
+    <p class="sec-sub">「可釋放」意指繩索承載重量時，上方人員仍可將系統切換為下放模式——這是唯一能在緊急狀況救援卡繩者的方法。</p>
+  </div>
+
+  <div class="info-note danger">
+    <strong>⚠ 核心原則</strong>所有垂直地形架繩必須採用可釋放設計。使用死結固定繩，一旦下降者卡繩或受傷，上方人員完全無法干預——這是台灣溯溪事故中最常見的高風險架設錯誤。
+  </div>
+
+  <!-- MMO展開教學 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S5-A · MMO 三環節教學</span>
+      <span class="tool-tag">展開各環節查看說明</span>
+    </div>
+    <div class="tool-inner">
+      <div class="accord" onclick="toggleAccord(this)">
+        <div class="accord-head">
+          <div class="accord-num">M</div>
+          <div class="accord-title">
+            <div class="at-name">義大利半扣（Munter Hitch）</div>
+            <div class="at-sub">提供制動力 · 支援下放轉換 · 需 HMS 梨型主鎖</div>
+          </div>
+          <div class="accord-arrow">▶</div>
+        </div>
+        <div class="accord-body">
+          <p class="body-text"><strong>功能：</strong>提供下降制動力，是唯一同時支援「確保」與「下放」兩種模式的基本結。在任意方向自動調整受力，在張力下仍可流暢調整繩長。</p>
+          <p class="body-text"><strong>架設位置：</strong>繞過固定點的 HMS 形主鎖（梨型鎖）。繩圈方向決定制動或下降模式，架設時確認為「下降模式」。</p>
+          <div class="info-note">普通 D 形主鎖的幾何形狀無法讓義大利半扣順暢翻轉，必須使用 HMS 梨型鎖。</div>
+        </div>
+      </div>
+
+      <div class="accord" onclick="toggleAccord(this)">
+        <div class="accord-head">
+          <div class="accord-num">M</div>
+          <div class="accord-title">
+            <div class="at-name">騾結（Mule Hitch）</div>
+            <div class="at-sub">受力鎖定 · 拉一下即解鎖為下放模式</div>
+          </div>
+          <div class="accord-arrow">▶</div>
+        </div>
+        <div class="accord-body">
+          <p class="body-text"><strong>功能：</strong>在義大利半扣的制動力基礎上，鎖定系統使繩索不在重量下滑動。只需拉開騾結，系統立刻轉換為下放模式。</p>
+          <p class="body-text"><strong>打法：</strong>在緊鄰義大利半扣的制動端繩股上打騾結，穿過主鎖或固定繩身。騾結需緊靠半扣，減少兩者間的鬆弛繩段。</p>
+        </div>
+      </div>
+
+      <div class="accord" onclick="toggleAccord(this)">
+        <div class="accord-head">
+          <div class="accord-num">O</div>
+          <div class="accord-title">
+            <div class="at-name">單結（Overhand Knot）</div>
+            <div class="at-sub">安全鎖死騾結 · 最後一道防線</div>
+          </div>
+          <div class="accord-arrow">▶</div>
+        </div>
+        <div class="accord-body">
+          <p class="body-text"><strong>功能：</strong>防止因繩索震動或意外拉扯導致騾結自行滑脫。完成後輕拉制動端，系統不移動為正確。</p>
+          <p class="body-text"><strong>確認：</strong>視覺上三個節點清晰可見：義大利半扣 → 騾結 → 單結。</p>
+        </div>
+      </div>
+
+      <div class="accord" onclick="toggleAccord(this)">
+        <div class="accord-head">
+          <div class="accord-num danger">!</div>
+          <div class="accord-title">
+            <div class="at-name">緊急下放程序（Emergency Lower）</div>
+            <div class="at-sub">口訣：先抓繩 → 解單 → 解騾 → 放人</div>
+          </div>
+          <div class="accord-arrow">▶</div>
+        </div>
+        <div class="accord-body">
+          <div class="flow-steps">
+            <div class="flow-step"><div class="flow-step-n danger">1</div><div class="flow-step-txt"><span class="fire">先抓繩（最重要）</span>：雙手握緊制動端繩股。不先抓繩，任何後續動作都可能造成下降者自由墜落。</div></div>
+            <div class="flow-step"><div class="flow-step-n">2</div><div class="flow-step-txt"><strong>解單結</strong>：拇指推開單結（單手完成，另一手繼續制動）</div></div>
+            <div class="flow-step"><div class="flow-step-n">3</div><div class="flow-step-txt"><strong>解騾結</strong>：用力向主繩方向拉，使騾結滑脫</div></div>
+            <div class="flow-step"><div class="flow-step-n">4</div><div class="flow-step-txt"><strong>緩慢下放</strong>：義大利半扣自動轉為下放模式，逐漸放繩</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 三系統SVG比較 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S5-B · 三種架繩系統比較</span>
+      <span class="tool-tag">MMO · Releasable-8 · Biner Block</span>
+    </div>
+    <div class="tool-inner">
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchTab('s5t', 0, this)">MMO 可釋放</button>
+        <button class="tab-btn" onclick="switchTab('s5t', 1, this)">八字環可釋放</button>
+        <button class="tab-btn" onclick="switchTab('s5t', 2, this)">鉤環阻擋</button>
+      </div>
+
+      <div class="tab-panel active" id="s5t-0">
+        <div class="svg-wrap">
+          <svg viewBox="0 0 380 160" style="font-family:IBM Plex Mono,monospace;font-size:11px">
+            <!-- anchor -->
+            <rect x="160" y="10" width="60" height="20" rx="4" fill="#EDE7D9" stroke="#1A6B6B" stroke-width="1.5"/>
+            <text x="190" y="24" text-anchor="middle" font-size="10" fill="#1A6B6B" font-weight="700">固定點 HMS鎖</text>
+            <!-- munter -->
+            <ellipse cx="190" cy="55" rx="18" ry="12" fill="none" stroke="#1A6B6B" stroke-width="2"/>
+            <ellipse cx="190" cy="55" rx="10" ry="7" fill="none" stroke="#1A6B6B" stroke-width="1.5" stroke-dasharray="3,2"/>
+            <text x="215" y="59" font-size="10" fill="#1A6B6B" font-weight="700">義大利半扣</text>
+            <!-- mule knot -->
+            <path d="M190 67 Q200 80 190 90 Q180 80 190 67" fill="none" stroke="#C8401A" stroke-width="2"/>
+            <circle cx="190" cy="90" r="5" fill="#C8401A"/>
+            <text x="202" y="93" font-size="10" fill="#C8401A" font-weight="700">騾結</text>
+            <!-- overhand -->
+            <path d="M190 95 Q195 108 190 115" fill="none" stroke="#B89030" stroke-width="2"/>
+            <circle cx="190" cy="115" r="4" fill="#B89030"/>
+            <text x="200" y="118" font-size="10" fill="#B89030" font-weight="700">單結</text>
+            <!-- rope down -->
+            <line x1="190" y1="119" x2="190" y2="148" stroke="#6B6560" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="197" y="142" font-size="10" fill="#6B6560">制動端</text>
+            <!-- pros -->
+            <text x="10" y="45" font-size="10" fill="#2E7D52" font-weight="700">✓ 可在承重下下放</text>
+            <text x="10" y="62" font-size="10" fill="#2E7D52">✓ 無需額外器材</text>
+            <text x="10" y="79" font-size="10" fill="#2E7D52">✓ 任何錨點皆適用</text>
+            <text x="10" y="100" font-size="10" fill="#C8401A">✗ 繩段佔用較多</text>
+            <text x="10" y="117" font-size="10" fill="#C8401A">✗ 可能產生繩索扭結</text>
+          </svg>
+          <div class="svg-caption">MMO 可釋放系統 · 適用情境：初學者或水流複雜垂降、緊急下放需求高</div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="s5t-1">
+        <div class="svg-wrap">
+          <svg viewBox="0 0 380 160" style="font-family:IBM Plex Mono,monospace;font-size:11px">
+            <!-- anchor -->
+            <rect x="160" y="10" width="60" height="20" rx="4" fill="#EDE7D9" stroke="#1A6B6B" stroke-width="1.5"/>
+            <text x="190" y="24" text-anchor="middle" font-size="10" fill="#1A6B6B" font-weight="700">固定點</text>
+            <!-- figure 8 shape -->
+            <circle cx="190" cy="55" r="13" fill="none" stroke="#1A6B6B" stroke-width="2"/>
+            <circle cx="190" cy="78" r="9" fill="none" stroke="#1A6B6B" stroke-width="2"/>
+            <text x="210" y="59" font-size="10" fill="#1A6B6B" font-weight="700">八字環</text>
+            <!-- lock off rope -->
+            <path d="M190 87 Q202 98 192 110" fill="none" stroke="#C8401A" stroke-width="2"/>
+            <circle cx="192" cy="110" r="5" fill="#C8401A"/>
+            <text x="200" y="113" font-size="10" fill="#C8401A" font-weight="700">鎖定環</text>
+            <!-- rope -->
+            <line x1="192" y1="115" x2="192" y2="148" stroke="#6B6560" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <!-- pros cons -->
+            <text x="10" y="45" font-size="10" fill="#2E7D52" font-weight="700">✓ 架設緊湊</text>
+            <text x="10" y="62" font-size="10" fill="#2E7D52">✓ 適合較低固定點</text>
+            <text x="10" y="79" font-size="10" fill="#2E7D52">✓ 最後一人下降後易拆</text>
+            <text x="10" y="100" font-size="10" fill="#C8401A">✗ 需要額外八字環</text>
+            <text x="10" y="117" font-size="10" fill="#C8401A">✗ 釋放前需確認方向</text>
+          </svg>
+          <div class="svg-caption">八字環可釋放系統 · 適用情境：確認下降者技術熟練、固定點位置較低</div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="s5t-2">
+        <div class="svg-wrap">
+          <svg viewBox="0 0 380 160" style="font-family:IBM Plex Mono,monospace;font-size:11px">
+            <!-- anchor -->
+            <rect x="160" y="10" width="60" height="20" rx="4" fill="#FCF0EB" stroke="#C8401A" stroke-width="1.5"/>
+            <text x="190" y="24" text-anchor="middle" font-size="10" fill="#C8401A" font-weight="700">固定點</text>
+            <!-- rope through anchor -->
+            <line x1="190" y1="30" x2="190" y2="80" stroke="#6B6560" stroke-width="2"/>
+            <!-- biner block -->
+            <rect x="178" y="78" width="24" height="16" rx="4" fill="#EDE7D9" stroke="#C8401A" stroke-width="2"/>
+            <text x="190" y="89" text-anchor="middle" font-size="9" fill="#C8401A" font-weight="700">鉤環</text>
+            <text x="210" y="89" font-size="10" fill="#C8401A">阻擋</text>
+            <!-- rope below -->
+            <line x1="190" y1="94" x2="190" y2="148" stroke="#6B6560" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="197" y="140" font-size="10" fill="#6B6560">垂降繩</text>
+            <!-- BIG RED X -->
+            <text x="25" y="80" font-size="36" fill="#C8401A" opacity=".15" font-weight="900">非可釋放</text>
+            <!-- pros cons -->
+            <text x="10" y="45" font-size="10" fill="#2E7D52" font-weight="700">✓ 架設最快速</text>
+            <text x="10" y="62" font-size="10" fill="#2E7D52">✓ 用於最後一人下降</text>
+            <text x="10" y="100" font-size="10" fill="#C8401A" font-weight="700">✗ 承重後完全無法下放</text>
+            <text x="10" y="117" font-size="10" fill="#C8401A">✗ 緊急救援極為困難</text>
+          </svg>
+          <div class="svg-caption" style="color:var(--fire)">⚠ 鉤環阻擋為非可釋放系統 · 禁用：水流沖擊、遠距垂降、有初學者的任何情境</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     S6 · 鐘擺技術
+══════════════════════════════════════════════ -->
+<section id="s6">
+  <div class="sec-header">
+    <div class="sec-layer">S6 · 溯溪技術</div>
+    <h2 class="sec-title">鐘擺技術 · <em>四種情境力學</em></h2>
+    <p class="sec-sub">不對抗水流，讓水流的下沖力成為橫向位移的動力——這與直覺「逃離水流」完全相反。</p>
+  </div>
+
+  <!-- 力學原理 SVG 動畫 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S6-A · 力學動態示意</span>
+      <span class="tool-tag" id="pend-tag">選擇情境查看軌跡</span>
+    </div>
+    <div class="tool-inner">
+      <div class="pend-wrap">
+        <div class="pend-stage">
+          <svg id="pend-svg" viewBox="0 0 300 220"></svg>
+        </div>
+        <div class="pend-controls">
+          <div style="font-family:var(--mono);font-size:10px;color:var(--dim2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem">情境選擇</div>
+          <button class="pend-scenario-btn active" onclick="setPend(0,this)">① 先鋒者橫渡</button>
+          <button class="pend-scenario-btn" onclick="setPend(1,this)">② 後繼者橫渡</button>
+          <button class="pend-scenario-btn" onclick="setPend(2,this)">③ 收尾者橫渡</button>
+          <button class="pend-scenario-btn" onclick="setPend(3,this)">④ 拋繩袋救援</button>
+          <div class="pend-desc" id="pend-desc" style="margin-top:.75rem"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 四情境步驟教學 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <span class="tool-label">S6-B · 四種情境步驟</span>
+      <span class="tool-tag">展開查看各角色操作</span>
+    </div>
+    <div class="tool-inner">
+      <div class="accord" onclick="toggleAccord(this)">
+        <div class="accord-head">
+          <div class="accord-num">①</div>
+          <div class="accord-title">
+            <div class="at-name">先鋒者橫渡（Leader Crossing）</div>
+            <div class="at-sub">風險最高，由最有經驗者擔任</div>
+          </div>
+          <div class="accord-arrow">▶</div>
+        </div>
+        <div class="accord-body">
+          <p class="body-text"><strong>基本確保型（單繩）：</strong></p>
+          <div class="flow-steps">
+            <div class="flow-step"><div class="flow-step-n">1</div><div class="flow-step-txt">確保者 B 在出發岸上游位置持繩，充當圓弧的圓心</div></div>
+            <div class="flow-step"><div class="flow-step-n">2</div><div class="flow-step-txt">先鋒者 A 以<strong>活結</strong>（可緊急解開）固定繩頭於吊帶，逐步涉水前進</div></div>
+            <div class="flow-step"><div class="flow-step-n">3</div><div class="flow-step-txt">B 逐漸給繩，水流推力引導 A 橫向移動；A 的軌跡是以 B 為圓心的圓弧</div></div>
+          </div>
+          <div class="info-note warn" style="margin-top:.85rem">
+            <strong>跌倒被沖走——撤退機制</strong>B 同時執行：① 迅速收繩（防繩索纏繞 A）；② 往下游移動（減小 A 的迎水面，防止吃水壓入水底）→ 鐘擺力學自動引導 A 到岸邊緩流
+          </div>
+        </div>
+      </div>
+
+      <div class="accord" onclick="toggleAccord(this)">
+        <div class="accord-head">
+          <div class="accord-num safe" style="background:var(--safe)">②</div>
+          <div class="accord-title">
+            <div class="at-name">後繼者橫渡（Follower Crossing）</div>
+            <div class="at-sub">最安全角色 · 適合體能較弱或訓練中的學員</div>
+          </div>
+          <div class="accord-arrow">▶</div>
+        </div>
+        <div class="accord-body">
+          <div class="flow-steps">
+            <div class="flow-step"><div class="flow-step-n">1</div><div class="flow-step-txt">先鋒者抵達對岸後，在對岸偏<strong>下游</strong>位置設立固定點，拉緊主繩</div></div>
+            <div class="flow-step"><div class="flow-step-n">2</div><div class="flow-step-txt">後繼者以 <strong>15 cm Lanyard</strong> 與鉤環連接至已拉緊的主繩</div></div>
+            <div class="flow-step"><div class="flow-step-n">3</div><div class="flow-step-txt">對岸固定點偏下游→主繩張力引導後繼者<strong>順流斜渡</strong>，水流為助力</div></div>
+            <div class="flow-step"><div class="flow-step-n">4</div><div class="flow-step-txt">雙手握緊主繩維持平衡，安全滑移至對岸</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accord" onclick="toggleAccord(this)">
+        <div class="accord-head">
+          <div class="accord-num">③</div>
+          <div class="accord-title">
+            <div class="at-name">收尾者橫渡（Sweeper Crossing）</div>
+            <div class="at-sub">需撤除固定點 · 由有經驗者擔任</div>
+          </div>
+          <div class="accord-arrow">▶</div>
+        </div>
+        <div class="accord-body">
+          <div class="flow-steps">
+            <div class="flow-step"><div class="flow-step-n">1</div><div class="flow-step-txt">解除出發岸固定點，將主繩繫於自身吊帶</div></div>
+            <div class="flow-step"><div class="flow-step-n">2</div><div class="flow-step-txt">對岸確保者<strong>逐步往下游移動</strong>並持續收繩</div></div>
+            <div class="flow-step"><div class="flow-step-n">3</div><div class="flow-step-txt">鐘擺力學將收尾者以圓弧軌跡引導至對岸，收尾者同時主動游泳輔助</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accord" onclick="toggleAccord(this)">
+        <div class="accord-head">
+          <div class="accord-num danger">④</div>
+          <div class="accord-title">
+            <div class="at-name">活餌救援（Live Bait Rescue）</div>
+            <div class="at-sub">受困者陷入滾筒流 · 先決條件：熟練快拆帶操作</div>
+          </div>
+          <div class="accord-arrow">▶</div>
+        </div>
+        <div class="accord-body">
+          <div class="info-note danger" style="margin-bottom:1rem">
+            <strong>先決條件</strong>攻擊手必須熟練快拆帶操作，否則可能造成攻擊手與受困者同時溺斃的雙重傷亡。
+          </div>
+          <div class="dtree">
+            <div class="dtree-node" onclick="toggleDtree(this)">
+              <div class="dtree-q"><div class="dtree-qn">Q1</div><div class="dtree-qt">受困者能抓到拋繩袋嗎？</div><div class="dtree-arr">▶</div></div>
+              <div class="dtree-body">
+                <div class="dtree-branch"><div class="db-cond safe">是 → 拋繩袋鐘擺救援</div><div class="db-action">拋至落水者下游水面（非人體）→ 落水者抓住後岸上人員鎖定制動 → 不得往上游拉 → 水流鐘擺力學自動引導至岸邊</div></div>
+                <div class="dtree-branch"><div class="db-cond danger">否 → 啟動活餌救援</div><div class="db-action">進入以下步驟</div></div>
+              </div>
+            </div>
+            <div class="dtree-node" onclick="toggleDtree(this)">
+              <div class="dtree-q"><div class="dtree-qn">步驟</div><div class="dtree-qt">活餌救援七步驟</div><div class="dtree-arr">▶</div></div>
+              <div class="dtree-body">
+                <div class="flow-steps">
+                  <div class="flow-step"><div class="flow-step-n">①</div><div class="flow-step-txt">穿戴配有<strong>快拆式活餌帶</strong>（Quick-release Harness）的激流 PFD，測試快拆機制</div></div>
+                  <div class="flow-step"><div class="flow-step-n">②</div><div class="flow-step-txt">主鎖連接拋繩袋主繩至 PFD 活餌帶 D 環（連接點在<strong>胸口</strong>，非背部）</div></div>
+                  <div class="flow-step"><div class="flow-step-n">③</div><div class="flow-step-txt">攻擊式游泳（抬頭捷泳）奮力游向受困者，<strong>從上游方向接近</strong></div></div>
+                  <div class="flow-step"><div class="flow-step-n warn">④</div><div class="flow-step-txt">以<strong>靠岸那側的手</strong>抓住受困者靠河心那側救生衣肩帶，再以靠河心那側的手向後抓繩，使兩人軀幹與主繩平行（此姿勢最小化對固定點的拉力）</div></div>
+                  <div class="flow-step"><div class="flow-step-n">⑤</div><div class="flow-step-txt">接觸穩定後向岸上確保手打出「OK」手勢</div></div>
+                  <div class="flow-step"><div class="flow-step-n">⑥</div><div class="flow-step-txt">確保手制動主繩，水流鐘擺力學將兩人引導至岸邊安全區</div></div>
+                  <div class="flow-step"><div class="flow-step-n danger">⑦</div><div class="flow-step-txt"><span class="fire">快拆備用</span>：若攻擊手被吸入另一個漩渦，立即拉動快拆帶脫離繩索，自救後再處理受困者</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /page-body -->
+
+<script>
+/* ══════════════════════════
+   NAV scroll-spy
+══════════════════════════ */
+const navLinks = document.querySelectorAll('.nav-link[data-layer="S"]');
+const sections = ['s1','s2','s3','s4','s5','s6'].map(id => document.getElementById(id));
+window.addEventListener('scroll', () => {
+  let cur = 0;
+  sections.forEach((s,i) => { if(s && window.scrollY >= s.offsetTop - 80) cur = i; });
+  navLinks.forEach((l,i) => l.classList.toggle('active', i === cur));
+}, {passive:true});
+
+/* ══════════════════════════
+   S2-B · TIMELINE
+══════════════════════════ */
+const TL_DATA = [
+  {
+    time:'出發前 48h', dot:'48h',
+    info:'上游集水區雨量站顯示：過去 48 小時累積雨量 185 mm（接近豪雨標準 200mm）。氣象署雷達回波圖顯示有對流胞向集水區移動。',
+    choices:[
+      {text:'繼續規劃，活動照舊', correct:false, explain:'185mm 接近豪雨標準，且對流胞移向集水區，此時應啟動備案而非樂觀等待。'},
+      {text:'啟動備案，縮短行程並提前確認撤退路線', correct:true, explain:'正確。氣象條件亮黃燈時應立即啟動備案、縮短行程，並通知所有參與者可能取消的情況。'},
+      {text:'直接取消活動', correct:false, explain:'目前條件尚未到達大豪雨或超大豪雨的強制取消門檻，縮短行程+加強監控是更合適的回應。'},
+    ]
+  },
+  {
+    time:'出發前 24h', dot:'24h',
+    info:'新的 24 小時累積雨量達到 230 mm（已超過豪雨標準 200mm）。氣象署發布山區豪雨特報，目標溪谷所在縣市列為警示範圍。',
+    choices:[
+      {text:'正常出發，在溪谷中密切注意', correct:false, explain:'已達豪雨等級且列入警示範圍，依嚮導準則應暫緩或取消活動，不得讓學員在此條件下入溪。'},
+      {text:'暫緩出發，等待 12 小時後重新評估', correct:true, explain:'正確。豪雨等級應「暫緩活動」。等待雨量站數據下降並確認雷達回波遠離後，才重新評估是否出發。'},
+      {text:'改去另一條不在警示範圍的溪谷', correct:false, explain:'豪雨特報覆蓋的是整個山區集水區，換溪不代表安全——不同溪谷可能共享同一個集水區。'},
+    ]
+  },
+  {
+    time:'出發當天早上', dot:'AM',
+    info:'雨量已停止，過去 6 小時無新增雨量。雷達回波圖顯示對流胞已移遠，天氣轉晴。但集水區土壤飽和度仍高。',
+    choices:[
+      {text:'天氣晴了，正常出發進行完整行程', correct:false, explain:'前 48 小時豪雨使土壤完全飽和，任何新的微量降雨都可能產生快速的地表逕流暴漲。當天行程應大幅縮短。'},
+      {text:'縮短行程，提前出發確保 14:00 前離溪', correct:true, explain:'正確。土壤飽和狀態下應縮短行程並提早離溪，避免午後對流造成的暴漲。同時必須設置水位標記石。'},
+      {text:'取消活動，等明天', correct:false, explain:'條件已改善，謹慎出發（縮短行程）是合理選擇。完全取消是過度保守，也影響學員的學習機會。'},
+    ]
+  },
+  {
+    time:'活動進行中', dot:'⚡',
+    info:'活動進行中，天氣仍晴。但你注意到水色在過去 5 分鐘內從清澈轉為略帶混濁，上游山頭開始出現積雲發展。',
+    choices:[
+      {text:'繼續前進，觀察一段時間再決定', correct:false, explain:'水色混濁是暴漲五大前兆中的「前兆③」，且積雲發展是「前兆①」的前期。兩個前兆同時出現，必須立即撤退。'},
+      {text:'立即啟動撤退，全員往水位線以上 15 公尺撤離', correct:true, explain:'正確。任一前兆觸發即撤退。水色混濁代表上游已有地表逕流，洪峰可能 30 分鐘內到達。'},
+      {text:'加速通過危險地形後再撤退', correct:false, explain:'加速通過反而讓隊伍暴露在危險水域更長時間。洪峰到達時間無法預測，必須立即往高地。'},
+    ]
+  },
+];
+let tlStep = 0;
+
+function renderTimeline(){
+  const wrap = document.getElementById('tl-wrap');
+  wrap.innerHTML = '';
+  TL_DATA.forEach((node, i) => {
+    const div = document.createElement('div');
+    div.className = 'tl-node' + (i===tlStep?' active':(i<tlStep?' done':''));
+    div.innerHTML = `
+      <div class="tl-dot">${node.dot}</div>
+      <div class="tl-content">
+        <div class="tl-time">${node.time}</div>
+        <div class="tl-info">${i<=tlStep?node.info:'— 尚未到達此節點 —'}</div>
+        ${i===tlStep?`<div class="tl-choices" id="tl-choices-${i}">${node.choices.map((c,j)=>`<div class="tl-choice" onclick="pickTl(${i},${j})">${c.text}</div>`).join('')}</div><div class="tl-explain" id="tl-ex-${i}"></div>`:''}
+      </div>`;
+    wrap.appendChild(div);
+  });
+  document.getElementById('tl-prog').textContent = `${Math.min(tlStep,4)} / 4 節點完成`;
+  document.getElementById('tl-final').style.display = tlStep>=4?'block':'none';
+}
+
+function pickTl(nodeIdx, choiceIdx){
+  if(tlStep !== nodeIdx) return;
+  const node = TL_DATA[nodeIdx];
+  const choice = node.choices[choiceIdx];
+  const choiceDivs = document.querySelectorAll(`#tl-choices-${nodeIdx} .tl-choice`);
+  choiceDivs.forEach((d,j) => {
+    d.classList.add('picked');
+    d.classList.add(node.choices[j].correct?'correct':'wrong');
+    d.style.pointerEvents='none';
+  });
+  const ex = document.getElementById(`tl-ex-${nodeIdx}`);
+  ex.textContent = (choice.correct?'✓ ':' ') + choice.explain;
+  ex.classList.add('show');
+  setTimeout(()=>{ tlStep++; renderTimeline(); }, 1400);
+}
+function resetTimeline(){ tlStep=0; renderTimeline(); }
+renderTimeline();
+
+/* ══════════════════════════
+   S2-C · CHECKLIST
+══════════════════════════ */
+function toggleCk(el){
+  el.classList.toggle('checked');
+  const cnt = document.querySelectorAll('.ck-item.checked').length;
+  document.getElementById('ck-cnt').textContent = `已勾選：${cnt} / 5 項`;
+  document.getElementById('ck-alert').style.display = cnt>=1?'block':'none';
+}
+
+/* ══════════════════════════
+   GENERIC: tab switch
+══════════════════════════ */
+function switchTab(prefix, idx, btn){
+  const allBtns = btn.closest('.tab-row').querySelectorAll('.tab-btn');
+  allBtns.forEach((b,i) => b.classList.toggle('active', i===idx));
+  allBtns.forEach((b,i) => {
+    const panel = document.getElementById(`${prefix}-${i}`);
+    if(panel) panel.classList.toggle('active', i===idx);
+  });
+}
+
+/* ══════════════════════════
+   GENERIC: accordion
+══════════════════════════ */
+function toggleAccord(el){ el.classList.toggle('open'); }
+
+/* ══════════════════════════
+   S6-A · PENDULUM SVG
+══════════════════════════ */
+const PEND_SCENARIOS = [
+  {
+    label:'① 先鋒者橫渡',
+    desc:'確保者 B 在上游岸邊作為固定軸。先鋒者 A 的移動軌跡是以 B 為圓心的圓弧。水流推力（↓）提供橫向力矩，驅動鐘擺。',
+    pivotSide:'left', travelerStart:[60,110], arcTo:[240,130], pivotY:80
+  },
+  {
+    label:'② 後繼者橫渡',
+    desc:'主繩固定點在對岸偏下游處。後繼者 D 連接 Lanyard 後，張力引導其順流斜渡，水流是助力而非阻力。',
+    pivotSide:'right', travelerStart:[60,110], arcTo:[240,150], pivotY:140
+  },
+  {
+    label:'③ 收尾者橫渡',
+    desc:'確保者在對岸逐步往下游移動並收繩，鐘擺力學將收尾者以圓弧軌跡引導至對岸，原理與先鋒橫渡相同但方向相反。',
+    pivotSide:'right', travelerStart:[60,120], arcTo:[240,140], pivotY:90
+  },
+  {
+    label:'④ 拋繩袋救援',
+    desc:'落水者抓住拋繩袋後，岸上人員鎖定繩索不做任何拖拉。水流推力沿繩索方向分解為橫向分力，自動將落水者鐘擺至岸邊緩流區。',
+    pivotSide:'left', travelerStart:[180,60], arcTo:[60,160], pivotY:40
+  }
+];
+let pendScenario=0, pendAnim=null, pendT=0;
+
+function setPend(idx, btn){
+  document.querySelectorAll('.pend-scenario-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  pendScenario=idx;
+  if(pendAnim){ cancelAnimationFrame(pendAnim); pendAnim=null; }
+  pendT=0;
+  document.getElementById('pend-desc').textContent = PEND_SCENARIOS[idx].desc;
+  document.getElementById('pend-tag').textContent = PEND_SCENARIOS[idx].label;
+  animatePend();
+}
+
+function drawPendFrame(t){
+  const sc = PEND_SCENARIOS[pendScenario];
+  const svg = document.getElementById('pend-svg');
+  const W=300, H=220;
+  const [sx,sy] = sc.travelerStart;
+  const [ex,ey] = sc.arcTo;
+  const pX = sc.pivotSide==='left'?30:270;
+  const pY = sc.pivotY;
+
+  // interpolate traveler position along arc
+  const px = sx + (ex-sx)*t;
+  const py = sy + (ey-sy)*t - Math.sin(Math.PI*t)*30;
+
+  let html = '';
+  // banks
+  html += `<rect width="${W}" height="${H}" fill="#D6E8F0"/>`;
+  html += `<rect x="0" y="0" width="40" height="${H}" fill="#EDE7D9" opacity=".9"/>`;
+  html += `<rect x="${W-40}" y="0" width="40" height="${H}" fill="#EDE7D9" opacity=".9"/>`;
+  html += `<text x="20" y="14" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#9A948E">出發岸</text>`;
+  html += `<text x="${W-20}" y="14" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#9A948E">對岸</text>`;
+  // flow arrows
+  for(let y=30;y<H;y+=28){
+    html += `<line x1="45" y1="${y}" x2="${W-50}" y2="${y+10}" stroke="#B8D4E8" stroke-width="1" opacity=".6"/>`;
+  }
+  // arc trail (dashed)
+  html += `<path d="M${sx},${sy}` + [...Array(20)].map((_,i)=>{
+    const tt=(i+1)/20*t;
+    const ppx=sx+(ex-sx)*tt;
+    const ppy=sy+(ey-sy)*tt-Math.sin(Math.PI*tt)*30;
+    return ` L${ppx.toFixed(1)},${ppy.toFixed(1)}`;
+  }).join('')+`" fill="none" stroke="#1A6B6B" stroke-width="1.5" stroke-dasharray="4,3" opacity=".7"/>`;
+  // pivot point
+  html += `<circle cx="${pX}" cy="${pY}" r="6" fill="#1A6B6B"/>`;
+  html += `<text x="${pX}" y="${pY-10}" text-anchor="middle" font-family="IBM Plex Mono" font-size="8" fill="#1A6B6B" font-weight="700">B</text>`;
+  // rope
+  html += `<line x1="${pX}" y1="${pY}" x2="${px.toFixed(1)}" y2="${py.toFixed(1)}" stroke="#C8401A" stroke-width="1.5"/>`;
+  // traveler
+  html += `<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="9" fill="#F5F0E8" stroke="#1A6B6B" stroke-width="2"/>`;
+  html += `<text x="${px.toFixed(1)}" y="${(py+4).toFixed(1)}" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="#1A6B6B" font-weight="700">A</text>`;
+  // flow force arrow at traveler
+  if(t>0.1 && t<0.95){
+    const fx = px, fy = py;
+    html += `<line x1="${fx.toFixed(1)}" y1="${fy.toFixed(1)}" x2="${fx.toFixed(1)}" y2="${(fy+22).toFixed(1)}" stroke="#B89030" stroke-width="1.5"/>`;
+    html += `<polygon points="${(fx-4).toFixed(1)},${(fy+22).toFixed(1)} ${(fx+4).toFixed(1)},${(fy+22).toFixed(1)} ${fx.toFixed(1)},${(fy+28).toFixed(1)}" fill="#B89030"/>`;
+    html += `<text x="${(fx+8).toFixed(1)}" y="${(fy+20).toFixed(1)}" font-family="IBM Plex Mono" font-size="8" fill="#B89030">F水</text>`;
+  }
+  svg.innerHTML = html;
+}
+
+function animatePend(){
+  pendT += 0.008;
+  if(pendT > 1.1){ pendT = 0; }
+  drawPendFrame(Math.min(pendT,1));
+  pendAnim = requestAnimationFrame(animatePend);
+}
+setPend(0, document.querySelector('.pend-scenario-btn'));
+
+/* ══════════════════════════
+   DECISION TREE
+══════════════════════════ */
+function toggleDtree(el){ el.classList.toggle('open'); }
+</script>
+</body>
+</html>
