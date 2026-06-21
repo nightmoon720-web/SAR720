@@ -111,6 +111,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
 .anchor-name { font-weight: 700; font-size: 14px; margin-bottom: .2rem; }
 .anchor-strength { font-family: var(--mono); font-size: 11px; color: var(--fire); margin-bottom: .35rem; }
 .anchor-desc { font-size: 12px; color: var(--dim); line-height: 1.5; }
+.anchor-note { font-family: var(--mono); font-size: 10px; color: var(--fire); margin-top: .4rem; line-height: 1.5; border-top: 1px solid var(--rule); padding-top: .35rem; }
 .anchor-detail { background: #FFF8F0; border: 1px solid #E8C8A0; border-radius: 8px; padding: 1.1rem 1.2rem; margin-bottom: .85rem; display: none; }
 .anchor-detail.show { display: block; }
 .anchor-detail h4 { font-family: var(--serif); font-weight: 700; font-size: 15px; margin-bottom: .75rem; color: var(--ink); }
@@ -265,6 +266,43 @@ input[type="range"].light-range::-webkit-slider-thumb {
   html.in-iframe .nav { display: none !important; }
   html.in-iframe .spine { display: none !important; }
   html.in-iframe .page-body { padding-top: 0 !important; padding-left: 1rem !important; }
+
+/* ── DISCLAIMER ── */
+.disclaimer {
+  background: var(--stone2, #E3DDD0);
+  border-top: 2px solid var(--rule2, #BDB6A8);
+  margin-top: 4rem;
+  padding: 2.5rem var(--gutter, 2rem);
+}
+.disclaimer-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+.disclaimer-title {
+  font-family: var(--mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  color: var(--dim, #6B6560);
+  margin-bottom: 1rem;
+}
+.disclaimer p {
+  font-family: var(--mono, monospace);
+  font-size: 11px;
+  line-height: 1.75;
+  color: var(--dim, #6B6560);
+  margin-bottom: .75rem;
+}
+.disclaimer-emergency {
+  color: var(--fire, #C8401A) !important;
+  font-weight: 700;
+}
+.disclaimer-footer-note {
+  margin-top: 1rem;
+  border-top: 1px solid var(--rule, #CFC9BC);
+  padding-top: .75rem;
+  color: var(--dim2, #9A948E) !important;
+}
 </style>
 <script>if(window.self!==window.top){document.documentElement.classList.add("in-iframe");}</script>
 </head>
@@ -372,7 +410,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
         <tbody id="hitch-tbody"></tbody>
       </table>
       <div class="callout callout-warn">
-        <strong>台灣現場常見錯誤</strong>：用索圈套接（Girth Hitch）連接扁帶至岩石，強度僅為籃式套接的40%（約20kN）。雙人救援重載約2kN，安全係數要求10:1需達20kN，此方式剛好在臨界點，無任何餘裕。
+        <strong>台灣現場常見錯誤</strong>：用拴牛結（Girth Hitch）連接扁帶至岩石，強度僅為籃式套接的40%（約20kN）。雙人救援重載約2kN，安全係數要求10:1需達20kN，此方式剛好在臨界點，無任何餘裕。
       </div>
     </div>
   </div>
@@ -614,17 +652,17 @@ input[type="range"].light-range::-webkit-slider-thumb {
 (function() {
   const ANCHORS = [
     {
-      id:'nat-rock', icon:'🪨', name:'天然岩石錨點', strength:'3 — 30+ kN（視岩質）',
+      id:'nat-rock', icon:'🪨', name:'天然岩石錨點', strength:'3 — 30+ kN（視岩質）', note:'不是岩石就好——最好是轟炸機錨（Bombproof Anchor＝巨大、穩固的岩石）',
       desc:'利用大型穩固岩塊或岩柱，以扁帶套接。花崗岩最理想，台灣板岩需謹慎。',
-      details: ['架設前先用手推拉測試穩定度，敲擊聽是否空洞','目視檢查：無貫穿性裂縫、無懸空岩片、無交叉節理','台灣板岩/頁岩節理發達，單點信任度遠低於花崗岩','扁帶套接：籃式套接 > 繞套 > 索圈套接（強度依序遞減）','確保受力方向與岩石最穩固的軸向一致（垂直向下或向內）','ICAR 2024：海崖或高濕度環境螺栓腐蝕問題，建議鈦合金']
+      details: ['架設前先用手推拉測試穩定度，敲擊聽是否空洞','目視檢查：無貫穿性裂縫、無懸空岩片、無交叉節理','台灣板岩/頁岩節理發達，單點信任度遠低於花崗岩','扁帶套接：籃式套接 > 繞套 > 拴牛結（強度依序遞減）','確保受力方向與岩石最穩固的軸向一致（垂直向下或向內）','ICAR 2024：海崖或高濕度環境螺栓腐蝕問題，建議鈦合金']
     },
     {
-      id:'nat-tree', icon:'🌲', name:'天然植物錨點', strength:'活木基部 ≈ 20 — 40 kN',
+      id:'nat-tree', icon:'🌲', name:'天然植物錨點', strength:'活木基部 ≈ 20 — 40 kN', note:'不是有樹就好——希望是個防彈錨（Bombproof Anchor＝強壯堅固的樹）',
       desc:'選直徑 ≥15cm 活木，套接於基部低處。台灣高海拔淺根樹種單株禁用。',
       details: ['直徑 ≥ 15cm 活木，樹皮完整無腐朽跡象','扁帶套接於基部 30cm 以內（利用根系向下抓地力）','台灣高山鐵杉、冷杉、圓柏：根系淺而水平分布，側向拉扯有連根拔起風險','單株嚴禁依賴，必須多株（≥3株）聯動均力','使用護套保護樹皮，避免扁帶直接磨損','多日降雨後土壤鬆軟，根系抓地力大幅下降，需重新評估']
     },
     {
-      id:'cam', icon:'⚙️', name:'凸輪裝置（Cam）', strength:'4 — 14 kN（依型號）',
+      id:'cam', icon:'⚙️', name:'Cam', strength:'4 — 14 kN（依型號）',
       desc:'擴張式保護點，適用平行裂隙。台灣破碎板岩裂隙不規則，置放需特別評估。',
       details: ['置放後凸輪外張率應在 50%–80% 之間，避免過張或極限縮小','受力方向須與裂隙走向平行（向下或向外）','台灣板岩裂隙常見鋸齒不規則邊緣，置放後需測試是否有鬆動','濕岩面會降低凸輪齒與岩石的摩擦力，梅雨/颱風後需特別謹慎','台灣救援：凸輪+岩楔+淺根喬木三者聯動，實現多點動態分配','單顆凸輪 MBS 約4–14kN，系統安全係數需達10:1 → 雙人救援需 ≥20kN']
     },
@@ -639,7 +677,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
       details: ['即使螺栓錨點，YOSAR 實務仍推薦「雙螺栓+Quad扁帶」，避免依賴單顆','螺栓年齡評估：1990年代前設置的螺栓閘門強度可能未達7kN標準','UIAA 2024：標準不鏽鋼在海崖高鹽霧環境有應力腐蝕風險，建議鈦合金','台灣山域熱門路線少數有螺栓，搜救行動多無法依賴既有螺栓','破壞性測試：螺栓應能通過 25kN 拉力測試方可信任','化學膠結型岩栓（Glue-in）適合溪降與濱海環境，不對岩石產生預應力']
     },
     {
-      id:'earth', icon:'⛏️', name:'地錨釘 / 土錨', strength:'2 — 10 kN（依土質）',
+      id:'earth', icon:'⛏️', name:'地錨釘 / 土錨（Deadman Anchor）', strength:'2 — 10 kN（依土質）',
       desc:'土坡、草坡或雪坡環境使用。台灣高山薄層腐植土中必須多點分散聯動。',
       details: ['土錨強度極度依賴土質密實度：台灣高山腐植土層薄，強度遠低於預期','正確置放角度：地錨釘與地面成 45°–60° 斜角（受力反方向）','強度提升：多根聯動（Picket System），以繩索串聯等距排列的多根地錨','台灣颱風過後地面極度飽和，地錨抗拉強度可能降低 50%–70%','作為輔助點而非主錨，必須配合天然岩石或植物錨點聯動使用','使用後應盡量回填土壤，避免破壞台灣高山脆弱的生態土層']
     }
@@ -653,7 +691,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
     const card = document.createElement('div');
     card.className = 'anchor-card';
     card.dataset.id = a.id;
-    card.innerHTML = `<span class="anchor-icon">${a.icon}</span><div class="anchor-name">${a.name}</div><div class="anchor-strength">${a.strength}</div><div class="anchor-desc">${a.desc}</div>`;
+    card.innerHTML = `<span class="anchor-icon">${a.icon}</span><div class="anchor-name">${a.name}</div><div class="anchor-strength">${a.strength}</div><div class="anchor-desc">${a.desc}</div>${a.note ? `<div class="anchor-note">⚠ ${a.note}</div>` : ''}`;
     card.addEventListener('click', () => {
       const wasOpen = openId === a.id;
       document.querySelectorAll('.anchor-card').forEach(c => c.classList.remove('open'));
@@ -681,7 +719,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
   const ITEMS = [
     { letter:'S', word:'Solid 堅固', desc:'每個單一保護點必須能獨立承受系統最大預期負載' },
     { letter:'E', word:'Equalized 均力', desc:'多點間負載分配均勻，夾角控制在60°以下' },
-    { letter:'R', word:'Redundant 冗餘', desc:'無單點失效結構，任一保護點失效系統仍能運作' },
+    { letter:'R', word:'Redundant 多餘的（冗餘）', desc:'無單點失效結構，任一保護點失效系統仍能運作' },
     { letter:'E', word:'Efficient 效率', desc:'架設速度合理，速度就是安全邊際' },
     { letter:'N', word:'No Extension 無延伸', desc:'保護點失效時不產生衝擊延伸，已加限位結' },
     { letter:'E', word:'Escaped 易脫困', desc:'確保者可在不移除確保情況下脫離系統' }
@@ -715,8 +753,8 @@ input[type="range"].light-range::-webkit-slider-thumb {
     { name:'籃式套接 Basket Hitch', kn:'53 kN', cls:'kn-green', pct:100, barCls:'#2E7D52', scene:'樹木、岩柱水平繞接', note:'台灣教案首選，優先選擇' },
     { name:'雙股平行繞套', kn:'~40 kN', cls:'kn-green', pct:75, barCls:'#2E7D52', scene:'較大岩石繞接', note:'次選，確保兩股均勻受力' },
     { name:'8字結 Figure-8', kn:'~32 kN', cls:'kn-amber', pct:60, barCls:'#B89030', scene:'繩端固定，主受力點', note:'效率75–80%，標準救援繩結' },
-    { name:'索圈套接 Girth Hitch', kn:'20–21 kN', cls:'kn-amber', pct:40, barCls:'#B89030', scene:'扁帶連接鎖扣', note:'⚠ 強度損失50%，雙人救援慎用' },
-    { name:'繫索結 Clove Hitch', kn:'~18 kN', cls:'kn-amber', pct:34, barCls:'#D4781A', scene:'快速調整長度', note:'可承受多方向，效率60–70%' },
+    { name:'拴牛結 Girth Hitch', kn:'20–21 kN', cls:'kn-amber', pct:40, barCls:'#B89030', scene:'扁帶連接鎖扣', note:'⚠ 強度損失50%，雙人救援慎用' },
+    { name:'雙套結 Clove Hitch', kn:'~18 kN', cls:'kn-amber', pct:34, barCls:'#D4781A', scene:'快速調整長度', note:'可承受多方向，效率60–70%' },
     { name:'單結 Overhand', kn:'~15 kN', cls:'kn-red', pct:28, barCls:'#C8401A', scene:'扁帶限位結', note:'強度最低，僅限限位結用途' },
   ];
   const tbody = document.getElementById('hitch-tbody');
@@ -815,7 +853,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
         yes: {
           id: 'parallel',
           result: {
-            icon: '⚙️', title: '主動凸輪裝置（Cam）',
+            icon: '⚙️', title: 'Cam',
             strength: '4 – 14 kN（依型號）',
             notes: ['外張率保持在 50%–80% 之間','受力方向必須與裂隙走向平行（向下或向外）','台灣板岩裂隙不規則，置放後必須手動測試是否鬆動','濕岩面摩擦係數降低，梅雨颱風後需特別謹慎'],
             taiwan: '<strong>台灣板岩注意</strong>：節理極度發達，裂隙邊緣常呈鋸齒狀。單顆凸輪禁止作為救援主錨，必須配合岩楔或植物錨點聯動。'

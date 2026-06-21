@@ -246,6 +246,43 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); -w
 html.in-iframe .nav { display: none !important; }
 html.in-iframe .spine { display: none !important; }
 html.in-iframe .page-body { padding-top: 0 !important; padding-left: 1rem !important; }
+
+/* ── DISCLAIMER ── */
+.disclaimer {
+  background: var(--stone2, #E3DDD0);
+  border-top: 2px solid var(--rule2, #BDB6A8);
+  margin-top: 4rem;
+  padding: 2.5rem var(--gutter, 2rem);
+}
+.disclaimer-inner {
+  max-width: 860px;
+  margin: 0 auto;
+}
+.disclaimer-title {
+  font-family: var(--mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  color: var(--dim, #6B6560);
+  margin-bottom: 1rem;
+}
+.disclaimer p {
+  font-family: var(--mono, monospace);
+  font-size: 11px;
+  line-height: 1.75;
+  color: var(--dim, #6B6560);
+  margin-bottom: .75rem;
+}
+.disclaimer-emergency {
+  color: var(--fire, #C8401A) !important;
+  font-weight: 700;
+}
+.disclaimer-footer-note {
+  margin-top: 1rem;
+  border-top: 1px solid var(--rule, #CFC9BC);
+  padding-top: .75rem;
+  color: var(--dim2, #9A948E) !important;
+}
 </style>
 <script>if(window.self!==window.top){document.documentElement.classList.add("in-iframe");}</script>
 </head>
