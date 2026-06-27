@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAR · K 群組 · 野地技術操作</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:    #F5F0E8;
+  --stone:    #EDE7D9;
+  --stone2:   #E3DDD0;
+  --rule:     #CFC9BC;
+  --rule2:    #BDB6A8;
+  --ink:      #1C1A17;
+  --dim:      #6B6560;
+  --dim2:     #9A948E;
+  --fire:     #C8401A;
+  --accent-K: #4A5C4A;
+  --mono:  'IBM Plex Mono', monospace;
+  --serif: 'Noto Serif TC', serif;
+  --sans:  'Noto Sans TC', sans-serif;
+  --nav-h: 52px;
+  --spine: 4px;
+  --gutter: clamp(1.5rem, 5vw, 3.5rem);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* SPINE */
+.spine {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--spine);
+  background: var(--fire);
+  z-index: 200;
+}
+
+/* NAV */
+.top-nav {
+  position: fixed; top: 0;
+  left: var(--spine); right: 0;
+  height: var(--nav-h);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center;
+  padding: 0 var(--gutter);
+  gap: 1.2rem;
+  z-index: 100;
+  overflow-x: auto;
+}
+.nav-logo {
+  font-family: var(--mono); font-weight: 700; font-size: 13px;
+  color: var(--fire); letter-spacing: .1em; white-space: nowrap;
+}
+.nav-home {
+  font-family: var(--mono); font-size: 11px; color: var(--dim);
+  text-decoration: none; white-space: nowrap;
+  transition: color .15s;
+}
+.nav-home:hover { color: var(--ink); }
+.nav-sep {
+  width: 1px; height: 16px; background: var(--rule); flex-shrink: 0;
+}
+.nav-links {
+  display: flex; gap: 1rem; align-items: center; overflow-x: auto;
+}
+.nav-links a {
+  font-family: var(--mono); font-size: 11px; color: var(--dim);
+  text-decoration: none; white-space: nowrap;
+  padding-left: .6rem;
+  border-left: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+.nav-links a[data-layer="K"] { border-left-color: var(--accent-K); }
+.nav-links a.active { color: var(--ink); font-weight: 700; }
+.nav-links a:hover { color: var(--ink); }
+
+/* PAGE */
+.page {
+  padding-top: calc(var(--nav-h) + 3.5rem);
+  padding-bottom: 8rem;
+  padding-left: calc(var(--spine) + var(--gutter));
+  padding-right: var(--gutter);
+  max-width: calc(var(--spine) + 1040px);
+}
+
+/* SECTION */
+section { margin-bottom: 6rem; scroll-margin-top: calc(var(--nav-h) + 1.5rem); }
+
+.sec-header { margin-bottom: 2rem; }
+.sec-layer {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--accent-K); letter-spacing: .2em; text-transform: uppercase;
+  margin-bottom: .6rem;
+}
+.sec-title {
+  font-family: var(--mono); font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-weight: 700; line-height: 1.15; color: var(--ink);
+  margin-bottom: .6rem;
+}
+.sec-title em { color: var(--accent-K); font-style: normal; }
+.sec-sub {
+  font-size: 13px; color: var(--dim); max-width: 560px; line-height: 1.7;
+}
+
+/* TOOL FRAME */
+.tool-frame {
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent-K);
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+.tool-bar {
+  background: var(--stone2);
+  border-bottom: 1px solid var(--rule);
+  padding: .55rem 1rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.tool-label {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--accent-K); letter-spacing: .12em; text-transform: uppercase;
+}
+.tool-tag {
+  font-family: var(--mono); font-size: 10px; color: var(--dim2);
+  margin-left: auto;
+}
+.tool-inner { padding: 1.25rem 1.2rem; background: var(--stone); }
+
+/* ALERT */
+.alert {
+  border-radius: 3px; padding: .85rem 1rem; margin-bottom: 1rem;
+  border-left: 3px solid;
+}
+.alert-danger { background: #FDF0ED; border-color: #C8401A; }
+.alert-warn   { background: #FDF6ED; border-color: #9B5E1A; }
+.alert-title {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: .4rem;
+}
+.alert-danger .alert-title { color: #C8401A; }
+.alert-warn   .alert-title { color: #9B5E1A; }
+.alert p { font-size: 13px; color: var(--ink); line-height: 1.65; }
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; gap: 1rem; }
+.step { display: flex; gap: 1rem; align-items: flex-start; }
+.step-dot {
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  color: var(--paper); background: var(--accent-K);
+  border-radius: 2px; padding: .2rem .45rem;
+  flex-shrink: 0; margin-top: .15rem; letter-spacing: .04em;
+}
+.step-body { flex: 1; }
+.step-body strong { font-size: 13px; color: var(--ink); display: block; margin-bottom: .2rem; }
+.step-body p { font-size: 12px; color: var(--dim); line-height: 1.6; }
+.step-body em { color: var(--accent-K); font-style: normal; font-weight: 700; }
+
+/* TABLE */
+.data-table {
+  width: 100%; border-collapse: collapse; font-family: var(--mono);
+  font-size: 12px;
+}
+.data-table th {
+  background: var(--stone2); color: var(--dim2); font-size: 10px;
+  letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  padding: .5rem .75rem; text-align: left;
+  border-bottom: 1px solid var(--rule2);
+}
+.data-table td {
+  padding: .55rem .75rem; border-bottom: 1px solid var(--rule);
+  color: var(--ink); vertical-align: top;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--paper); }
+.td-accent { color: var(--accent-K); font-weight: 700; }
+.td-warn   { color: #C8401A; font-weight: 700; }
+.td-dim    { color: var(--dim2); }
+
+/* TAG PILL */
+.pill {
+  display: inline-block; font-family: var(--mono); font-size: 9px; font-weight: 700;
+  padding: .15rem .45rem; border-radius: 2px; letter-spacing: .06em;
+}
+.pill-k   { background: #E8EDE8; color: var(--accent-K); }
+.pill-red { background: #FDF0ED; color: #C8401A; }
+.pill-dim { background: var(--stone2); color: var(--dim); }
+
+/* GRID 2-col */
+.two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;
+}
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+/* SCENARIO TABS */
+.tab-group { margin-bottom: 1.5rem; }
+.tab-btns {
+  display: flex; gap: .4rem; margin-bottom: 0;
+  border-bottom: 1px solid var(--rule);
+}
+.tab-btn {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  color: var(--dim); background: none; border: none; cursor: pointer;
+  padding: .5rem .9rem; border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: color .15s, border-color .15s;
+  letter-spacing: .06em;
+}
+.tab-btn.active { color: var(--accent-K); border-bottom-color: var(--accent-K); }
+.tab-btn:hover { color: var(--ink); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* CARD SMALL */
+.card-sm {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent-K);
+  border-radius: 3px; padding: .85rem 1rem; margin-bottom: .75rem;
+}
+.card-sm-title {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  color: var(--ink); margin-bottom: .35rem; letter-spacing: .04em;
+}
+.card-sm p { font-size: 12px; color: var(--dim); line-height: 1.6; }
+.card-sm em { color: var(--accent-K); font-style: normal; font-weight: 700; }
+
+/* KNIFE CARD */
+.knife-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: .75rem;
+}
+.knife-card {
+  background: var(--paper); border: 1px solid var(--rule);
+  border-radius: 3px; padding: .9rem; cursor: pointer;
+  transition: background .15s, box-shadow .15s;
+}
+.knife-card:hover { background: var(--stone); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.knife-card.selected { border-color: var(--accent-K); background: #EEF1EE; }
+.knife-id {
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  color: var(--accent-K); letter-spacing: .1em; margin-bottom: .3rem;
+}
+.knife-name {
+  font-family: var(--mono); font-size: 12px; font-weight: 700;
+  color: var(--ink); margin-bottom: .4rem;
+}
+.knife-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-bottom: .5rem; }
+.knife-detail { font-size: 11px; color: var(--dim); line-height: 1.55; display: none; }
+.knife-card.selected .knife-detail { display: block; }
+
+/* BOILING TABLE HIGHLIGHT */
+.alt-row td { background: #F0F3F0; }
+
+/* SECTION DIVIDER */
+.sec-rule {
+  height: 1px; background: var(--rule); margin: 2rem 0;
+}
+
+/* FOOTER */
+.page-footer {
+  border-top: 1px solid var(--rule); padding: 2rem 0; margin-top: 5rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-left { font-family: var(--mono); font-size: 11px; color: var(--dim); line-height: 1.8; }
+.footer-left strong { color: var(--ink); }
+.footer-right { font-family: var(--mono); font-size: 10px; color: var(--dim2); text-align: right; }
+
+/* DISCLAIMER */
+.disclaimer {
+  background: var(--stone2);
+  border-top: 2px solid var(--rule2);
+  margin-top: 4rem;
+  padding: 2.5rem var(--gutter);
+}
+.disclaimer-inner { max-width: 860px; margin: 0 auto; }
+.disclaimer-title {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .15em; color: var(--dim); margin-bottom: 1rem;
+}
+.disclaimer p {
+  font-family: var(--mono); font-size: 11px;
+  line-height: 1.75; color: var(--dim); margin-bottom: .75rem;
+}
+.disclaimer-emergency { color: var(--fire) !important; font-weight: 700; }
+
+@media (max-width: 640px) {
+  .knife-grid { grid-template-columns: repeat(2, 1fr); }
+  .page-footer { flex-direction: column; gap: 1rem; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+<div class="spine"></div>
+
+<nav class="top-nav">
+  <div class="nav-logo">SAR // TW</div>
+  <a class="nav-home" href="index.html">← 首頁</a>
+  <div class="nav-sep"></div>
+  <div class="nav-links">
+    <a href="#k1" class="active" data-layer="K">K1 炊事</a>
+    <a href="#k2" data-layer="K">K2 刀具</a>
+    <a href="#k3" data-layer="K">K3 天幕</a>
+    <a href="#k4" data-layer="K">K4 自製炊具</a>
+    <a href="#k5" data-layer="K">K5 庇護空間</a>
+  </div>
+</nav>
+
+<main class="page">
+
+<!-- ══════════════════════════════════════════
+     K1 · 野外炊事教學
+══════════════════════════════════════════ -->
+<section id="k1">
+  <div class="sec-header">
+    <div class="sec-layer">K1 · 野地技術操作</div>
+    <h2 class="sec-title">野外炊事教學 · <em>從零煮出一鍋白飯</em></h2>
+    <p class="sec-sub">爐頭怎麼選、明火怎麼控、高海拔米心為什麼不熟——依場景分三套流程，從新手角度完整說明。</p>
+  </div>
+
+  <!-- 場景 Tabs -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <div class="tool-label">場景選擇</div>
+      <div class="tool-tag">中級山 · 溪谷 · 高山</div>
+    </div>
+    <div class="tool-inner">
+      <div class="tab-group">
+        <div class="tab-btns">
+          <button class="tab-btn active" onclick="switchTab('k1','mid')">中級山（爐頭）</button>
+          <button class="tab-btn" onclick="switchTab('k1','creek')">溪谷（明火）</button>
+          <button class="tab-btn" onclick="switchTab('k1','alpine')">高山（爐頭）</button>
+        </div>
+
+        <!-- 中級山 -->
+        <div class="tab-panel active" id="k1-mid">
+          <div style="margin-top:1.2rem;">
+            <div class="sec-rule" style="margin-top:0;"></div>
+            <p style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent-K);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;">爐頭種類比較</p>
+            <table class="data-table" style="margin-bottom:1.5rem;">
+              <thead>
+                <tr>
+                  <th>類型</th><th>優點</th><th>缺點</th><th>適用情境</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="td-accent">瓦斯爐</td>
+                  <td>火力強、調節方便</td>
+                  <td>低溫輸出下降、空罐難丟</td>
+                  <td>中級山首選</td>
+                </tr>
+                <tr class="alt-row">
+                  <td class="td-accent">酒精爐</td>
+                  <td>輕量、無加壓容器</td>
+                  <td>火力弱、風影響大、燃燒不可見</td>
+                  <td>超輕量取向</td>
+                </tr>
+                <tr>
+                  <td class="td-accent">固態燃料</td>
+                  <td>最輕、備用佳</td>
+                  <td>火力最弱、殘留有毒</td>
+                  <td>緊急備用</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="alert alert-warn" style="margin-bottom:1.2rem;">
+              <div class="alert-title">低溫注意</div>
+              <p>氣溫低於 10°C 時，瓦斯罐異丁烷比例不足者輸出明顯下降。解法：出發前將瓦斯罐置於睡袋內保溫，或換用四季混合罐（含異丁烷比例較高）。</p>
+            </div>
+
+            <p style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent-K);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;">一杯米煮成白飯 · 步驟</p>
+            <div class="timeline">
+              <div class="step">
+                <div class="step-dot">S1</div>
+                <div class="step-body">
+                  <strong>量米洗米</strong>
+                  <p>一杯米（約 180ml）洗 2–3 次至水略清。<em>不需洗到全透明</em>，保留適量澱粉有助黏性。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S2</div>
+                <div class="step-body">
+                  <strong>加水浸泡</strong>
+                  <p>加水 1.2–1.3 杯（約米量 1.2 倍），浸泡 <em>15–20 分鐘</em>，讓米粒吸水膨脹，縮短炊煮時間。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S3</div>
+                <div class="step-body">
+                  <strong>大火煮沸</strong>
+                  <p>開大火至沸騰，此時攪拌一次防黏底。聽到鍋內水沸聲即可進入下一步。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S4</div>
+                <div class="step-body">
+                  <strong>轉小火煮乾</strong>
+                  <p>轉最小火，蓋鍋蓋。約 <em>8–10 分鐘</em>，待鍋內水蒸氣聲變小、鍋邊不再冒大量蒸氣，表示水分收乾。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S5</div>
+                <div class="step-body">
+                  <strong>關火悶熟</strong>
+                  <p>關火後<em>不開鍋蓋</em>，用毛帽或衣物包覆鍋子保溫，悶 <em>10 分鐘</em>。餘熱讓米心完全熟透。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S6</div>
+                <div class="step-body">
+                  <strong>判斷熟度</strong>
+                  <p>開蓋後以飯匙翻動底層，<em>無白色生米心</em>即完成。若有，蓋回悶再 5 分鐘。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 溪谷 -->
+        <div class="tab-panel" id="k1-creek">
+          <div style="margin-top:1.2rem;">
+            <div class="alert alert-danger" style="margin-bottom:1.2rem;">
+              <div class="alert-title">法規警示 · 禁火限制</div>
+              <p>國家公園、自然保護區、野生動物保護區範圍內依法禁止野外生火。出發前確認行程所在地管理機關規定。本平台所載炊事方法，使用者須自行確認當地法規合規性，本站不承擔相關責任。</p>
+            </div>
+
+            <p style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent-K);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;">台灣溪谷取材現實</p>
+            <div class="card-sm" style="margin-bottom:1rem;">
+              <div class="card-sm-title">一般晴天／乾燥期</div>
+              <p>台灣中低海拔溪谷林木豐富，溪岸枯枝、倒木腐木外層通常可找到<em>乾燥引燃材料</em>。優先搜索離地的枯枝、樹皮內側，避免直接撿地面濕葉。</p>
+            </div>
+            <div class="card-sm" style="margin-bottom:1.5rem;">
+              <div class="card-sm-title">連日大雨後</div>
+              <p>表層材料全濕。應對方法：<em>劈開倒木取內層乾料</em>（樹心通常保持相對乾燥），或搜索岩石遮蔽下方的落葉堆。此情況生火難度顯著提升，應評估是否改用備用爐頭。</p>
+            </div>
+
+            <p style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent-K);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;">一杯米煮成白飯 · 明火版步驟</p>
+            <div class="timeline">
+              <div class="step">
+                <div class="step-dot">S1</div>
+                <div class="step-body">
+                  <strong>建立穩定火床</strong>
+                  <p>以三塊石頭架成爐座支撐鍋具，確保鍋底距火焰<em>約 10–15cm</em>。過近易糊底，過遠效率差。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S2</div>
+                <div class="step-body">
+                  <strong>量米洗米加水浸泡</strong>
+                  <p>同中級山版本，加水 1.2–1.3 杯，浸泡 15–20 分鐘。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S3</div>
+                <div class="step-body">
+                  <strong>大火煮沸</strong>
+                  <p>明火火力用<em>柴量與鍋底距離</em>調節。沸騰後攪拌防黏。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S4</div>
+                <div class="step-body">
+                  <strong>撤柴降火轉小火</strong>
+                  <p>移除部分柴薪，降低火力。<em>明火無旋鈕</em>，靠減少燃料與增加鍋底距離控制。約 10–12 分鐘水收乾。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S5</div>
+                <div class="step-body">
+                  <strong>離火悶熟</strong>
+                  <p>將鍋移離火堆，包覆保溫悶 <em>10–15 分鐘</em>。明火溫度較不穩定，悶熟時間可略長。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S6</div>
+                <div class="step-body">
+                  <strong>判斷熟度</strong>
+                  <p>翻動底層確認無白心。明火煮飯底層容易焦，<em>略帶鍋巴</em>屬正常，但出現焦味需立即離火。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 高山 -->
+        <div class="tab-panel" id="k1-alpine">
+          <div style="margin-top:1.2rem;">
+            <p style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent-K);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;">海拔 · 氣壓 · 沸點對照</p>
+            <table class="data-table" style="margin-bottom:1.5rem;">
+              <thead>
+                <tr><th>海拔</th><th>氣壓（hPa）</th><th>水的沸點</th><th>炊煮影響</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>0 m（海平面）</td><td>1013</td><td>100°C</td><td class="td-dim">基準值</td>
+                </tr>
+                <tr class="alt-row">
+                  <td>1,000 m</td><td>899</td><td>96.7°C</td><td class="td-dim">差異尚小</td>
+                </tr>
+                <tr>
+                  <td>2,000 m</td><td>795</td><td>93.3°C</td><td class="td-warn">米心開始偏硬</td>
+                </tr>
+                <tr class="alt-row">
+                  <td>3,000 m</td><td>701</td><td>89.8°C</td><td class="td-warn">需延長悶熟時間</td>
+                </tr>
+                <tr>
+                  <td>3,952 m（玉山）</td><td>619</td><td>86.7°C</td><td class="td-warn">加壓鍋效果最佳</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="alert alert-warn" style="margin-bottom:1.2rem;">
+              <div class="alert-title">高山爐頭特別注意</div>
+              <p>高山低溫雙重夾擊：氣溫低使瓦斯輸出減弱，同時沸點低使炊煮時間拉長、燃料消耗增加。建議：睡前將瓦斯罐放睡袋保溫，炊煮時設置擋風板。</p>
+            </div>
+
+            <p style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent-K);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;">高山米飯解法</p>
+            <div class="two-col">
+              <div class="card-sm">
+                <div class="card-sm-title">解法 A · 延長悶熟</div>
+                <p>沸點低導致米心偏硬，解決方式是<em>拉長悶熟時間</em>。關火後包覆保溫悶 <em>15–20 分鐘</em>（平地 10 分鐘），利用餘熱讓米心完全熟透。成本低，僅需多等。</p>
+              </div>
+              <div class="card-sm">
+                <div class="card-sm-title">解法 B · 加壓鍋</div>
+                <p>加壓鍋可將內部氣壓提升至超過大氣壓，使沸點回升至 <em>110–120°C</em>。3,000 m 以上效果最顯著。缺點：重量增加，需評估裝備取捨。</p>
+              </div>
+            </div>
+
+            <p style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--accent-K);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1rem;">一杯米煮成白飯 · 高山版步驟</p>
+            <div class="timeline">
+              <div class="step">
+                <div class="step-dot">S1</div>
+                <div class="step-body">
+                  <strong>量米洗米加水浸泡</strong>
+                  <p>加水略增為 <em>1.3–1.4 杯</em>（高海拔蒸發較快），浸泡 20 分鐘。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S2</div>
+                <div class="step-body">
+                  <strong>設置擋風</strong>
+                  <p>架設擋風板或利用地形擋風，<em>風是高山爐頭最大敵人</em>，熱效率影響超過 50%。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S3</div>
+                <div class="step-body">
+                  <strong>大火煮沸</strong>
+                  <p>水沸騰溫度低於平地，<em>沸騰聲與冒泡仍是可靠指標</em>，不需依賴溫度計。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S4</div>
+                <div class="step-body">
+                  <strong>轉小火煮乾</strong>
+                  <p>約 8–10 分鐘水收乾，過程同中級山。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S5</div>
+                <div class="step-body">
+                  <strong>關火長悶</strong>
+                  <p>包覆保溫悶 <em>15–20 分鐘</em>。高海拔請選解法 A 或 B，不可省略此步驟。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">S6</div>
+                <div class="step-body">
+                  <strong>判斷熟度</strong>
+                  <p>若仍有白心，可<em>再加少量水（約 2 湯匙）蓋鍋微加熱</em>，再悶 5–10 分鐘。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     K2 · 刀具選擇與保養
+══════════════════════════════════════════ -->
+<section id="k2">
+  <div class="sec-header">
+    <div class="sec-layer">K2 · 野地技術操作</div>
+    <h2 class="sec-title">刀具選擇與保養 · <em>選對工具、用對場景</em></h2>
+    <p class="sec-sub">台灣中級山林相密集、溯溪環境潮濕——求生刀的浪漫形象在現場往往是累贅，這裡告訴你老手真正帶什麼。</p>
+  </div>
+
+  <!-- 材質 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <div class="tool-label">材質比較</div>
+      <div class="tool-tag">碳鋼 · 不鏽鋼 · 高碳不鏽鋼</div>
+    </div>
+    <div class="tool-inner">
+      <table class="data-table">
+        <thead>
+          <tr><th>材質</th><th>鋒利度</th><th>耐鏽性</th><th>研磨難度</th><th>台灣山域適用性</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-accent">碳鋼</td><td>★★★★★</td><td class="td-warn">★☆☆☆☆</td><td>低（易磨）</td><td class="td-warn">溪谷／雨季高風險，需勤保養</td>
+          </tr>
+          <tr class="alt-row">
+            <td class="td-accent">不鏽鋼</td><td>★★★☆☆</td><td>★★★★★</td><td>高（難磨）</td><td>溪谷潮濕環境首選</td>
+          </tr>
+          <tr>
+            <td class="td-accent">高碳不鏽鋼</td><td>★★★★☆</td><td>★★★★☆</td><td>中</td><td>全場景折衷推薦</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="alert alert-danger" style="margin-top:1rem;margin-bottom:0;">
+        <div class="alert-title">碳鋼在溪谷的現實</div>
+        <p>台灣溪谷濕度長期偏高，碳鋼刀一日未擦乾即可能起鏽。若帶碳鋼刀入溯溪行程，每次使用後必須立即擦乾並薄塗防鏽油。雨季建議直接換不鏽鋼或高碳不鏽鋼。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 刀型圖鑑 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <div class="tool-label">刀型圖鑑</div>
+      <div class="tool-tag">點選展開詳細說明</div>
+    </div>
+    <div class="tool-inner">
+      <div class="knife-grid" id="knife-grid">
+
+        <div class="knife-card" onclick="toggleKnife(this)">
+          <div class="knife-id">TYPE 01</div>
+          <div class="knife-name">求生刀（鋸背）</div>
+          <div class="knife-tags">
+            <span class="pill pill-red">常見迷思</span>
+            <span class="pill pill-dim">不推薦主力</span>
+          </div>
+          <div class="knife-detail">
+            外型看起來萬能，實際上鋸背效率遠不及專用鋸子，刀身增重明顯。在台灣山域，老手普遍選擇輕便折疊鋸取代鋸背功能。求生刀或許在歐美叢林環境有其定位，但台灣現地使用場景有限。<br><br><strong style="color:var(--accent-K)">結論：</strong>不推薦作為主力工具，帶輕便鋸更實際。
+          </div>
+        </div>
+
+        <div class="knife-card" onclick="toggleKnife(this)">
+          <div class="knife-id">TYPE 02</div>
+          <div class="knife-name">軍用直刀</div>
+          <div class="knife-tags">
+            <span class="pill pill-red">叢林穿越不適用</span>
+          </div>
+          <div class="knife-detail">
+            台灣中級山林相極為密集，刺藤、懸勾子等障礙物是主要困難，一般軍用直刀刀身短、缺乏揮砍弧度，對付這類植物幾乎沒有效果。<br><br><strong style="color:var(--accent-K)">結論：</strong>叢林穿越場景不適用，可保留作為日常工作刀。
+          </div>
+        </div>
+
+        <div class="knife-card" onclick="toggleKnife(this)">
+          <div class="knife-id">TYPE 03</div>
+          <div class="knife-name">開山刀 ／ 柴刀</div>
+          <div class="knife-tags">
+            <span class="pill pill-k">叢林穿越主力</span>
+            <span class="pill pill-k">劈柴</span>
+          </div>
+          <div class="knife-detail">
+            刀身長、重心前置，揮砍效率高，是台灣叢林穿越的主流選擇。可有效處理刺藤、竹叢、小樹幹。重量較重，長程縱走需評估裝備取捨。<br><br><strong style="color:var(--accent-K)">結論：</strong>中級山叢林穿越首選。
+          </div>
+        </div>
+
+        <div class="knife-card" onclick="toggleKnife(this)">
+          <div class="knife-id">TYPE 04</div>
+          <div class="knife-name">鐮刀</div>
+          <div class="knife-tags">
+            <span class="pill pill-k">刺藤剋星</span>
+            <span class="pill pill-dim">特定場景</span>
+          </div>
+          <div class="knife-detail">
+            弧形刀刃非常適合勾割刺藤、懸勾子等橫向纏繞型植物。在密林環境中，鐮刀的勾割動作比直刀揮砍更省力、效率更高。<br><br><strong style="color:var(--accent-K)">結論：</strong>面對刺藤密集環境，鐮刀是出乎意料的好選擇。
+          </div>
+        </div>
+
+        <div class="knife-card" onclick="toggleKnife(this)">
+          <div class="knife-id">TYPE 05</div>
+          <div class="knife-name">折刀</div>
+          <div class="knife-tags">
+            <span class="pill pill-k">日常輕工作</span>
+            <span class="pill pill-dim">高山適用</span>
+          </div>
+          <div class="knife-detail">
+            攜帶便利、重量輕，適合炊事備料、細部處理等日常輕度工作。高山行程通常不需大型刀具，折刀即已足夠。<br><br><strong style="color:var(--accent-K)">結論：</strong>全場景備用，高山行程主力。
+          </div>
+        </div>
+
+        <div class="knife-card" onclick="toggleKnife(this)">
+          <div class="knife-id">TYPE 06</div>
+          <div class="knife-name">多功能刀（瑞士刀型）</div>
+          <div class="knife-tags">
+            <span class="pill pill-dim">輕量備用</span>
+          </div>
+          <div class="knife-detail">
+            包含開罐器、起子、剪刀等工具，作為輔助工具有其價值，但主刀刃強度有限，不適合重度工作。<br><br><strong style="color:var(--accent-K)">結論：</strong>輔助備用，不作主力。
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 場景推薦 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <div class="tool-label">場景對應速查</div>
+    </div>
+    <div class="tool-inner">
+      <table class="data-table">
+        <thead>
+          <tr><th>場景</th><th>主力推薦</th><th>優先材質</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-accent">中級山叢林穿越</td>
+            <td>開山刀／柴刀＋鐮刀</td>
+            <td>高碳不鏽鋼</td>
+            <td>搭配輕便折疊鋸，鋸背求生刀沒有優勢</td>
+          </tr>
+          <tr class="alt-row">
+            <td class="td-accent">溪谷</td>
+            <td>折刀</td>
+            <td>不鏽鋼優先</td>
+            <td>防鏽第一，大型刀具需勤保養</td>
+          </tr>
+          <tr>
+            <td class="td-accent">高山</td>
+            <td>折刀</td>
+            <td>不鏽鋼或高碳不鏽鋼</td>
+            <td>輕量優先，大型刀具無必要</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 保養 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <div class="tool-label">保養重點</div>
+    </div>
+    <div class="tool-inner">
+      <div class="timeline">
+        <div class="step">
+          <div class="step-dot">P1</div>
+          <div class="step-body">
+            <strong>防鏽處理（碳鋼尤其重要）</strong>
+            <p>每次使用後立即擦乾，薄塗<em>食用油或防鏽油</em>。長期收納前確保完全乾燥，刀鞘選透氣材質避免悶濕。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">P2</div>
+          <div class="step-body">
+            <strong>磨刀石基本動作</strong>
+            <p>以<em>15–20 度</em>固定角度，由刀根往刀尖推磨，正反面交替。先粗石去鏽整形，再細石修整刀刃。力道均勻，角度一致比力道更重要。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">P3</div>
+          <div class="step-body">
+            <strong>收納注意</strong>
+            <p>刀鞘長期接觸皮革或橡膠材質容易加速碳鋼生鏽，建議選<em>木質或透氣尼龍刀鞘</em>。長期不用時取出刀具獨立保存。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 法規 -->
+  <div class="alert alert-danger">
+    <div class="alert-title">法規警示 · 刀具攜帶限制</div>
+    <p>依《社會秩序維護法》第 63 條，無故攜帶刀械者可處罰鍰或拘留。本站僅說明法規條文供參考，使用者攜帶刀具須自行確認合規性，本站不承擔相關責任。</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     K3 · 天幕外帳搭設
+══════════════════════════════════════════ -->
+<section id="k3">
+  <div class="sec-header">
+    <div class="sec-layer">K3 · 野地技術操作</div>
+    <h2 class="sec-title">天幕外帳搭設 · <em>水線管理與脊線系統</em></h2>
+    <p class="sec-sub">天幕不是蓋上去就好——積水能壓垮整張帳，脊線張力決定一切。這裡從核心原理開始教。</p>
+  </div>
+
+  <!-- 選址 -->
+  <div class="tool-frame">
+    <div class="tool-bar"><div class="tool-label">選址原則</div></div>
+    <div class="tool-inner">
+      <div class="two-col">
+        <div>
+          <div class="card-sm">
+            <div class="card-sm-title">避風</div>
+            <p>觀察地形與植被，找天然擋風屏障（山脊背面、密林邊緣）。避免架在明顯風道上。</p>
+          </div>
+          <div class="card-sm">
+            <div class="card-sm-title">排水坡度</div>
+            <p>地面需有<em>自然排水坡度</em>，水流方向確認後再決定天幕導水方向。平坦地容易積水。</p>
+          </div>
+        </div>
+        <div>
+          <div class="card-sm">
+            <div class="card-sm-title">離水源距離</div>
+            <p>溪谷紮營距溪床保持安全高度，避免暴雨暴漲。不在溪床低窪處或河道轉彎內側紮營。</p>
+          </div>
+          <div class="card-sm">
+            <div class="card-sm-title">風向判斷</div>
+            <p>觀察樹葉、草地擺動方向確認主風向，天幕開口背對主風向。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 脊線 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <div class="tool-label">核心一 · 脊線架設</div>
+      <div class="tool-tag">先架脊線，再展天幕</div>
+    </div>
+    <div class="tool-inner">
+      <div class="alert alert-warn" style="margin-bottom:1.2rem;">
+        <div class="alert-title">原則</div>
+        <p>所有天幕都必須先架脊線，再展開天幕。脊線是整個系統的骨幹，張力不夠則天幕無法拉平，水線管理失效。</p>
+      </div>
+      <div class="timeline">
+        <div class="step">
+          <div class="step-dot">A法</div>
+          <div class="step-body">
+            <strong>兩端綁樹（理想情況）</strong>
+            <p>找兩棵間距適合的樹，脊線綁於<em>腰部以上高度</em>。拉緊至用手壓下不超過 10cm。樹徑至少 10cm 以上，避免細樹受力彎曲。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">B法</div>
+          <div class="step-body">
+            <strong>立柱系統（無適合樹木時）</strong>
+            <p>使用木頭、竹子或登山杖架設立柱。立柱<em>不能只靠垂直支撐</em>，必須抓失力方向：脊線過柱頂後，向地面斜拉固定錨點（約 45 度），防止立柱在脊線張力下向內倒塌。兩側立柱各需一條錨繩固定。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">確認</div>
+          <div class="step-body">
+            <strong>脊線張力檢查</strong>
+            <p>脊線架好後，用手在中點向下壓：<em>下沉不超過 10cm</em> 為合格。張力不足的脊線在大雨後會因天幕積水重量繼續下沉，導致積水惡化。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 水線 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <div class="tool-label">核心二 · 水線管理</div>
+      <div class="tool-tag">積水是安全問題，不只是舒適問題</div>
+    </div>
+    <div class="tool-inner">
+      <div class="alert alert-danger" style="margin-bottom:1.2rem;">
+        <div class="alert-title">為什麼積水很危險</div>
+        <p>1 公升水重 1 公斤。台灣大雨可在天幕中央積累數十公升水，重量足以壓斷脊線或扯脫固定點，導致天幕整個塌陷。拉平整是安全問題，不只是舒適問題。</p>
+      </div>
+      <div class="timeline">
+        <div class="step">
+          <div class="step-dot">W1</div>
+          <div class="step-body">
+            <strong>設計單一導水方向</strong>
+            <p>架設時刻意讓天幕<em>一側略低</em>，讓所有雨水匯集後從低側流出。不要讓天幕兩側等高——那樣水會在中央積聚。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">W2</div>
+          <div class="step-body">
+            <strong>避免中間低兩側高</strong>
+            <p>常見錯誤：兩側拉繩太緊、中央脊線張力不足，造成天幕中央下凹。這是<em>最容易積水的形狀</em>，大雨必垮。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">W3</div>
+          <div class="step-body">
+            <strong>大雨前再次確認</strong>
+            <p>入夜前或預判大雨即將來臨時，重新確認脊線張力與各角拉繩，<em>提前處理鬆弛</em>比雨中搶修容易得多。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 高度與氣候 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <div class="tool-label">核心三 · 架設高度與氣候判斷</div>
+    </div>
+    <div class="tool-inner">
+      <table class="data-table">
+        <thead>
+          <tr><th>天氣狀況</th><th>建議高度</th><th>理由</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-accent">晴天／微風</td>
+            <td>高架（人站進去頭部有空間）</td>
+            <td>通風良好、視野開闊、進出方便</td>
+          </tr>
+          <tr class="alt-row">
+            <td class="td-accent">預判大雨</td>
+            <td>低架（腰部高度進出）</td>
+            <td>降低風阻、減少雨飄入角度、結構更穩定</td>
+          </tr>
+          <tr>
+            <td class="td-accent">溪谷環境</td>
+            <td>低架但離地面保持高度</td>
+            <td>防水氣與地面濕氣，同時避免暴漲淹入</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 營釘 -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <div class="tool-label">核心四 · 營釘固定</div>
+    </div>
+    <div class="tool-inner">
+      <div class="timeline">
+        <div class="step">
+          <div class="step-dot">標準</div>
+          <div class="step-body">
+            <strong>營釘角度</strong>
+            <p>營釘入地方向與營繩呈 <em>45 度夾角</em>，垂直於地面受力方向，抗拔出力最大。直接垂直打入是常見錯誤，容易被拔出。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">替代A</div>
+          <div class="step-body">
+            <strong>木釘（無營釘時）</strong>
+            <p>選<em>硬木、直紋、手腕粗細</em>，削尖一端打入地面。軟木腐木強度不足，承重易斷。長度約 20–30cm。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">替代B</div>
+          <div class="step-body">
+            <strong>大石壓繩</strong>
+            <p>找 5 公斤以上的大石，將繩圈套繞石頭後壓實。適合碎石地或無法打釘的硬地。確認石頭本身<em>不會因重力滾動</em>。</p>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:1rem;">
+        <p style="font-family:var(--mono);font-size:10px;font-weight:700;color:var(--dim2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;">土質應對</p>
+        <table class="data-table">
+          <thead><tr><th>土質</th><th>建議</th></tr></thead>
+          <tbody>
+            <tr><td>一般山土</td><td>標準營釘，深度至少 15cm</td></tr>
+            <tr class="alt-row"><td>碎石地</td><td>大石壓繩或多釘並聯增加摩擦</td></tr>
+            <tr><td>溪谷沙地</td><td>木釘或大石，沙地保持力差，盡量加深或多點固定</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     K4 · 野外自製炊具
+══════════════════════════════════════════ -->
+<section id="k4">
+  <div class="sec-header">
+    <div class="sec-layer">K4 · 野地技術操作</div>
+    <h2 class="sec-title">野外自製炊具 · <em>竹製系統</em></h2>
+    <p class="sec-sub">適用於中級山與溪谷環境，台灣竹林資源豐富，熟悉竹製炊具能在裝備不足時大幅提升炊事能力。高山無適合材料，本模組不適用。</p>
+  </div>
+
+  <div class="alert alert-danger" style="margin-bottom:1.5rem;">
+    <div class="alert-title">安全警示 · 竹子加熱爆裂風險</div>
+    <p>竹節密閉空間加熱後內部蒸氣壓力急速上升，<strong>必定爆裂</strong>。所有竹製容器加熱前均須處理開口釋壓，否則爆裂碎片可導致嚴重割傷。此為硬性原則，無例外。</p>
+  </div>
+
+  <!-- 選竹 -->
+  <div class="tool-frame">
+    <div class="tool-bar"><div class="tool-label">選竹原則（所有竹製炊具共用）</div></div>
+    <div class="tool-inner">
+      <div class="timeline">
+        <div class="step">
+          <div class="step-dot">C1</div>
+          <div class="step-body">
+            <strong>竹節完整無裂縫</strong>
+            <p>裂縫的竹子加熱後更容易延伸裂開，且容水性差。目視與手觸確認外壁完整。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">C2</div>
+          <div class="step-body">
+            <strong>避免過老或過嫩</strong>
+            <p><em>過老</em>的竹子外壁乾燥易脆，加熱易裂；<em>過嫩</em>的竹子壁薄強度不足，且水分多加熱慢。選外壁帶淡綠至青黃色、壁厚扎實者。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">C3</div>
+          <div class="step-body">
+            <strong>粗細依用途選擇</strong>
+            <p>水壺用較粗竹節（直徑 6cm 以上），筷子用細直竹枝，竹叉用分叉自然形成的枝節。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 各炊具 -->
+  <div class="two-col">
+    <div class="tool-frame" style="margin-bottom:0;">
+      <div class="tool-bar"><div class="tool-label">竹筒飯</div></div>
+      <div class="tool-inner">
+        <div class="timeline">
+          <div class="step">
+            <div class="step-dot">1</div>
+            <div class="step-body">
+              <strong>選竹節段</strong>
+              <p>選一端有竹節（封底）、一端開口的竹段，長約 30cm，直徑 5cm 以上。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">2</div>
+            <div class="step-body">
+              <strong>開口釋壓（必要）</strong>
+              <p>開口端<em>不封閉</em>，讓蒸氣自然散出。若想蓋葉片保溫，葉片必須鬆蓋，不可密封。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">3</div>
+            <div class="step-body">
+              <strong>裝米加水</strong>
+              <p>米加水比例同一般煮法（約 1:1.2），從開口端裝入，水位距開口留 3cm 空間。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">4</div>
+            <div class="step-body">
+              <strong>斜放明火加熱</strong>
+              <p>竹筒斜放於火堆旁，開口朝上斜約 <em>45 度</em>，讓水對流循環。約 20–30 分鐘，聞到竹香即接近完成。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-frame" style="margin-bottom:0;">
+      <div class="tool-bar"><div class="tool-label">竹水壺</div></div>
+      <div class="tool-inner">
+        <div class="timeline">
+          <div class="step">
+            <div class="step-dot">1</div>
+            <div class="step-body">
+              <strong>選粗節竹段</strong>
+              <p>選直徑 6cm 以上、保留底部竹節封水的竹段。長度 20–25cm，可裝約 400–600ml 水。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">2</div>
+            <div class="step-body">
+              <strong>開口釋壓（必要）</strong>
+              <p>頂端開口<em>不得封閉</em>，煮水時蒸氣必須能自由散出，否則爆裂。</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-dot">3</div>
+            <div class="step-body">
+              <strong>明火煮水</strong>
+              <p>直立或斜放於火旁，<em>水沸騰後持續煮 1 分鐘</em>以確保淨化效果（中低海拔適用）。首次使用竹水壺時竹子本身的香氣會融入水中屬正常。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-top:1rem;">
+    <div class="tool-frame" style="margin-bottom:0;">
+      <div class="tool-bar"><div class="tool-label">竹叉（架鍋支架）</div></div>
+      <div class="tool-inner">
+        <p style="font-size:12px;color:var(--dim);line-height:1.65;">找<em>自然分叉的竹枝</em>，叉角約 60–90 度，叉頂承接鍋把或鍋耳。選用時確認分叉節點木質化程度夠、不易斷裂。兩根交叉使用可提升穩定性。竹叉高度決定鍋底距火焰距離，可用石頭墊高調整。</p>
+      </div>
+    </div>
+
+    <div class="tool-frame" style="margin-bottom:0;">
+      <div class="tool-bar"><div class="tool-label">竹筷</div></div>
+      <div class="tool-inner">
+        <p style="font-size:12px;color:var(--dim);line-height:1.65;">選<em>細直的竹枝或竹條</em>，直徑約 0.8–1cm，長度 20–25cm。用刀具削去節點突起，確保表面平滑。兩支粗細盡量一致。竹筷不需特別烘乾，新鮮竹子柔韌性佳，不易折斷。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn" style="margin-top:1.5rem;">
+    <div class="alert-title">明火法規提醒</div>
+    <p>野外自製炊具需搭配明火使用，出發前確認行程所在地是否有禁火規定，同前 K1 溪谷場景說明。</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     K5 · 野外天然庇護空間
+══════════════════════════════════════════ -->
+<section id="k5">
+  <div class="sec-header">
+    <div class="sec-layer">K5 · 野地技術操作</div>
+    <h2 class="sec-title">野外天然庇護空間 · <em>緊急過夜的選址與建構</em></h2>
+    <p class="sec-sub">裝備遺失、迷途、非計畫性過夜——三個場景各有最佳庇護策略。選址比搭建更重要。</p>
+  </div>
+
+  <!-- 共通原則 -->
+  <div class="tool-frame">
+    <div class="tool-bar"><div class="tool-label">選址原則（所有場景共用）</div></div>
+    <div class="tool-inner">
+      <div class="two-col">
+        <div>
+          <div class="card-sm">
+            <div class="card-sm-title">避風</div>
+            <p>找天然屏障：岩壁背面、密林邊緣、倒木背側。稜線與開闊地風場最強，<em>絕對避免</em>。</p>
+          </div>
+          <div class="card-sm">
+            <div class="card-sm-title">避水</div>
+            <p>不睡低窪處、溪床附近、天然排水道。台灣暴雨可在 30 分鐘內造成積水，選略有坡度的地點。</p>
+          </div>
+        </div>
+        <div>
+          <div class="card-sm">
+            <div class="card-sm-title">地面隔熱層</div>
+            <p>地面是最大失溫來源之一。枯葉、芒草堆積<em>至少 10cm 厚</em>作為隔熱層，潮濕環境需更厚。</p>
+          </div>
+          <div class="card-sm">
+            <div class="card-sm-title">求救能見度</div>
+            <p>不要躲進太隱蔽的地點。如有可能，庇護點附近保持空曠區域，讓直升機或搜救人員能發現你。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 三場景 Tabs -->
+  <div class="tool-frame">
+    <div class="tool-bar">
+      <div class="tool-label">場景選擇</div>
+      <div class="tool-tag">中級山 · 溪谷 · 高山</div>
+    </div>
+    <div class="tool-inner">
+      <div class="tab-group">
+        <div class="tab-btns">
+          <button class="tab-btn active" onclick="switchTab('k5','forest')">中級山林區</button>
+          <button class="tab-btn" onclick="switchTab('k5','canyon')">溪谷</button>
+          <button class="tab-btn" onclick="switchTab('k5','summit')">高山</button>
+        </div>
+
+        <div class="tab-panel active" id="k5-forest">
+          <div style="margin-top:1.2rem;">
+            <div class="timeline">
+              <div class="step">
+                <div class="step-dot">F1</div>
+                <div class="step-body">
+                  <strong>倒木利用型</strong>
+                  <p>大型倒木背側可提供遮風效果。使用前<em>先確認腐朽程度</em>：用腳輕踩表面，若明顯下陷或聽到空洞聲，結構已不可靠，壓壞有危險。枯葉堆積於倒木旁形成隔熱層。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">F2</div>
+                <div class="step-body">
+                  <strong>落葉枯枝堆積型</strong>
+                  <p>在背風凹地收集大量枯葉，堆積出<em>足以覆蓋身體</em>的堆積層（至少 30cm 厚）。潮濕落葉保溫效果差，優先找遮蔽處的乾燥落葉。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">F3</div>
+                <div class="step-body">
+                  <strong>大樹根部避風凹槽</strong>
+                  <p>台灣中低海拔大型闊葉木根系發達，根部周圍常形成天然凹槽。確認<em>無蜂巢、蛇類蹤跡</em>後可利用，鋪枯葉隔地，根部本身提供遮風效果。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="k5-canyon">
+          <div style="margin-top:1.2rem;">
+            <div class="alert alert-danger" style="margin-bottom:1.2rem;">
+              <div class="alert-title">溪谷最高警示 · 絕對不睡低窪處</div>
+              <p>台灣溪谷暴漲速度極快，上游降雨下游感受到之前幾乎無預警。溪床、河道低點、兩側低窪地即使當下乾燥也絕對不能作為過夜地點。</p>
+            </div>
+            <div class="timeline">
+              <div class="step">
+                <div class="step-dot">C1</div>
+                <div class="step-body">
+                  <strong>大石遮蔽型</strong>
+                  <p>溪谷巨石背側（相對上游方向）可提供遮風與部分遮雨效果。確認石頭<em>穩固不會移動</em>，岩面乾燥較佳。枯葉隔地，保持與溪床足夠高度。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">C2</div>
+                <div class="step-body">
+                  <strong>河岸凹壁遮蔽</strong>
+                  <p>溪岸岩壁的天然凹陷或小型洞穴可提供遮雨。進入前確認<em>無積水痕跡</em>（表示歷史高水位），並確認凹壁高度在安全水位以上。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">C3</div>
+                <div class="step-body">
+                  <strong>地面濕氣應對</strong>
+                  <p>溪谷地面濕氣嚴峻，枯葉隔熱層需<em>加倍厚度</em>（20cm 以上），若找得到芒草更佳，草莖中空隔熱效果優於枯葉。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="k5-summit">
+          <div style="margin-top:1.2rem;">
+            <div class="alert alert-warn" style="margin-bottom:1.2rem;">
+              <div class="alert-title">高山庇護資源有限</div>
+              <p>高山林木稀少，落葉枯枝取得困難，庇護方式以利用現有地形與植被為主，無法大量建構。保暖比建構更優先。</p>
+            </div>
+            <div class="timeline">
+              <div class="step">
+                <div class="step-dot">H1</div>
+                <div class="step-body">
+                  <strong>岩石遮蔽型</strong>
+                  <p>找凹壁、大型岩石背側（背風面）或石縫。確認無落石風險，岩面盡量乾燥。用衣物或背包墊地，<em>離地隔熱優先於擋風</em>。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">H2</div>
+                <div class="step-body">
+                  <strong>箭竹林（高山特有選項）</strong>
+                  <p>台灣中高海拔山區箭竹林常見，密集的竹叢防風性極佳，是高山緊急過夜的實用選擇。<em>選竹叢密度高處鑽入</em>，竹葉鋪地隔濕。注意箭竹叢也是台灣黑熊與山羌的活動環境，鑽入前觀察是否有動物痕跡。</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-dot">H3</div>
+                <div class="step-body">
+                  <strong>稜線絕對禁忌</strong>
+                  <p>稜線風場為全山域最強，同時是雷擊風險最高位置。即使稜線附近有看似便利的地點，<em>絕對不在稜線過夜</em>，務必下撤至背風坡面。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 安全警示 -->
+  <div class="tool-frame">
+    <div class="tool-bar"><div class="tool-label">安全警示</div></div>
+    <div class="tool-inner">
+      <div class="timeline">
+        <div class="step">
+          <div class="step-dot">!</div>
+          <div class="step-body">
+            <strong>野生動物藏匿風險</strong>
+            <p>倒木、樹根凹槽、石縫是蛇類、虎頭蜂（蜂巢）、鼠類的常見棲所。使用前<em>用登山杖或長枝條先行驚擾</em>，確認無動物後再進入。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">!</div>
+          <div class="step-body">
+            <strong>倒木腐朽判斷</strong>
+            <p>外表看起來完整的倒木內部可能已空洞腐朽。<em>用腳踩踏表面</em>：明顯下陷、聽到空洞聲、外壁大量剝落，均表示不可靠，壓上去可能整個垮塌。</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">!</div>
+          <div class="step-body">
+            <strong>溪谷不睡低窪處</strong>
+            <p>無論當下水位多低，溪床與低窪地點<em>嚴禁過夜</em>。台灣暴雨溪流暴漲幾乎無預警，歷史最高水位痕跡（岩面沖刷痕、漂流木堆積位置）是選址上限的重要參考。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <div class="footer-left">
+    <strong>SAR · TW</strong> · 台灣山域搜救訓練平台<br>
+    K 群組 · 野地技術操作 · nightmoon720
+  </div>
+  <div class="footer-right">
+    5 MODULES<br>
+    K GROUP<br>
+    VERSION 2025
+  </div>
+</div>
+
+</main>
+
+<div class="disclaimer">
+  <div class="disclaimer-inner">
+    <div class="disclaimer-title">免責聲明 · DISCLAIMER</div>
+    <p>本平台所載之炊事技術、刀具使用、天幕搭設、野外求生方法及所有訓練內容，均僅供教育與訓練參考用途，不構成任何形式之專業建議或操作指引。</p>
+    <p>實際野外操作應由具備足夠經驗之人員依現場狀況判斷執行。本平台對因參考本內容而導致之任何人身傷亡、財產損失或法律責任，不承擔任何明示或默示之責任。</p>
+    <p class="disclaimer-emergency">遇到緊急狀況請立即撥打 <strong>119</strong>。</p>
+  </div>
+</div>
+
+<script>
+// Tab 切換
+function switchTab(section, panel) {
+  const allPanels = document.querySelectorAll(`#${section} .tab-panel`);
+  const allBtns   = document.querySelectorAll(`#${section} .tab-btn`);
+  allPanels.forEach(p => p.classList.remove('active'));
+  allBtns.forEach(b => b.classList.remove('active'));
+  document.getElementById(`${section}-${panel}`).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// 刀具卡片展開
+function toggleKnife(card) {
+  const wasSelected = card.classList.contains('selected');
+  document.querySelectorAll('.knife-card').forEach(c => c.classList.remove('selected'));
+  if (!wasSelected) card.classList.add('selected');
+}
+
+// Nav active 更新
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a[data-layer="K"]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
