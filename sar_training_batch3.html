@@ -149,9 +149,9 @@ input[type="range"].light-range::-webkit-slider-thumb {
 .bar-fill { height: 100%; border-radius: 4px; }
 
 /* ============================================================
-   C2 PART E — TTRRS vs DMDB
+   C2 PART E — TTRS vs DMDB
    ============================================================ */
-.ttrrs-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.ttrs-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 .sys-card { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
 .sys-card-head { padding: .85rem 1.1rem; border-bottom: 1px solid var(--rule); }
 .sys-card-head .sys-name { font-family: var(--serif); font-weight: 700; font-size: 16px; }
@@ -160,10 +160,10 @@ input[type="range"].light-range::-webkit-slider-thumb {
 .sys-row { display: flex; align-items: flex-start; gap: .6rem; font-size: 13px; line-height: 1.5; }
 .sys-icon { flex: none; font-size: 14px; margin-top: .05rem; }
 .sys-card.dmdb .sys-card-head { background: #FFF8F0; border-bottom-color: #E8C8A0; }
-.sys-card.ttrrs .sys-card-head { background: #F0F8F4; border-bottom-color: #B8D8C8; }
+.sys-card.ttrs .sys-card-head { background: #F0F8F4; border-bottom-color: #B8D8C8; }
 .sys-verdict { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 700; padding: .2rem .6rem; border-radius: 4px; margin-top: .5rem; }
 .sys-card.dmdb .sys-verdict { background: #FFF0EE; color: var(--fire); border: 1px solid #E8B0A0; }
-.sys-card.ttrrs .sys-verdict { background: #E8F5EE; color: var(--safe); border: 1px solid #B0D8C0; }
+.sys-card.ttrs .sys-verdict { background: #E8F5EE; color: var(--safe); border: 1px solid #B0D8C0; }
 .dcd-spec { background: var(--stone); border: 1px solid var(--rule); border-radius: 8px; padding: 1rem 1.1rem; margin-top: 1rem; }
 .dcd-title { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--dim2); letter-spacing: .08em; margin-bottom: .75rem; }
 .dcd-row { display: flex; justify-content: space-between; align-items: center; padding: .4rem 0; border-bottom: 1px solid var(--rule); }
@@ -260,7 +260,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
 .callout-warn { background: #FFF8E0; border: 1px solid #E8D890; border-left: 4px solid var(--amber); }
 
 @media (max-width: 768px) {
-  .anchor-sim-layout, .ttrrs-compare, .sim-layout, .anchor-grid, .serene-grid { grid-template-columns: 1fr; }
+  .anchor-sim-layout, .ttrs-compare, .sim-layout, .anchor-grid, .serene-grid { grid-template-columns: 1fr; }
   #anchor-canvas { width: 100%; height: auto; }
 }
   html.in-iframe .nav { display: none !important; }
@@ -333,7 +333,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
   <div class="sec-header">
     <div class="sec-layer">C2 · 技術執行</div>
     <h2 class="sec-title">固定點技術 × <em>你會選哪種？</em></h2>
-    <p class="sec-sub">從夾角力學到選型決策樹，完整涵蓋 SERENE 評估、套接方式強度、TTRRS vs DMDB 系統比較。</p>
+    <p class="sec-sub">從夾角力學到選型決策樹，完整涵蓋 SERENE 評估、套接方式強度、TTRS vs DMDB 系統比較。</p>
   </div>
 
   <div class="tool-frame">
@@ -405,23 +405,24 @@ input[type="range"].light-range::-webkit-slider-thumb {
     <div class="tool-inner">
       <table class="hitch-table">
         <thead>
-          <tr><th>套接方式</th><th>強度</th><th>相對強度</th><th>適用場景</th><th>台灣注意事項</th></tr>
+          <tr><th>套接方式</th><th>剩餘強度效率</th><th>適用場景</th><th>台灣注意事項</th></tr>
         </thead>
         <tbody id="hitch-tbody"></tbody>
       </table>
       <div class="callout callout-warn">
         <strong>台灣現場常見錯誤</strong>：用拴牛結（Girth Hitch）連接扁帶至岩石，強度僅為籃式套接的40%（約20kN）。雙人救援重載約2kN，安全係數要求10:1需達20kN，此方式剛好在臨界點，無任何餘裕。
       </div>
+
     </div>
   </div>
 
   <div class="tool-frame">
     <div class="tool-bar">
-      <span class="tool-label">MODULE 05 · TTRRS vs DMDB</span>
+      <span class="tool-label">MODULE 05 · TTRS vs DMDB</span>
       <span class="tool-tag">雙繩張力系統 vs 傳統主繩確保系統</span>
     </div>
     <div class="tool-inner">
-      <div class="ttrrs-compare" id="ttrrs-compare"></div>
+      <div class="ttrs-compare" id="ttrs-compare"></div>
       <div class="dcd-spec">
         <div class="dcd-title">DCD 裝置性能規範（ICAR TERCOM）</div>
         <div class="dcd-row"><span class="dcd-label">無意外滑移臨界（靜態鎖定）</span><span class="dcd-val">0 – 3 kN</span></div>
@@ -750,31 +751,28 @@ input[type="range"].light-range::-webkit-slider-thumb {
    ============================================================ */
 (function() {
   const HITCHES = [
-    { name:'籃式套接 Basket Hitch', kn:'53 kN', cls:'kn-green', pct:100, barCls:'#2E7D52', scene:'樹木、岩柱水平繞接', note:'台灣教案首選，優先選擇' },
-    { name:'雙股平行繞套', kn:'~40 kN', cls:'kn-green', pct:75, barCls:'#2E7D52', scene:'較大岩石繞接', note:'次選，確保兩股均勻受力' },
-    { name:'8字結 Figure-8', kn:'~32 kN', cls:'kn-amber', pct:60, barCls:'#B89030', scene:'繩端固定，主受力點', note:'效率75–80%，標準救援繩結' },
-    { name:'拴牛結 Girth Hitch', kn:'20–21 kN', cls:'kn-amber', pct:40, barCls:'#B89030', scene:'扁帶連接鎖扣', note:'⚠ 強度損失50%，雙人救援慎用' },
-    { name:'雙套結 Clove Hitch', kn:'~18 kN', cls:'kn-amber', pct:34, barCls:'#D4781A', scene:'快速調整長度', note:'可承受多方向，效率60–70%' },
-    { name:'單結 Overhand', kn:'~15 kN', cls:'kn-red', pct:28, barCls:'#C8401A', scene:'扁帶限位結', note:'強度最低，僅限限位結用途' },
+    { name:'籃式套接 Basket Hitch', eff:'≈ 95–100%', effCls:'kn-green', scene:'樹木、岩柱水平繞接', note:'台灣教案首選，優先選擇' },
+    { name:'雙股平行繞套',          eff:'≈ 70–80%',  effCls:'kn-green', scene:'較大岩石繞接',       note:'次選，確保兩股均勻受力' },
+    { name:'8字結 Figure-8',        eff:'60–85%',    effCls:'kn-amber', scene:'繩端固定，主受力點', note:'高強度且不易打錯，標準救援繩結' },
+    { name:'拴牛結 Girth Hitch',    eff:'~40%',      effCls:'kn-amber', scene:'扁帶連接鎖扣',       note:'⚠ 強度損失50%，雙人救援慎用' },
+    { name:'雙套結 Clove Hitch',    eff:'60–70%',    effCls:'kn-amber', scene:'快速調整長度',       note:'可承受多方向' },
+    { name:'單結 Overhand',         eff:'26–30%',    effCls:'kn-red',   scene:'扁帶限位結',         note:'強度最低，僅限限位結用途' },
   ];
   const tbody = document.getElementById('hitch-tbody');
   HITCHES.forEach(h => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${h.name}</td>
-      <td><span class="${h.cls}">${h.kn}</span></td>
-      <td><div class="bar-wrap"><div class="bar-fill" style="width:${h.pct}%;background:${h.barCls}"></div></div></td>
+      <td><span class="${h.effCls}">${h.eff}</span></td>
       <td>${h.scene}</td>
       <td>${h.note}</td>`;
     tbody.appendChild(tr);
   });
 })();
 
-/* ============================================================
-   C2 — TTRRS vs DMDB
-   ============================================================ */
+
 (function() {
-  const container = document.getElementById('ttrrs-compare');
+  const container = document.getElementById('ttrs-compare');
   const systems = [
     {
       cls: 'dmdb', name: 'DMDB 系統', tag: '傳統主繩／確保繩系統',
@@ -788,7 +786,7 @@ input[type="range"].light-range::-webkit-slider-thumb {
       verdict: '傳統系統 · 有致命力學缺陷'
     },
     {
-      cls: 'ttrrs', name: 'TTRRS 系統', tag: '雙繩張力系統（台灣進階教案推薦）',
+      cls: 'ttrs', name: 'TTRS 系統', tag: '雙繩張力系統（台灣進階教案推薦）',
       rows: [
         { icon:'✓', text:'兩條繩索共同承受張力，各分擔約50%負載' },
         { icon:'✓', text:'任一繩斷裂時無自由墜落，負載平滑轉移' },

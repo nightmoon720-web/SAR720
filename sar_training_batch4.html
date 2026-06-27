@@ -402,7 +402,7 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); -w
   <div class="sec-header">
     <div class="sec-layer">D2 · 延伸研究</div>
     <h2 class="sec-title">YOSAR × El Capitan<br><em>高角度救援案例深度研究</em></h2>
-    <p class="sec-sub">優勝美地搜救隊（YOSAR）是全球大岩壁高角度救援的最高標準。El Capitan 每年30+件救援任務，涵蓋懸吊救援、高空醫療與 TTRRS 技術的實戰應用。</p>
+    <p class="sec-sub">優勝美地搜救隊（YOSAR）是全球大岩壁高角度救援的最高標準。El Capitan 每年30+件救援任務，涵蓋懸吊救援、高空醫療與 TTRS 技術的實戰應用。</p>
   </div>
 
   <div class="tool-frame">
@@ -670,7 +670,7 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); -w
     {
       col:'#B89030', level:'中效能', name:'工程控制（Engineering Controls）',
       eff:'效能 50–80%',
-      example:'打設多點均力錨點，部署雙繩張力系統（TTRRS）進行斜坡防墜保護。設計物理隔離措施降低危害接觸。'
+      example:'打設多點均力錨點，部署雙繩張力系統（TTRS）進行斜坡防墜保護。設計物理隔離措施降低危害接觸。'
     },
     {
       col:'#D4781A', level:'中低效能', name:'行政控制（Administrative Controls）',
@@ -715,8 +715,8 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); -w
         { type:'action',   time:'D+0 09:15', event:'YOSAR 接報', desc:'優勝美地遊客服務中心轉報 YOSAR，立即確認位置（壁面高度600m），啟動高角度救援程序。', callout:'YOSAR 標準程序：位置確認後15分鐘內出動先遣小組，不等待完整情資。' },
         { type:'action',   time:'D+0 10:00', event:'先遣小組接近', desc:'YOSAR 先遣2人組由頂部垂降接近，攜帶醫療包、雙靜力繩（11mm × 60m）、Petzl Maestro 下放器。' },
         { type:'action',   time:'D+0 11:30', event:'醫療評估 + 固定點架設', desc:'先遣員完成 ABCDE 評估：患者無意識、脈搏弱且不規律，疑似心室顫動後自發恢復。在雙螺栓固定點建立 Quad 扁帶主受力環。', callout:'關鍵決策：患者意識喪失 → 不等心電圖確認，立即按 ACS 程序處理並啟動後送。' },
-        { type:'action',   time:'D+0 12:15', event:'TTRRS 系統架設', desc:'建立雙繩張力提拉系統（TTRRS），3:1 複合省力到 9:1，確保患者與擔架承受零衝擊的平滑上升。先遣員持續監控生命徵象。' },
-        { type:'ok',       time:'D+0 14:30', event:'抵達壁頂 · 直升機後送', desc:'傷患在 Airship 直升機吊掛前完成靜電接地釋放。飛往優勝美地醫療中心，後轉送 Fresno 醫院心臟科。', callout:'TTRRS 關鍵優勢：600m垂直壁面，任一繩索斷裂均不產生自由墜落——在花崗岩銳邊環境此為決定性因素。' },
+        { type:'action',   time:'D+0 12:15', event:'TTRS 系統架設', desc:'建立雙繩張力提拉系統（TTRS），3:1 複合省力到 9:1，確保患者與擔架承受零衝擊的平滑上升。先遣員持續監控生命徵象。' },
+        { type:'ok',       time:'D+0 14:30', event:'抵達壁頂 · 直升機後送', desc:'傷患在 Airship 直升機吊掛前完成靜電接地釋放。飛往優勝美地醫療中心，後轉送 Fresno 醫院心臟科。', callout:'TTRS 關鍵優勢：600m垂直壁面，任一繩索斷裂均不產生自由墜落——在花崗岩銳邊環境此為決定性因素。' },
       ]
     },
     dawn: {
@@ -726,7 +726,7 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); -w
         { type:'critical', time:'D+0 06:00', event:'懸吊創傷發生', desc:'攀登者從確保站墜落約1.5m，PAS 扣住主鎖後勒住腰腹，無法自行站立或釋放系統。同伴不具技術救援能力。', callout:'懸吊創傷警告：靜脈血液積聚於下肢，直立懸掛超過30分鐘可引發休克甚至死亡。' },
         { type:'action',   time:'D+0 07:00', event:'YOSAR 空中偵察', desc:'Airship 直升機第一時間空中目視確認位置（750m高度），確認傷患仍有意識但無法自救，回報 YOSAR ICP。' },
         { type:'action',   time:'D+0 08:30', event:'壁面接近 + 緊急釋放', desc:'YOSAR 技術員由上方垂降抵達，立即在傷患足部安裝臨時踏環讓其站立以緩解懸吊壓力，同步評估生命徵象。', callout:'現場關鍵：先讓傷患站立（緩解症狀）才進行固定點架設，不可倒序操作。' },
-        { type:'action',   time:'D+0 09:15', event:'TTRRS 架設 + 下放決策', desc:'評估後決定以「下放後後送」優先於「上提後送」，距底部地面約250m，TTRRS 建立下放系統。Dawn Wall 岩質有數處鋸齒銳邊，邊緣保護板強制部署。' },
+        { type:'action',   time:'D+0 09:15', event:'TTRS 架設 + 下放決策', desc:'評估後決定以「下放後後送」優先於「上提後送」，距底部地面約250m，TTRS 建立下放系統。Dawn Wall 岩質有數處鋸齒銳邊，邊緣保護板強制部署。' },
         { type:'ok',       time:'D+0 11:00', event:'地面救護接應', desc:'傷患安全下放至地面，地面救護接應後轉送醫院。AVPU評估顯示意識部分恢復，無脊椎損傷。', callout:'後送決策邏輯：距頂部遠（>200繩距）+ 距底部近（<250m）→ 下放優於上提，節省關鍵時間。' },
       ]
     },
@@ -738,13 +738,13 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); -w
         { type:'action',   time:'D+5 11:00', event:'航空偵察', desc:'Airship 直升機沿 Salathe Wall 全壁系統性巡查，YOSAR 觀察員配備雙筒望遠鏡對全壁顏色異常進行掃描。', callout:'決策盲點對照：不盲目假設位置，先做系統性視域清查再分配地面人力。' },
         { type:'action',   time:'D+5 14:30', event:'目視發現', desc:'航空偵察在第26繩距處發現一個靜止的黃色帳篷色塊，無肉眼可見的人員移動。判定可能受困。' },
         { type:'action',   time:'D+6 08:00', event:'壁面接近', desc:'YOSAR 技術員組2人隊由頂部垂降，攜帶5日食糧、水、高山病藥物與急救包。全過程由 ICP 透過 Garmin InReach 追蹤位置。' },
-        { type:'ok',       time:'D+6 13:00', event:'找到繩隊 · 評估後安全下撤', desc:'確認兩名攀登者均存活，主攀者有輕度 HACE（高山腦水腫）症狀，確保者體力耗竭。評估後決定在 YOSAR 技術員帶領下自行攀降，TTRRS 保護隊伍下撤。', callout:'HACE 處理：立即給予 Dexamethasone（地塞米松）並最快速下降高度，優先於其他任何行動。' },
+        { type:'ok',       time:'D+6 13:00', event:'找到繩隊 · 評估後安全下撤', desc:'確認兩名攀登者均存活，主攀者有輕度 HACE（高山腦水腫）症狀，確保者體力耗竭。評估後決定在 YOSAR 技術員帶領下自行攀降，TTRS 保護隊伍下撤。', callout:'HACE 處理：立即給予 Dexamethasone（地塞米松）並最快速下降高度，優先於其他任何行動。' },
       ]
     }
   };
 
   const LESSONS = [
-    { type:'tech', title:'TTRRS 在垂直壁面的決定性優勢', body:'El Capitan 花崗岩銳邊密布，每條繩索只承受50%負載，銳邊剪切力大幅降低。任一繩斷裂無自由墜落——這在600m高空是生死的差距。' },
+    { type:'tech', title:'TTRS 在垂直壁面的決定性優勢', body:'El Capitan 花崗岩銳邊密布，每條繩索只承受50%負載，銳邊剪切力大幅降低。任一繩斷裂無自由墜落——這在600m高空是生死的差距。' },
     { type:'command', title:'位置確認即出動，不等完整情資', body:'YOSAR 標準程序：壁面位置確認後15分鐘內出動先遣組，帶著不確定性行動。等待完整情資反而讓傷患喪失黃金時窗。' },
     { type:'medical', title:'懸吊創傷優先讓傷患站立', body:'懸吊傷患救援的第一個動作不是架設固定點，而是讓傷患足部有支撐。靜脈血積聚下肢，每多1分鐘懸吊都是風險累積。' },
     { type:'safety', title:'靜電接地不可省略', body:'直升機高空吊掛時鋼索積累巨大靜電。El Cap救援案例顯示，忽略接地程序的救援員手部電擊傷發生率超過20%。台灣山域直升機後送同樣強制執行。' },
